@@ -10,7 +10,7 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --ink: #0d0c0a;
+    --ink: #000000;
     --parchment: #f5f0e8;
     --muted: #8a8070;
     --accent: #c9a84c;
@@ -41,12 +41,36 @@
     display: flex; justify-content: space-between; align-items: center;
     padding: 1.5rem 4rem;
     border-bottom: 1px solid var(--border);
-    background: rgba(13,12,10,0.9); backdrop-filter: blur(14px);
+    background: rgba(0,0,0,0.92); backdrop-filter: blur(14px);
   }
-  .nav-logo { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); text-decoration: none; }
+  .nav-logo { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); text-decoration: none; flex-shrink: 0; }
   .nav-links { display: flex; gap: 2.5rem; list-style: none; }
   .nav-links a { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s; }
   .nav-links a:hover { color: var(--parchment); }
+
+  @media (max-width: 700px) {
+    nav {
+      flex-direction: row;
+      align-items: center;
+      padding: 0.9rem 1.25rem;
+      gap: 1rem;
+    }
+    .nav-links {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 1.2rem;
+      flex-shrink: 1;
+      min-width: 0;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links li { flex-shrink: 0; }
+    .nav-links a {
+      font-size: 0.55rem;
+      white-space: nowrap;
+      letter-spacing: 0.15em;
+    }
+  }
 
   /* HERO */
   .hero {
@@ -75,17 +99,28 @@
   .hero-photo {
     position: absolute; top: 0; right: 0; bottom: 0;
     width: 44%; pointer-events: none;
-    mask-image: linear-gradient(to left, rgba(0,0,0,0.7) 40%, transparent 100%),
-                linear-gradient(to top, transparent 0%, black 20%);
     -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.65) 40%, transparent 100%);
-    mask-composite: intersect;
+    mask-image: linear-gradient(to left, rgba(0,0,0,0.65) 40%, transparent 100%);
   }
   .hero-photo img {
     width: 100%; height: 100%;
     object-fit: cover; object-position: top center;
-    filter: brightness(0.7) contrast(1.1);
+    filter: brightness(0.75) contrast(1.05);
     mix-blend-mode: luminosity;
-    opacity: 0.55;
+    opacity: 0.65;
+  }
+  @media (max-width: 700px) {
+    .hero-photo {
+      width: 100%;
+      height: 55%;
+      top: 0; left: 0; right: 0; bottom: auto;
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5) 40%, transparent 100%);
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5) 40%, transparent 100%);
+    }
+    .hero-photo img {
+      opacity: 0.45;
+      object-position: top center;
+    }
   }
 
   /* QUICK-NAV PANEL */
@@ -218,7 +253,7 @@
   .footer-desc { font-size: 1rem; font-weight: 300; color: var(--muted); line-height: 1.8; max-width: 40ch; margin-bottom: 2.5rem; }
   .contact-email { display: inline-block; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.15em; color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(201,168,76,0.3); padding-bottom: 0.25rem; transition: border-color 0.3s; }
   .contact-email:hover { border-color: var(--accent); }
-  .footer-nav { display: flex; flex-direction: column; align-items: flex-end; gap: 1rem; }
+  .footer-nav { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.5rem; }
   .footer-nav a { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s; }
   .footer-nav a:hover { color: var(--parchment); }
   .footer-bottom { grid-column: span 2; padding-top: 3rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
@@ -378,14 +413,127 @@
     .portfolio-grid { grid-template-columns: 1fr; }
   }
 
-  /* ANIMATIONS */
+  /* PORTFOLIO SUBSECTIONS */
+  .portfolio-subsection { margin-bottom: 3rem; }
+  .portfolio-sub-header {
+    display: flex; align-items: baseline; gap: 1.5rem;
+    margin-bottom: 1.5rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .portfolio-sub-title {
+    font-family: var(--mono); font-size: 0.65rem;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .portfolio-sub-count {
+    font-family: var(--mono); font-size: 0.55rem;
+    letter-spacing: 0.15em; color: var(--muted);
+  }
+  /* event designs — portrait-ish cards */
+  .event-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .event-item {
+    position: relative; overflow: hidden;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    background: #111;
+  }
+  .event-item img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform 0.6s ease, filter 0.4s ease;
+    filter: brightness(0.92);
+  }
+  .event-item:hover img { transform: scale(1.04); filter: brightness(0.55); }
+  .event-item-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.25rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .event-item:hover .event-item-overlay { opacity: 1; }
+  .event-item-tag { font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
+  .event-item-title { font-family: var(--serif); font-size: 0.95rem; font-weight: 400; line-height: 1.3; color: var(--parchment); }
+  @media (max-width: 700px) {
+    .event-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+  }
+
+  /* RYAN PRINCE SECTION */
+  .ryan-prince-section { padding: 2rem 4rem 4rem; max-width: 1200px; margin: 0 auto; }
+  .rp-inner {
+    display: grid; grid-template-columns: 420px 1fr; gap: 5rem;
+    align-items: center;
+    border: 1px solid var(--border); padding: 3.5rem;
+    position: relative; overflow: hidden;
+    background: rgba(201,168,76,0.025);
+  }
+  .rp-inner::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(to bottom, var(--accent), transparent); }
+  .rp-photo-wrap { position: relative; }
+  .rp-photo { width: 100%; display: block; filter: brightness(0.92) contrast(1.05); border: 1px solid var(--border); }
+  .rp-photo-badge {
+    position: absolute; bottom: 1rem; left: 1rem;
+    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--ink); background: var(--accent); padding: 0.35rem 0.9rem; border-radius: 2px;
+  }
+  .rp-eyebrow { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .rp-title { font-family: var(--serif); font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 300; line-height: 1.05; margin-bottom: 1.5rem; }
+  .rp-title em { font-style: italic; color: var(--accent); }
+  .rp-desc { font-size: 1rem; font-weight: 300; color: var(--muted); line-height: 1.85; margin-bottom: 2rem; }
+  .rp-meta { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .rp-meta-item { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; color: var(--accent-dim); }
+  .rp-meta-sep { color: var(--border); }
+  @media (max-width: 900px) {
+    .ryan-prince-section { padding: 2rem 2rem 3rem; }
+    .rp-inner { grid-template-columns: 1fr; gap: 2rem; padding: 2rem; }
+  }
+
+  /* ACADEMICS SECTION */
+  .academics-section { padding: 4rem 4rem 2rem; max-width: 1200px; margin: 0 auto; }
+  .academics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 0; }
+  .academic-card {
+    border: 1px solid var(--border); padding: 2rem;
+    position: relative; overflow: hidden;
+    transition: background 0.4s;
+  }
+  .academic-card:hover { background: rgba(201,168,76,0.04); }
+  .academic-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
+  .academic-card:hover::before { transform: scaleX(1); }
+  .academic-card-label { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent-dim); margin-bottom: 0.75rem; }
+  .academic-card-value { font-family: var(--serif); font-size: 2rem; font-weight: 300; color: var(--parchment); margin-bottom: 0.4rem; }
+  .academic-card-desc { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.05em; color: var(--muted); line-height: 1.6; }
+  @media (max-width: 900px) {
+    .academics-section { padding: 3rem 2rem; }
+    .academics-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    .academics-grid { grid-template-columns: 1fr; }
+  }
+
+  /* LEADERSHIP PILLS SECTION */
+  .leadership-section { padding: 2rem 4rem 4rem; max-width: 1200px; margin: 0 auto; }
+  .leadership-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0; }
+  .leadership-pill {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted);
+    border: 1px solid var(--border); padding: 0.5rem 1.1rem;
+    border-radius: 2px; transition: color 0.3s, border-color 0.3s;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .leadership-pill:hover { color: var(--accent); border-color: var(--accent-dim); }
+  .leadership-pill-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); opacity: 0.6; flex-shrink: 0; }
+  @media (max-width: 900px) { .leadership-section { padding: 2rem 2rem 3rem; } }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
   .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
   /* RESPONSIVE */
   @media (max-width: 900px) {
-    nav { padding: 1.2rem 2rem; }
+    nav { padding: 1rem 1.5rem; flex-direction: row; align-items: center; }
     .hero { padding: 0 2rem 5rem; }
     .about { grid-template-columns: 1fr; gap: 2rem; padding: 4rem 2rem; }
     .posts-section { padding: 3rem 2rem 2rem; }
@@ -393,7 +541,7 @@
     .post-card.featured { grid-column: span 1; }
     .quote-section { padding: 5rem 2rem; }
     footer { grid-template-columns: 1fr; padding: 4rem 2rem 2rem; }
-    .footer-nav { align-items: flex-start; }
+    .footer-nav { align-items: flex-start; flex-direction: row; }
     .footer-bottom { grid-column: span 1; flex-direction: column; gap: 1rem; align-items: flex-start; }
     .divider { padding: 0 2rem; }
     .article-back { left: 2rem; }
@@ -424,6 +572,7 @@
     <li><a href="#writing" onclick="showIndex()">Writing</a></li>
     <li><a href="#portfolio">Design</a></li>
     <li><a href="#experience">Experience</a></li>
+    <li><a href="#academics">Academic</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Connect</a></li>
   </ul>
@@ -434,13 +583,13 @@
   <a class="qn-item" href="#writing" onclick="showIndex()">Writing</a>
   <a class="qn-item" href="#portfolio">Design</a>
   <a class="qn-item" href="#experience">Experience</a>
+  <a class="qn-item" href="#academics">Academic</a>
   <a class="qn-item" href="#about">About</a>
   <a class="qn-item" href="#contact">Connect</a>
 </div>
 
 <!-- HERO -->
 <section class="hero" id="home">
-  <div class="hero-bg-text" aria-hidden="true">Lex</div>
   <div class="hero-photo" aria-hidden="true">
     <img src="shaurya-photo.jpg" alt="">
   </div>
@@ -764,9 +913,26 @@
 <section class="portfolio-section reveal" id="portfolio">
   <div class="section-header">
     <h2 class="section-title">Design</h2>
-    <span class="section-meta">8 covers</span>
+    <span class="section-meta">Magazine &amp; Event work</span>
   </div>
-  <div class="portfolio-grid" id="portfolioGrid"></div>
+
+  <!-- Magazine Designs -->
+  <div class="portfolio-subsection">
+    <div class="portfolio-sub-header">
+      <span class="portfolio-sub-title">Magazine Designs</span>
+      <span class="portfolio-sub-count">8 covers</span>
+    </div>
+    <div class="portfolio-grid" id="portfolioGrid"></div>
+  </div>
+
+  <!-- Event Designs -->
+  <div class="portfolio-subsection" style="margin-top: 3rem;">
+    <div class="portfolio-sub-header">
+      <span class="portfolio-sub-title">Event Designs</span>
+      <span class="portfolio-sub-count">5 pieces</span>
+    </div>
+    <div class="event-grid" id="eventGrid"></div>
+  </div>
 </section>
 
 <!-- LIGHTBOX -->
@@ -780,6 +946,90 @@
   <button class="lb-nav lb-next" onclick="lbStep(1)">→</button>
 </div>
 
+<!-- ACADEMICS -->
+<section class="academics-section reveal" id="academics">
+  <div class="section-header">
+    <h2 class="section-title">Academic Record</h2>
+    <span class="section-meta">Credentials &amp; Certifications</span>
+  </div>
+  <div class="academics-grid">
+    <div class="academic-card">
+      <p class="academic-card-label">Class X · CBSE</p>
+      <p class="academic-card-value">93.4%</p>
+      <p class="academic-card-desc">Ryan International School, Greater Noida</p>
+    </div>
+    <div class="academic-card">
+      <p class="academic-card-label">Class XI · Commerce</p>
+      <p class="academic-card-value">80%</p>
+      <p class="academic-card-desc">2nd Overall in Commerce stream</p>
+    </div>
+    <div class="academic-card">
+      <p class="academic-card-label">CLAT 2026 · Mock Attempt</p>
+      <p class="academic-card-value">AIR 3,201</p>
+      <p class="academic-card-desc">Mock attempt — Main attempt is CLAT 2027</p>
+    </div>
+    <div class="academic-card">
+      <p class="academic-card-label">Cambridge English</p>
+      <p class="academic-card-value">C1</p>
+      <p class="academic-card-desc">C1 Advanced Proficiency Certificate</p>
+    </div>
+    <div class="academic-card">
+      <p class="academic-card-label">Ryan Prince · Grade XII</p>
+      <p class="academic-card-value">Best Student</p>
+      <p class="academic-card-desc">Highest award across all Ryan International Group of Institutions</p>
+    </div>
+    <div class="academic-card">
+      <p class="academic-card-label">TED Talk · Ryan Teen Camp</p>
+      <p class="academic-card-value">1st Prize</p>
+      <p class="academic-card-desc">Ryan Teen Camp, Daman</p>
+    </div>
+  </div>
+</section>
+
+<!-- RYAN PRINCE HIGHLIGHT -->
+<section class="ryan-prince-section reveal" id="ryan-prince">
+  <div class="rp-inner">
+    <div class="rp-photo-wrap">
+      <img src="ryan-prince.jpeg" alt="Shaurya receiving the Ryan Prince award" class="rp-photo">
+      <div class="rp-photo-badge">Ryan Prince</div>
+    </div>
+    <div class="rp-text">
+      <p class="rp-eyebrow">Highest Honour · Ryan International Group</p>
+      <h2 class="rp-title">Ryan <em>Prince</em></h2>
+      <p class="rp-desc">Awarded in Grade XII, the Ryan Prince is the highest distinction conferred across all institutions under the Ryan International Group — recognising the student who best embodies academic excellence, leadership, and character.</p>
+      <div class="rp-meta">
+        <span class="rp-meta-item">Ryan International School, Greater Noida</span>
+        <span class="rp-meta-sep">·</span>
+        <span class="rp-meta-item">Grade XII · 2025–26</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERSHIP -->
+<section class="leadership-section reveal" id="leadership">
+  <div class="section-header" style="margin-bottom: 2rem;">
+    <h2 class="section-title">Leadership &amp; Roles</h2>
+    <span class="section-meta">School · Council · Clubs</span>
+  </div>
+  <div class="leadership-grid">
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>Speaker, Student Council</span>
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>Editor-in-Chief, Editorial Board</span>
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>President, Eco Club</span>
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>Conference Convenor, MUN Club</span>
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>Core Organiser, Cogniverse</span>
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>Lead Singer, School Choir</span>
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>Graphic Designer, Cyber Club</span>
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>Chess Club</span>
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>Journalist, BBN – Ryan TV</span>
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>14 Student-Council Friday Assemblies</span>
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>Internship — Hindustan Times</span>
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>Internship — Amar Ujala</span>
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>Goonj Social Work Internship</span>
+    <span class="leadership-pill"><span class="leadership-pill-dot"></span>Teaching Volunteer, Project Kitaab</span>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer id="contact">
   <div class="reveal">
@@ -792,6 +1042,7 @@
     <a href="#writing" onclick="showIndex()">Writing</a>
     <a href="#portfolio">Design</a>
     <a href="#experience">Experience</a>
+    <a href="#academics">Academic</a>
     <a href="#about">About</a>
     <a href="#contact">Connect</a>
     <a href="https://www.linkedin.com/in/shaurya-pratap-singh-4a3632311/" target="_blank" rel="noopener">LinkedIn</a>
@@ -1138,7 +1389,7 @@ function renderPortfolio() {
         <p class="portfolio-item-tag">${item.tag}</p>
         <p class="portfolio-item-title">${item.title}</p>
       </div>`;
-    el.addEventListener('click', () => openLb(i));
+    el.addEventListener('click', () => openLbUnified('mag', i));
     grid.appendChild(el);
   });
 }
@@ -1156,8 +1407,8 @@ function closeLb() {
 }
 
 function lbStep(dir) {
-  lbIndex = (lbIndex + dir + portfolioItems.length) % portfolioItems.length;
-  updateLb();
+  lbAllIndex = (lbAllIndex + dir + lbAllItems.length) % lbAllItems.length;
+  updateLbUnified();
 }
 
 function updateLb() {
@@ -1179,9 +1430,59 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+/* ═══ EVENT PORTFOLIO DATA ═══ */
+const eventItems = [
+  { src: 'RISGNMUN_25_PLACARDS_2025.png',  tag: 'MUN Design', title: 'RISGNMUN\'25 — Placards' },
+  { src: 'RISGNMUN_24_Certificates_of_Appreciation_and_Achievement.png', tag: 'MUN Design', title: 'RISGNMUN\'24 — Certificate Design' },
+  { src: 'RISGNMUN_25_-_vedansh_arora.png', tag: 'MUN Design', title: 'RISGNMUN\'25 — Chairperson Feature' },
+  { src: 'RISGNMUN_25_-_unga_vedansh.png',  tag: 'MUN Design', title: 'RISGNMUN\'25 — UNGA Feature' },
+  { src: 'Add_a_heading.png',               tag: 'MUN Design', title: 'RISGNMUN\'25 — Announcement' },
+];
+
+let lbAllItems = [];
+let lbAllIndex = 0;
+
+function renderEventGrid() {
+  const grid = document.getElementById('eventGrid');
+  eventItems.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'event-item';
+    el.setAttribute('aria-label', 'View: ' + item.title);
+    el.innerHTML = `
+      <img src="${item.src}" alt="${item.title}" loading="lazy">
+      <div class="event-item-overlay">
+        <p class="event-item-tag">${item.tag}</p>
+        <p class="event-item-title">${item.title}</p>
+      </div>`;
+    el.addEventListener('click', () => openLbUnified('event', i));
+    grid.appendChild(el);
+  });
+}
+
+function openLbUnified(type, i) {
+  if (type === 'mag') {
+    lbAllItems = portfolioItems;
+    lbAllIndex = i;
+  } else {
+    lbAllItems = eventItems;
+    lbAllIndex = i;
+  }
+  updateLbUnified();
+  document.getElementById('lbOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function updateLbUnified() {
+  const item = lbAllItems[lbAllIndex];
+  document.getElementById('lbImg').src = item.src;
+  document.getElementById('lbImg').alt = item.title;
+  document.getElementById('lbCaption').textContent = item.tag + ' · ' + item.title;
+}
+
+renderEventGrid();
+
 renderPortfolio();
 
-renderGrid();
-</script>
+renderGrid();</script>
 </body>
 </html>
