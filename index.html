@@ -600,6 +600,13 @@
     position: absolute; top: 0.5rem; left: 0.75rem;
     font-style: normal; line-height: 1;
   }
+  .admired-card-fallback {
+    width: 100%; aspect-ratio: 3/4;
+    background: #111;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-size: 4rem; font-weight: 300;
+    color: rgba(201,168,76,0.25); letter-spacing: 0.05em;
+  }
   @media (max-width: 900px) {
     .admired-section { padding: 3rem 2rem 4rem; }
     .admired-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
@@ -1737,37 +1744,43 @@ const admiredPeople = [
   {
     name: 'Jawaharlal Nehru',
     role: 'Statesman · First Prime Minister of India',
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Nehru_1948.jpg/800px-Nehru_1948.jpg',
+    img: 'https://en.wikipedia.org/wiki/Special:Redirect/file/Nehru_1948.jpg',
+    initials: 'JN',
     quote: 'At the stroke of the midnight hour, when the world sleeps, India will awake to life and freedom. A moment comes, which comes but rarely in history, when we step out from the old to the new.'
   },
   {
     name: 'Romila Thapar',
     role: 'Historian · Professor Emerita, JNU',
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Romila_Thapar_at_Jaipur_Literature_Festival_2012.jpg/800px-Romila_Thapar_at_Jaipur_Literature_Festival_2012.jpg',
+    img: 'https://en.wikipedia.org/wiki/Special:Redirect/file/Romila_Thapar_at_Jaipur_Literature_Festival_2012.jpg',
+    initials: 'RT',
     quote: 'Nationalism seeks legitimacy from the past, and history therefore becomes a sensitive subject.'
   },
   {
     name: 'Ramachandra Guha',
     role: 'Historian · Author of India After Gandhi',
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Ramachandra_Guha.jpg/800px-Ramachandra_Guha.jpg',
+    img: 'https://en.wikipedia.org/wiki/Special:Redirect/file/Ramachandra_Guha.jpg',
+    initials: 'RG',
     quote: 'It is in the nature of democracies that while visionaries are sometimes necessary to make them, once made they can be managed by mediocrities.'
   },
   {
     name: 'Menaka Guruswamy',
     role: 'Senior Advocate · Supreme Court of India',
-    img: 'https://images.indianexpress.com/2018/09/menaka-guruswamy-759.jpg',
+    img: 'https://en.wikipedia.org/wiki/Special:Redirect/file/Menaka_Guruswamy.jpg',
+    initials: 'MG',
     quote: 'So much of why I love the law is that you can really litigate freedom. You can use your country\'s constitution to expand freedom.'
   },
   {
     name: 'Prashant Bhushan',
     role: 'Senior Advocate · Public Interest Litigator',
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Prashant_Bhushan_%282013%29.jpg/800px-Prashant_Bhushan_%282013%29.jpg',
+    img: 'https://en.wikipedia.org/wiki/Special:Redirect/file/Prashant_Bhushan_(2013).jpg',
+    initials: 'PB',
     quote: 'The rule of law is the most basic principle on which our Constitution is based.'
   },
   {
     name: 'B.R. Ambedkar',
     role: 'Jurist · Architect of the Constitution',
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Dr._Bhimrao_Ambedkar.jpg/800px-Dr._Bhimrao_Ambedkar.jpg',
+    img: 'https://en.wikipedia.org/wiki/Special:Redirect/file/Dr._Bhimrao_Ambedkar.jpg',
+    initials: 'BA',
     quote: 'Constitutional morality is not a natural sentiment. It has to be cultivated. Democracy in India is only a top-dressing on an Indian soil which is essentially undemocratic.'
   }
 ];
@@ -1777,16 +1790,51 @@ function renderAdmiredGrid() {
   admiredPeople.forEach(person => {
     const card = document.createElement('div');
     card.className = 'admired-card reveal';
-    card.innerHTML = `
-      <div class="admired-card-img-wrap">
-        <img src="${person.img}" alt="${person.name}" loading="lazy"
-          onerror="this.style.minHeight='120px';this.style.background='#111';this.style.display='block'">
-        <div class="admired-card-info">
-          <p class="admired-card-name">${person.name}</p>
-          <p class="admired-card-role">${person.role}</p>
-        </div>
-      </div>
-      <div class="admired-card-quote">${person.quote}</div>`;
+
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'admired-card-img-wrap';
+
+    const img = document.createElement('img');
+    img.alt = person.name;
+    img.loading = 'lazy';
+
+    // Fallback: show styled initials block if image fails
+    img.onerror = function() {
+      this.style.display = 'none';
+      const fb = document.createElement('div');
+      fb.className = 'admired-card-fallback';
+      fb.textContent = person.initials;
+      imgWrap.insertBefore(fb, imgWrap.firstChild);
+    };
+
+    // Fetch through Wikipedia API to get a resized thumbnail URL (avoids hotlink block)
+    const filename = person.img.split('/file/')[1];
+    fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=File:${filename}&prop=imageinfo&iiprop=url&iiurlwidth=600&format=json&origin=*`)
+      .then(r => r.json())
+      .then(data => {
+        const pages = data.query.pages;
+        const page = pages[Object.keys(pages)[0]];
+        if (page.imageinfo && page.imageinfo[0].thumburl) {
+          img.src = page.imageinfo[0].thumburl;
+        } else {
+          img.src = page.imageinfo[0].url;
+        }
+      })
+      .catch(() => { img.src = person.img; });
+
+    imgWrap.appendChild(img);
+
+    const info = document.createElement('div');
+    info.className = 'admired-card-info';
+    info.innerHTML = `<p class="admired-card-name">${person.name}</p><p class="admired-card-role">${person.role}</p>`;
+    imgWrap.appendChild(info);
+
+    const quote = document.createElement('div');
+    quote.className = 'admired-card-quote';
+    quote.textContent = person.quote;
+
+    card.appendChild(imgWrap);
+    card.appendChild(quote);
     grid.appendChild(card);
     observer.observe(card);
   });
