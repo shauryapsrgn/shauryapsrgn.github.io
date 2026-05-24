@@ -527,6 +527,143 @@
   .leadership-pill:hover { color: var(--accent); border-color: var(--accent-dim); }
   .leadership-pill-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); opacity: 0.6; flex-shrink: 0; }
   @media (max-width: 900px) { .leadership-section { padding: 2rem 2rem 3rem; } }
+  /* GRID VIEW MORE */
+  .grid-hidden { display: none !important; }
+  .grid-view-more-wrap { display: flex; justify-content: center; padding: 1.5rem 0 0; }
+  .grid-view-more-btn {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+    background: none; border: 1px solid var(--border);
+    padding: 0.7rem 2rem; cursor: pointer; border-radius: 2px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+  .grid-view-more-btn:hover { color: var(--accent); border-color: var(--accent-dim); }
+
+  /* ADMIRED PEOPLE */
+  .admired-section { padding: 4rem 4rem 6rem; max-width: 1200px; margin: 0 auto; }
+  .admired-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 0;
+  }
+  .admired-card {
+    border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+    background: #0a0a0a;
+    transition: border-color 0.4s;
+  }
+  .admired-card:hover { border-color: rgba(201,168,76,0.35); }
+  .admired-card-img-wrap {
+    width: 100%; aspect-ratio: 3/4; overflow: hidden;
+    position: relative;
+  }
+  .admired-card-img-wrap img {
+    width: 100%; height: 100%; object-fit: cover; object-position: top center;
+    filter: grayscale(100%) brightness(0.75) contrast(1.1);
+    transition: transform 0.6s ease, filter 0.4s ease;
+    display: block;
+  }
+  .admired-card:hover .admired-card-img-wrap img {
+    transform: scale(1.04);
+    filter: grayscale(100%) brightness(0.55) contrast(1.15);
+  }
+  .admired-card-img-wrap::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.2) 50%, transparent 75%);
+  }
+  .admired-card-info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 1.25rem;
+    display: flex; flex-direction: column; gap: 0.25rem;
+    z-index: 2;
+  }
+  .admired-card-name {
+    font-family: var(--serif); font-size: 1.15rem; font-weight: 400;
+    color: var(--parchment); line-height: 1.2;
+  }
+  .admired-card-role {
+    font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent-dim);
+  }
+  .admired-card-quote {
+    padding: 1.25rem 1.25rem 1.5rem;
+    font-family: var(--serif); font-size: 0.92rem; font-weight: 300;
+    font-style: italic; color: var(--muted); line-height: 1.75;
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+  .admired-card-quote::before {
+    content: '\201C';
+    font-size: 3.5rem; color: var(--accent); opacity: 0.18;
+    position: absolute; top: 0.5rem; left: 0.75rem;
+    font-style: normal; line-height: 1;
+  }
+  @media (max-width: 900px) {
+    .admired-section { padding: 3rem 2rem 4rem; }
+    .admired-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+  }
+  @media (max-width: 480px) {
+    .admired-grid { grid-template-columns: 1fr; }
+  }
+
+  /* CLAT COUNTDOWN */
+  .clat-section {
+    padding: 3.5rem 4rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 3rem; flex-wrap: wrap;
+  }
+  .clat-left { flex: 1; min-width: 200px; }
+  .clat-eyebrow {
+    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem;
+  }
+  .clat-title {
+    font-family: var(--serif); font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 300; color: var(--parchment); line-height: 1.2;
+    margin-bottom: 0.4rem;
+  }
+  .clat-title em { font-style: italic; color: var(--accent); }
+  .clat-sub {
+    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.15em;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .clat-countdown {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    align-items: flex-end;
+  }
+  .clat-unit {
+    display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+    min-width: 64px;
+  }
+  .clat-num {
+    font-family: var(--serif); font-size: clamp(2.8rem, 5vw, 4.5rem);
+    font-weight: 300; color: var(--parchment); line-height: 1;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  .clat-num::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0; right: 0;
+    height: 1px; background: var(--accent); opacity: 0.35;
+  }
+  .clat-label {
+    font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .clat-sep {
+    font-family: var(--serif); font-size: 2.5rem; font-weight: 300;
+    color: var(--accent); opacity: 0.3; line-height: 1;
+    padding-bottom: 0.5rem; align-self: flex-end;
+  }
+  @media (max-width: 700px) {
+    .clat-section { padding: 2.5rem 1.5rem; flex-direction: column; gap: 2rem; align-items: flex-start; }
+    .clat-countdown { gap: 1rem; }
+    .clat-sep { display: none; }
+  }
+
   @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
   .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
@@ -534,64 +671,18 @@
   /* RESPONSIVE */
   @media (max-width: 900px) {
     nav { padding: 1rem 1.5rem; flex-direction: row; align-items: center; }
-    .hero { padding: 7rem 1.5rem 4rem; min-height: 100svh; }
-    .hero-name { font-size: clamp(2.8rem, 11vw, 5rem); }
-    .hero-tagline { font-size: 1.05rem; max-width: 100%; }
-    .hero-scroll { right: 1.5rem; bottom: 2rem; }
-    .about { grid-template-columns: 1fr; gap: 2rem; padding: 4rem 1.5rem; }
-    .about-number { font-size: 5rem; }
-    .posts-section { padding: 3rem 1.5rem 2rem; }
+    .hero { padding: 0 2rem 5rem; }
+    .about { grid-template-columns: 1fr; gap: 2rem; padding: 4rem 2rem; }
+    .posts-section { padding: 3rem 2rem 2rem; }
     .posts-grid { grid-template-columns: 1fr; }
-    .post-card { padding: 1.75rem; }
     .post-card.featured { grid-column: span 1; }
-    .quote-section { padding: 4rem 1.5rem; }
-    .pull-quote blockquote::before { display: none; }
-    footer { grid-template-columns: 1fr; padding: 3rem 1.5rem 2rem; gap: 2.5rem; }
+    .quote-section { padding: 5rem 2rem; }
+    footer { grid-template-columns: 1fr; padding: 4rem 2rem 2rem; }
     .footer-nav { align-items: flex-start; flex-direction: row; }
     .footer-bottom { grid-column: span 1; flex-direction: column; gap: 1rem; align-items: flex-start; }
-    .divider { padding: 0 1.5rem; }
-    .article-back { left: 1.5rem; }
-    .article-inner { padding: 6rem 1.25rem 4rem; }
-
-    /* quicknav — shrink on mobile so it doesn't overflow */
-    .quicknav { max-width: calc(100vw - 2rem); overflow-x: auto; scrollbar-width: none; border-radius: 3px; }
-    .quicknav::-webkit-scrollbar { display: none; }
-    .qn-item { padding: 0.6rem 0.75rem; font-size: 0.52rem; }
-
-    /* portfolio touch — always show overlay on mobile */
-    .portfolio-item-overlay { opacity: 1; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%); }
-    .event-item-overlay { opacity: 1; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%); }
-    .portfolio-section { padding: 3rem 1.5rem 4rem; }
-    .portfolio-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-
-    /* lightbox swipe hint */
-    .lb-img-wrap { max-width: 92vw; }
-    .lb-close { top: 1rem; right: 1rem; }
-
-    /* ryan prince */
-    .ryan-prince-section { padding: 1.5rem 1.5rem 2.5rem; }
-    .rp-inner { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem; }
-
-    /* academics */
-    .academics-section { padding: 3rem 1.5rem; }
-    .academics-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .academic-card { padding: 1.25rem; }
-    .academic-card-value { font-size: 1.5rem; }
-
-    /* leadership */
-    .leadership-section { padding: 1.5rem 1.5rem 3rem; }
-    .leadership-pill { font-size: 0.55rem; padding: 0.4rem 0.85rem; }
-
-    /* event grid */
-    .event-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-    .event-item-overlay { opacity: 1; }
-  }
-
-  @media (max-width: 480px) {
-    .hero-name { font-size: clamp(2.4rem, 12vw, 3.5rem); }
-    .portfolio-grid { grid-template-columns: 1fr; }
-    .academics-grid { grid-template-columns: 1fr; }
-    .section-title { font-size: 2.2rem; }
+    .divider { padding: 0 2rem; }
+    .article-back { left: 2rem; }
+    .article-inner { padding: 7rem 1.5rem 4rem; }
   }
 </style>
 </head>
@@ -620,6 +711,7 @@
     <li><a href="#experience">Experience</a></li>
     <li><a href="#academics">Academic</a></li>
     <li><a href="#about">About</a></li>
+    <li><a href="#admired">Admired</a></li>
     <li><a href="#contact">Connect</a></li>
   </ul>
 </nav>
@@ -631,6 +723,7 @@
   <a class="qn-item" href="#experience">Experience</a>
   <a class="qn-item" href="#academics">Academic</a>
   <a class="qn-item" href="#about">About</a>
+  <a class="qn-item" href="#admired">Admired</a>
   <a class="qn-item" href="#contact">Connect</a>
 </div>
 
@@ -656,6 +749,24 @@
   <div class="divider-line"></div>
   <span class="divider-mark">Ryan International School · Greater Noida</span>
   <div class="divider-line"></div>
+</div>
+
+<!-- CLAT COUNTDOWN -->
+<div class="clat-section reveal" id="clat">
+  <div class="clat-left">
+    <p class="clat-eyebrow">Currently Preparing For</p>
+    <h2 class="clat-title"><em>CLAT</em> 2027</h2>
+    <p class="clat-sub">Common Law Admission Test · 7 December 2026 · IST</p>
+  </div>
+  <div class="clat-countdown" id="clatCountdown" aria-live="polite">
+    <div class="clat-unit"><span class="clat-num" id="clatDays">--</span><span class="clat-label">Days</span></div>
+    <span class="clat-sep" aria-hidden="true">:</span>
+    <div class="clat-unit"><span class="clat-num" id="clatHours">--</span><span class="clat-label">Hours</span></div>
+    <span class="clat-sep" aria-hidden="true">:</span>
+    <div class="clat-unit"><span class="clat-num" id="clatMins">--</span><span class="clat-label">Minutes</span></div>
+    <span class="clat-sep" aria-hidden="true">:</span>
+    <div class="clat-unit"><span class="clat-num" id="clatSecs">--</span><span class="clat-label">Seconds</span></div>
+  </div>
 </div>
 
 <!-- ABOUT -->
@@ -750,6 +861,19 @@
       </div>
       <p class="exp-role-title">Editor-in-Chief</p>
       <p class="exp-excerpt">Led editorial direction and content strategy for the publication's run.</p>
+      <div class="exp-full" id="amicusFull">
+        <p style="margin-bottom:0.75rem;font-size:0.88rem;color:var(--muted);">Articles published under the organisation:</p>
+        <div style="display:flex;flex-direction:column;gap:0.45rem;">
+          <a href="https://www.linkedin.com/posts/write-amicuscuriae_does-the-law-protect-only-those-we-are-willing-activity-7407245735416573952-S9HR" target="_blank" rel="noopener" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;color:var(--accent);text-decoration:none;display:flex;align-items:baseline;gap:0.5rem;transition:color 0.2s;" onmouseover="this.style.color='var(--parchment)'" onmouseout="this.style.color='var(--accent)'"><span style="color:var(--accent-dim);flex-shrink:0;">→</span> Does the Law Protect Only Those We Are Willing to See?</a>
+          <a href="https://www.linkedin.com/posts/write-amicuscuriae_faith-was-meant-to-heal-not-hunt-a-secular-activity-7412681548551909376-RP_a" target="_blank" rel="noopener" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;color:var(--accent);text-decoration:none;display:flex;align-items:baseline;gap:0.5rem;transition:color 0.2s;" onmouseover="this.style.color='var(--parchment)'" onmouseout="this.style.color='var(--accent)'"><span style="color:var(--accent-dim);flex-shrink:0;">→</span> Faith Was Meant to Heal, Not Hunt — A Secular Reckoning</a>
+          <a href="https://www.linkedin.com/posts/write-amicuscuriae_progress-isnt-fewer-headlines-about-pollution-activity-7415707445098127360-g9UV" target="_blank" rel="noopener" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;color:var(--accent);text-decoration:none;display:flex;align-items:baseline;gap:0.5rem;transition:color 0.2s;" onmouseover="this.style.color='var(--parchment)'" onmouseout="this.style.color='var(--accent)'"><span style="color:var(--accent-dim);flex-shrink:0;">→</span> Progress Isn't Fewer Headlines About Pollution</a>
+          <a href="https://www.linkedin.com/posts/write-amicuscuriae_rebranding-welfare-doesnt-automatically-activity-7416320532746600449-9_vu" target="_blank" rel="noopener" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;color:var(--accent);text-decoration:none;display:flex;align-items:baseline;gap:0.5rem;transition:color 0.2s;" onmouseover="this.style.color='var(--parchment)'" onmouseout="this.style.color='var(--accent)'"><span style="color:var(--accent-dim);flex-shrink:0;">→</span> Rebranding Welfare Doesn't Automatically Make It Work</a>
+          <a href="https://www.linkedin.com/posts/write-amicuscuriae_when-the-courtroom-becomes-a-battleground-activity-7417487101782519808-UOON" target="_blank" rel="noopener" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;color:var(--accent);text-decoration:none;display:flex;align-items:baseline;gap:0.5rem;transition:color 0.2s;" onmouseover="this.style.color='var(--parchment)'" onmouseout="this.style.color='var(--accent)'"><span style="color:var(--accent-dim);flex-shrink:0;">→</span> When the Courtroom Becomes a Battleground</a>
+          <a href="https://www.linkedin.com/posts/write-amicuscuriae_not-every-disagreement-belongs-in-court-activity-7418202445618663424-VDOW" target="_blank" rel="noopener" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;color:var(--accent);text-decoration:none;display:flex;align-items:baseline;gap:0.5rem;transition:color 0.2s;" onmouseover="this.style.color='var(--parchment)'" onmouseout="this.style.color='var(--accent)'"><span style="color:var(--accent-dim);flex-shrink:0;">→</span> Not Every Disagreement Belongs in Court</a>
+          <a href="https://www.linkedin.com/posts/write-amicuscuriae_the-greenland-dilemma-activity-7420661772853956608-ZSy-" target="_blank" rel="noopener" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;color:var(--accent);text-decoration:none;display:flex;align-items:baseline;gap:0.5rem;transition:color 0.2s;" onmouseover="this.style.color='var(--parchment)'" onmouseout="this.style.color='var(--accent)'"><span style="color:var(--accent-dim);flex-shrink:0;">→</span> The Greenland Dilemma</a>
+        </div>
+      </div>
+      <button class="exp-toggle" onclick="toggleExp('amicusFull', this)">Read more →</button>
     </div>
 
     <div class="exp-category-label"></div>
@@ -966,7 +1090,7 @@
   <div class="portfolio-subsection">
     <div class="portfolio-sub-header">
       <span class="portfolio-sub-title">Magazine Designs</span>
-      <span class="portfolio-sub-count">8 covers</span>
+      <span class="portfolio-sub-count">7 covers</span>
     </div>
     <div class="portfolio-grid" id="portfolioGrid"></div>
   </div>
@@ -978,6 +1102,15 @@
       <span class="portfolio-sub-count">5 pieces</span>
     </div>
     <div class="event-grid" id="eventGrid"></div>
+  </div>
+
+  <!-- NGO / Social Work Designs -->
+  <div class="portfolio-subsection" style="margin-top: 3rem;">
+    <div class="portfolio-sub-header">
+      <span class="portfolio-sub-title">NGO &amp; Social Work Designs</span>
+      <span class="portfolio-sub-count">6 pieces</span>
+    </div>
+    <div class="event-grid" id="ngoGrid"></div>
   </div>
 </section>
 
@@ -1076,6 +1209,15 @@
   </div>
 </section>
 
+<!-- PEOPLE I ADMIRE -->
+<section class="admired-section reveal" id="admired">
+  <div class="section-header">
+    <h2 class="section-title">People I Admire</h2>
+    <span class="section-meta">Thinkers · Lawyers · Historians</span>
+  </div>
+  <div class="admired-grid" id="admiredGrid"></div>
+</section>
+
 <!-- FOOTER -->
 <footer id="contact">
   <div class="reveal">
@@ -1090,6 +1232,7 @@
     <a href="#experience">Experience</a>
     <a href="#academics">Academic</a>
     <a href="#about">About</a>
+    <a href="#admired">Admired</a>
     <a href="#contact">Connect</a>
     <a href="https://www.linkedin.com/in/shaurya-pratap-singh-4a3632311/" target="_blank" rel="noopener">LinkedIn</a>
   </nav>
@@ -1418,7 +1561,6 @@ const portfolioItems = [
   { src: '5.png',  tag: 'Budget',             title: 'Union Budget 2026' },
   { src: '6.png',  tag: 'Political Analysis', title: 'The Fall of Titans' },
   { src: '7.png',  tag: 'Economics',          title: 'Dead Economy?' },
-  { src: '10.png', tag: 'Political Analysis', title: 'The Fall of Titans (Alt.)' },
 ];
 
 let lbIndex = 0;
@@ -1476,17 +1618,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* ═══ LIGHTBOX TOUCH SWIPE ═══ */
-(function() {
-  const lb = document.getElementById('lbOverlay');
-  let startX = 0;
-  lb.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
-  lb.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - startX;
-    if (Math.abs(dx) > 50) lbStep(dx < 0 ? 1 : -1);
-  }, { passive: true });
-})();
-
 /* ═══ EVENT PORTFOLIO DATA ═══ */
 const eventItems = [
   { src: 'RISGNMUN_25_PLACARDS_2025.png',  tag: 'MUN Design', title: 'RISGNMUN\'25 — Placards' },
@@ -1520,6 +1651,9 @@ function openLbUnified(type, i) {
   if (type === 'mag') {
     lbAllItems = portfolioItems;
     lbAllIndex = i;
+  } else if (type === 'ngo') {
+    lbAllItems = ngoItems.filter(it => !it.src.endsWith('.pdf'));
+    lbAllIndex = i;
   } else {
     lbAllItems = eventItems;
     lbAllIndex = i;
@@ -1536,10 +1670,164 @@ function updateLbUnified() {
   document.getElementById('lbCaption').textContent = item.tag + ' · ' + item.title;
 }
 
+/* ═══ NGO PORTFOLIO DATA ═══ */
+const ngoItems = [
+  { src: 'Jeevartan1.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Meet the Architects' },
+  { src: 'Jeevartan2.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Social Media Team (I)' },
+  { src: 'Jeevartan3.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Social Media Team (II)' },
+  { src: 'Jeevartan4.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Graphic Designer Feature' },
+  { src: 'Jeevartan5.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Awareness Poster' },
+  { src: 'Jeevartan6.png', tag: 'NGO Design', title: 'Jeevartan × RSSA — Rabies Drive Brochure' },
+];
+
+function renderNgoGrid() {
+  const grid = document.getElementById('ngoGrid');
+  ngoItems.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'event-item';
+    el.setAttribute('aria-label', 'View: ' + item.title);
+    el.innerHTML = `
+      <img src="${item.src}" alt="${item.title}" loading="lazy">
+      <div class="event-item-overlay">
+        <p class="event-item-tag">${item.tag}</p>
+        <p class="event-item-title">${item.title}</p>
+      </div>`;
+    el.addEventListener('click', () => openLbUnified('ngo', i));
+    grid.appendChild(el);
+  });
+}
+
 renderEventGrid();
+
+renderNgoGrid();
 
 renderPortfolio();
 
-renderGrid();</script>
+renderGrid();
+
+/* ═══ VIEW MORE FOR DESIGN GRIDS ═══ */
+function applyViewMore(gridId, limit) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  const items = Array.from(grid.children);
+  if (items.length <= limit) return;
+  items.forEach((el, i) => { if (i >= limit) el.classList.add('grid-hidden'); });
+  let expanded = false;
+  const wrap = document.createElement('div');
+  wrap.className = 'grid-view-more-wrap';
+  const btn = document.createElement('button');
+  btn.className = 'grid-view-more-btn';
+  btn.textContent = 'View ' + (items.length - limit) + ' more →';
+  btn.addEventListener('click', () => {
+    expanded = !expanded;
+    items.forEach((el, i) => {
+      if (i >= limit) el.classList.toggle('grid-hidden', !expanded);
+    });
+    btn.textContent = expanded ? 'Show less ↑' : 'View ' + (items.length - limit) + ' more →';
+  });
+  wrap.appendChild(btn);
+  grid.parentNode.insertBefore(wrap, grid.nextSibling);
+}
+applyViewMore('portfolioGrid', 1);
+applyViewMore('eventGrid', 1);
+applyViewMore('ngoGrid', 1);
+
+/* ═══ ADMIRED PEOPLE DATA ═══ */
+const admiredPeople = [
+  {
+    name: 'Jawaharlal Nehru',
+    role: 'Statesman · First Prime Minister of India',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Nehru_1948.jpg/800px-Nehru_1948.jpg',
+    quote: 'At the stroke of the midnight hour, when the world sleeps, India will awake to life and freedom. A moment comes, which comes but rarely in history, when we step out from the old to the new.'
+  },
+  {
+    name: 'Romila Thapar',
+    role: 'Historian · Professor Emerita, JNU',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Romila_Thapar_at_Jaipur_Literature_Festival_2012.jpg/800px-Romila_Thapar_at_Jaipur_Literature_Festival_2012.jpg',
+    quote: 'Nationalism seeks legitimacy from the past, and history therefore becomes a sensitive subject.'
+  },
+  {
+    name: 'Ramachandra Guha',
+    role: 'Historian · Author of India After Gandhi',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Ramachandra_Guha.jpg/800px-Ramachandra_Guha.jpg',
+    quote: 'It is in the nature of democracies that while visionaries are sometimes necessary to make them, once made they can be managed by mediocrities.'
+  },
+  {
+    name: 'Menaka Guruswamy',
+    role: 'Senior Advocate · Supreme Court of India',
+    img: 'https://images.indianexpress.com/2018/09/menaka-guruswamy-759.jpg',
+    quote: 'So much of why I love the law is that you can really litigate freedom. You can use your country\'s constitution to expand freedom.'
+  },
+  {
+    name: 'Prashant Bhushan',
+    role: 'Senior Advocate · Public Interest Litigator',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Prashant_Bhushan_%282013%29.jpg/800px-Prashant_Bhushan_%282013%29.jpg',
+    quote: 'The rule of law is the most basic principle on which our Constitution is based.'
+  },
+  {
+    name: 'B.R. Ambedkar',
+    role: 'Jurist · Architect of the Constitution',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Dr._Bhimrao_Ambedkar.jpg/800px-Dr._Bhimrao_Ambedkar.jpg',
+    quote: 'Constitutional morality is not a natural sentiment. It has to be cultivated. Democracy in India is only a top-dressing on an Indian soil which is essentially undemocratic.'
+  }
+];
+
+function renderAdmiredGrid() {
+  const grid = document.getElementById('admiredGrid');
+  admiredPeople.forEach(person => {
+    const card = document.createElement('div');
+    card.className = 'admired-card reveal';
+    card.innerHTML = `
+      <div class="admired-card-img-wrap">
+        <img src="${person.img}" alt="${person.name}" loading="lazy"
+          onerror="this.style.minHeight='120px';this.style.background='#111';this.style.display='block'">
+        <div class="admired-card-info">
+          <p class="admired-card-name">${person.name}</p>
+          <p class="admired-card-role">${person.role}</p>
+        </div>
+      </div>
+      <div class="admired-card-quote">${person.quote}</div>`;
+    grid.appendChild(card);
+    observer.observe(card);
+  });
+}
+
+/* ═══ CLAT COUNTDOWN (IST) ═══ */
+(function() {
+  // CLAT 2027 exam: 7 December 2026, 02:00 UTC = 07:30 IST
+  // IST is UTC+5:30, exam starts at 02:00 IST so target midnight IST = 18:30 UTC Dec 6
+  // Target: Dec 7 2026 00:00:00 IST = Dec 6 2026 18:30:00 UTC
+  const targetUTC = Date.UTC(2026, 11, 6, 18, 30, 0); // months are 0-indexed
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function tick() {
+    const now = Date.now();
+    const diff = targetUTC - now;
+
+    if (diff <= 0) {
+      document.getElementById('clatDays').textContent  = '00';
+      document.getElementById('clatHours').textContent = '00';
+      document.getElementById('clatMins').textContent  = '00';
+      document.getElementById('clatSecs').textContent  = '00';
+      return;
+    }
+
+    const days  = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins  = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs  = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.getElementById('clatDays').textContent  = String(days);
+    document.getElementById('clatHours').textContent = pad(hours);
+    document.getElementById('clatMins').textContent  = pad(mins);
+    document.getElementById('clatSecs').textContent  = pad(secs);
+  }
+
+  tick();
+  setInterval(tick, 1000);
+})();
+
+renderAdmiredGrid();</script>
 </body>
 </html>
