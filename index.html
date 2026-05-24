@@ -539,6 +539,87 @@
   }
   .grid-view-more-btn:hover { color: var(--accent); border-color: var(--accent-dim); }
 
+  /* BOOK LIBRARY */
+  .library-section { padding: 4rem 4rem 2rem; max-width: 1200px; margin: 0 auto; }
+  .library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1.5rem 1.25rem;
+    margin-top: 0;
+  }
+  .book-card {
+    display: flex; flex-direction: column; gap: 0.75rem;
+    cursor: pointer; position: relative;
+  }
+  .book-cover-wrap {
+    position: relative; width: 100%;
+    aspect-ratio: 2/3; overflow: hidden;
+    border: 1px solid var(--border);
+    background: #111;
+    transition: border-color 0.3s;
+  }
+  .book-card:hover .book-cover-wrap { border-color: rgba(201,168,76,0.4); }
+  .book-cover-wrap img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform 0.5s ease, filter 0.3s ease;
+    filter: brightness(0.92);
+  }
+  .book-card:hover .book-cover-wrap img { transform: scale(1.04); filter: brightness(0.7); }
+  .book-read-check {
+    position: absolute; top: 0.5rem; right: 0.5rem;
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background 0.2s, border-color 0.2s;
+    z-index: 3; flex-shrink: 0;
+  }
+  .book-read-check.checked { background: var(--accent); border-color: var(--accent); }
+  .book-read-check svg { width: 11px; height: 11px; opacity: 0; transition: opacity 0.2s; }
+  .book-read-check.checked svg { opacity: 1; }
+  .book-cover-fallback {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1rem; text-align: center;
+    font-family: var(--serif); font-size: 0.8rem; font-weight: 400;
+    color: var(--muted); line-height: 1.4;
+    background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+  }
+  .book-info { padding: 0 0.1rem; }
+  .book-title {
+    font-family: var(--serif); font-size: 0.82rem; font-weight: 400;
+    color: var(--parchment); line-height: 1.3; margin-bottom: 0.2rem;
+  }
+  .book-author {
+    font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent-dim);
+  }
+  .library-progress-wrap {
+    margin-top: 2rem; padding: 1.5rem;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  }
+  .library-progress-label {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--muted); white-space: nowrap;
+  }
+  .library-progress-bar-wrap {
+    flex: 1; height: 3px; background: rgba(255,255,255,0.08);
+    border-radius: 2px; min-width: 100px;
+  }
+  .library-progress-bar {
+    height: 100%; background: var(--accent);
+    border-radius: 2px; transition: width 0.4s ease;
+  }
+  .library-progress-count {
+    font-family: var(--serif); font-size: 1.1rem; font-weight: 300;
+    color: var(--accent); white-space: nowrap;
+  }
+  @media (max-width: 900px) {
+    .library-section { padding: 3rem 2rem 2rem; }
+    .library-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 1.25rem 1rem; }
+  }
+
   /* ADMIRED PEOPLE */
   .admired-section { padding: 4rem 4rem 6rem; max-width: 1200px; margin: 0 auto; }
   .admired-grid {
@@ -718,6 +799,7 @@
     <li><a href="#experience">Experience</a></li>
     <li><a href="#academics">Academic</a></li>
     <li><a href="#about">About</a></li>
+    <li><a href="#library">Reading</a></li>
     <li><a href="#admired">Admired</a></li>
     <li><a href="#contact">Connect</a></li>
   </ul>
@@ -730,6 +812,7 @@
   <a class="qn-item" href="#experience">Experience</a>
   <a class="qn-item" href="#academics">Academic</a>
   <a class="qn-item" href="#about">About</a>
+  <a class="qn-item" href="#library">Reading</a>
   <a class="qn-item" href="#admired">Admired</a>
   <a class="qn-item" href="#contact">Connect</a>
 </div>
@@ -1216,6 +1299,22 @@
   </div>
 </section>
 
+<!-- BOOK LIBRARY -->
+<section class="library-section reveal" id="library">
+  <div class="section-header">
+    <h2 class="section-title">Reading List</h2>
+    <span class="section-meta">Books that shaped my thinking</span>
+  </div>
+  <div class="library-grid" id="libraryGrid"></div>
+  <div class="library-progress-wrap">
+    <span class="library-progress-label">Books you've read</span>
+    <div class="library-progress-bar-wrap">
+      <div class="library-progress-bar" id="libraryProgressBar" style="width:0%"></div>
+    </div>
+    <span class="library-progress-count" id="libraryProgressCount">0 / 17</span>
+  </div>
+</section>
+
 <!-- PEOPLE I ADMIRE -->
 <section class="admired-section reveal" id="admired">
   <div class="section-header">
@@ -1239,6 +1338,7 @@
     <a href="#experience">Experience</a>
     <a href="#academics">Academic</a>
     <a href="#about">About</a>
+    <a href="#library">Reading</a>
     <a href="#admired">Admired</a>
     <a href="#contact">Connect</a>
     <a href="https://www.linkedin.com/in/shaurya-pratap-singh-4a3632311/" target="_blank" rel="noopener">LinkedIn</a>
@@ -1744,43 +1844,49 @@ const admiredPeople = [
   {
     name: 'Jawaharlal Nehru',
     role: 'Statesman · First Prime Minister of India',
-    img: 'https://en.wikipedia.org/wiki/Special:Redirect/file/Nehru_1948.jpg',
     initials: 'JN',
+    color: '#1a2e1a',
+    accent: '#4a7c59',
     quote: 'At the stroke of the midnight hour, when the world sleeps, India will awake to life and freedom. A moment comes, which comes but rarely in history, when we step out from the old to the new.'
   },
   {
     name: 'Romila Thapar',
     role: 'Historian · Professor Emerita, JNU',
-    img: 'https://en.wikipedia.org/wiki/Special:Redirect/file/Romila_Thapar_at_Jaipur_Literature_Festival_2012.jpg',
     initials: 'RT',
+    color: '#1a1a2e',
+    accent: '#4a4a7c',
     quote: 'Nationalism seeks legitimacy from the past, and history therefore becomes a sensitive subject.'
   },
   {
     name: 'Ramachandra Guha',
     role: 'Historian · Author of India After Gandhi',
-    img: 'https://en.wikipedia.org/wiki/Special:Redirect/file/Ramachandra_Guha.jpg',
     initials: 'RG',
+    color: '#2e1a0a',
+    accent: '#7c5a2a',
     quote: 'It is in the nature of democracies that while visionaries are sometimes necessary to make them, once made they can be managed by mediocrities.'
   },
   {
     name: 'Menaka Guruswamy',
     role: 'Senior Advocate · Supreme Court of India',
-    img: 'https://en.wikipedia.org/wiki/Special:Redirect/file/Menaka_Guruswamy.jpg',
     initials: 'MG',
+    color: '#1a1a1a',
+    accent: '#8a6a28',
     quote: 'So much of why I love the law is that you can really litigate freedom. You can use your country\'s constitution to expand freedom.'
   },
   {
     name: 'Prashant Bhushan',
     role: 'Senior Advocate · Public Interest Litigator',
-    img: 'https://en.wikipedia.org/wiki/Special:Redirect/file/Prashant_Bhushan_(2013).jpg',
     initials: 'PB',
+    color: '#2e0a0a',
+    accent: '#7c2a2a',
     quote: 'The rule of law is the most basic principle on which our Constitution is based.'
   },
   {
     name: 'B.R. Ambedkar',
     role: 'Jurist · Architect of the Constitution',
-    img: 'https://en.wikipedia.org/wiki/Special:Redirect/file/Dr._Bhimrao_Ambedkar.jpg',
     initials: 'BA',
+    color: '#0a1a2e',
+    accent: '#2a5a7c',
     quote: 'Constitutional morality is not a natural sentiment. It has to be cultivated. Democracy in India is only a top-dressing on an Indian soil which is essentially undemocratic.'
   }
 ];
@@ -1791,38 +1897,44 @@ function renderAdmiredGrid() {
     const card = document.createElement('div');
     card.className = 'admired-card reveal';
 
+    // SVG portrait — always renders, no network dependency
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 380" style="width:100%;display:block;">
+      <defs>
+        <radialGradient id="bg_${person.initials}" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="${person.accent}" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="${person.color}" stop-opacity="1"/>
+        </radialGradient>
+        <radialGradient id="glow_${person.initials}" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="${person.accent}" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="${person.accent}" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="300" height="380" fill="url(#bg_${person.initials})"/>
+      <circle cx="150" cy="155" r="110" fill="url(#glow_${person.initials})"/>
+      <!-- subtle grain lines -->
+      <line x1="0" y1="60"  x2="300" y2="60"  stroke="${person.accent}" stroke-opacity="0.06" stroke-width="1"/>
+      <line x1="0" y1="120" x2="300" y2="120" stroke="${person.accent}" stroke-opacity="0.06" stroke-width="1"/>
+      <line x1="0" y1="180" x2="300" y2="180" stroke="${person.accent}" stroke-opacity="0.06" stroke-width="1"/>
+      <line x1="0" y1="240" x2="300" y2="240" stroke="${person.accent}" stroke-opacity="0.06" stroke-width="1"/>
+      <line x1="0" y1="300" x2="300" y2="300" stroke="${person.accent}" stroke-opacity="0.06" stroke-width="1"/>
+      <!-- initials -->
+      <text x="150" y="175" text-anchor="middle" dominant-baseline="middle"
+        font-family="Georgia, serif" font-size="88" font-weight="300"
+        fill="${person.accent}" fill-opacity="0.55" letter-spacing="4">${person.initials}</text>
+      <!-- bottom gradient overlay for name readability -->
+      <defs>
+        <linearGradient id="nameOverlay_${person.initials}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="55%" stop-color="transparent"/>
+          <stop offset="100%" stop-color="rgba(0,0,0,0.88)"/>
+        </linearGradient>
+      </defs>
+      <rect width="300" height="380" fill="url(#nameOverlay_${person.initials})"/>
+    </svg>`;
+
     const imgWrap = document.createElement('div');
     imgWrap.className = 'admired-card-img-wrap';
-
-    const img = document.createElement('img');
-    img.alt = person.name;
-    img.loading = 'lazy';
-
-    // Fallback: show styled initials block if image fails
-    img.onerror = function() {
-      this.style.display = 'none';
-      const fb = document.createElement('div');
-      fb.className = 'admired-card-fallback';
-      fb.textContent = person.initials;
-      imgWrap.insertBefore(fb, imgWrap.firstChild);
-    };
-
-    // Fetch through Wikipedia API to get a resized thumbnail URL (avoids hotlink block)
-    const filename = person.img.split('/file/')[1];
-    fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=File:${filename}&prop=imageinfo&iiprop=url&iiurlwidth=600&format=json&origin=*`)
-      .then(r => r.json())
-      .then(data => {
-        const pages = data.query.pages;
-        const page = pages[Object.keys(pages)[0]];
-        if (page.imageinfo && page.imageinfo[0].thumburl) {
-          img.src = page.imageinfo[0].thumburl;
-        } else {
-          img.src = page.imageinfo[0].url;
-        }
-      })
-      .catch(() => { img.src = person.img; });
-
-    imgWrap.appendChild(img);
+    imgWrap.style.position = 'relative';
+    imgWrap.innerHTML = svg;
 
     const info = document.createElement('div');
     info.className = 'admired-card-info';
@@ -1876,6 +1988,140 @@ function renderAdmiredGrid() {
   setInterval(tick, 1000);
 })();
 
+/* ═══ BOOK LIBRARY ═══ */
+const books = [
+  { title: 'India After Gandhi',               author: 'Ramachandra Guha',      isbn: '9780060958589' },
+  { title: 'Legal Eagles',                     author: 'Indu Bhan',             isbn: '9789380658636' },
+  { title: '10 Judgements That Changed India', author: 'Zia Mody',              isbn: '9780670086627' },
+  { title: 'The Cases That India Forgot',      author: 'Chitranshul Sinha',     isbn: '9789387578913' },
+  { title: 'The Case That Shook India',        author: 'Prashant Bhushan',      isbn: '9780143103042' },
+  { title: 'Pax Indica',                       author: 'Shashi Tharoor',        isbn: '9780670085743' },
+  { title: 'India: A History',                 author: 'John Keay',             isbn: '9780802137975' },
+  { title: 'Prisoners of Geography',           author: 'Tim Marshall',          isbn: '9781783962433' },
+  { title: 'Wings of Fire',                    author: 'A.P.J. Abdul Kalam',   isbn: '9788173711466' },
+  { title: 'A Thousand Splendid Suns',         author: 'Khaled Hosseini',       isbn: '9781594489501' },
+  { title: 'The India Way',                    author: 'S. Jaishankar',         isbn: '9789353579111' },
+  { title: 'Animal Farm',                      author: 'George Orwell',         isbn: '9780451526342' },
+  { title: '1984',                             author: 'George Orwell',         isbn: '9780451524935' },
+  { title: 'Annihilation of Caste',            author: 'B.R. Ambedkar',        isbn: '9781784786335' },
+  { title: 'Train to Pakistan',                author: 'Khushwant Singh',       isbn: '9780802132871' },
+  { title: 'The God of Small Things',          author: 'Arundhati Roy',         isbn: '9780812979657' },
+  { title: 'Why Nations Fail',                 author: 'Acemoglu & Robinson',   isbn: '9780307719225' },
+];
+
+// localStorage helpers
+function getReadBooks() {
+  try { return JSON.parse(localStorage.getItem('sps_read_books') || '{}'); } catch(e) { return {}; }
+}
+function saveReadBooks(state) {
+  try { localStorage.setItem('sps_read_books', JSON.stringify(state)); } catch(e) {}
+}
+
+function updateLibraryProgress() {
+  const state = getReadBooks();
+  const count = Object.values(state).filter(Boolean).length;
+  const total = books.length;
+  const pct = Math.round((count / total) * 100);
+  document.getElementById('libraryProgressBar').style.width = pct + '%';
+  document.getElementById('libraryProgressCount').textContent = count + ' / ' + total;
+}
+
+function makeFallbackCover(book, coverWrap) {
+  // Generate a unique-colored SVG book cover as fallback
+  const hues = [200, 30, 120, 270, 0, 180, 60, 300, 150, 240, 15, 90, 330, 45, 210, 75, 345];
+  const idx = books.indexOf(book);
+  const h = hues[idx % hues.length];
+  const svgCover = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300" style="width:100%;display:block;">
+    <defs>
+      <linearGradient id="cvr${idx}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="hsl(${h},35%,12%)"/>
+        <stop offset="100%" stop-color="hsl(${h},25%,8%)"/>
+      </linearGradient>
+    </defs>
+    <rect width="200" height="300" fill="url(#cvr${idx})"/>
+    <rect x="16" y="16" width="168" height="268" fill="none" stroke="hsl(${h},50%,35%)" stroke-width="1" stroke-opacity="0.4"/>
+    <rect x="20" y="20" width="160" height="260" fill="none" stroke="hsl(${h},50%,35%)" stroke-width="0.5" stroke-opacity="0.2"/>
+    <line x1="16" y1="200" x2="184" y2="200" stroke="hsl(${h},50%,35%)" stroke-width="0.5" stroke-opacity="0.3"/>
+    <foreignObject x="24" y="30" width="152" height="155">
+      <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Georgia,serif;font-size:13px;font-weight:400;color:hsl(${h},60%,82%);line-height:1.45;word-wrap:break-word;">${book.title}</div>
+    </foreignObject>
+    <foreignObject x="24" y="215" width="152" height="65">
+      <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:monospace;font-size:9px;letter-spacing:0.08em;color:hsl(${h},40%,55%);word-wrap:break-word;text-transform:uppercase;">${book.author}</div>
+    </foreignObject>
+  </svg>`;
+  coverWrap.innerHTML = svgCover;
+  // Re-append the check button if it exists
+  const existingCheck = coverWrap._checkBtn;
+  if (existingCheck) coverWrap.appendChild(existingCheck);
+}
+
+function renderLibraryGrid() {
+  const grid = document.getElementById('libraryGrid');
+  const state = getReadBooks();
+
+  books.forEach((book, i) => {
+    const card = document.createElement('div');
+    card.className = 'book-card';
+
+    const coverWrap = document.createElement('div');
+    coverWrap.className = 'book-cover-wrap';
+
+    // Fetch cover via Google Books API — no hotlink issues, real thumbnails
+    const query = encodeURIComponent('isbn:' + book.isbn);
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=1`)
+      .then(r => r.json())
+      .then(data => {
+        const item = data.items && data.items[0];
+        const thumb = item && item.volumeInfo && item.volumeInfo.imageLinks &&
+          (item.volumeInfo.imageLinks.thumbnail || item.volumeInfo.imageLinks.smallThumbnail);
+        if (thumb) {
+          // Use https and zoom=1 for better resolution
+          const url = thumb.replace('http://', 'https://').replace('zoom=1', 'zoom=2');
+          const img = document.createElement('img');
+          img.src = url;
+          img.alt = book.title;
+          img.loading = 'lazy';
+          img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+          img.onerror = () => makeFallbackCover(book, coverWrap);
+          coverWrap.insertBefore(img, coverWrap.firstChild);
+        } else {
+          makeFallbackCover(book, coverWrap);
+        }
+      })
+      .catch(() => makeFallbackCover(book, coverWrap));
+
+    // Check / tick button
+    const check = document.createElement('div');
+    check.className = 'book-read-check' + (state[i] ? ' checked' : '');
+    check.title = 'Mark as read';
+    check.innerHTML = `<svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="2,6 5,9 10,3" stroke="${state[i] ? '#000' : 'var(--accent)'}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+    check.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const s = getReadBooks();
+      s[i] = !s[i];
+      saveReadBooks(s);
+      check.classList.toggle('checked', !!s[i]);
+      check.querySelector('polyline').setAttribute('stroke', s[i] ? '#000' : 'var(--accent)');
+      updateLibraryProgress();
+    });
+    coverWrap._checkBtn = check;
+    coverWrap.appendChild(check);
+
+    const info = document.createElement('div');
+    info.className = 'book-info';
+    info.innerHTML = `<p class="book-title">${book.title}</p><p class="book-author">${book.author}</p>`;
+
+    card.appendChild(coverWrap);
+    card.appendChild(info);
+    grid.appendChild(card);
+  });
+
+  updateLibraryProgress();
+}
+
+renderLibraryGrid();
 renderAdmiredGrid();</script>
 </body>
 </html>
