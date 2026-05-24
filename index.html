@@ -527,59 +527,6 @@
   .leadership-pill:hover { color: var(--accent); border-color: var(--accent-dim); }
   .leadership-pill-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); opacity: 0.6; flex-shrink: 0; }
   @media (max-width: 900px) { .leadership-section { padding: 2rem 2rem 3rem; } }
-  /* AMICUS CURIAE ARTICLES */
-  .amicus-articles { display: flex; flex-direction: column; gap: 0; margin-top: 0.5rem; }
-  .amicus-article {
-    display: flex; align-items: baseline; gap: 1rem;
-    padding: 0.65rem 0; border-bottom: 1px solid var(--border);
-    text-decoration: none; color: inherit;
-    transition: background 0.2s;
-  }
-  .amicus-article:last-child { border-bottom: none; }
-  .amicus-article:hover .amicus-title { color: var(--accent); }
-  .amicus-article:hover .amicus-arrow { opacity: 1; }
-  .amicus-num { font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.15em; color: var(--accent-dim); flex-shrink: 0; width: 1.8rem; }
-  .amicus-title { font-family: var(--serif); font-size: 1rem; font-weight: 400; color: var(--muted); line-height: 1.4; flex: 1; transition: color 0.25s; }
-  .amicus-arrow { font-family: var(--mono); font-size: 0.7rem; color: var(--accent); opacity: 0; transition: opacity 0.25s; flex-shrink: 0; }
-
-  /* JEEVARTAN 2×2 in experience */
-  .jeevartan-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
-    margin-top: 0.75rem; max-width: 420px;
-  }
-  .jeevartan-grid img { width: 100%; display: block; border: 1px solid var(--border); }
-
-  /* JEEVARTAN PORTFOLIO (2×2 larger) */
-  .jeevartan-portfolio-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
-    max-width: 700px;
-  }
-  .jeevartan-portfolio-grid img {
-    width: 100%; display: block; border: 1px solid var(--border);
-    cursor: pointer; transition: filter 0.3s;
-  }
-  .jeevartan-portfolio-grid img:hover { filter: brightness(0.75); }
-
-  /* BROCHURE CARD */
-  .brochure-grid { display: flex; flex-direction: column; gap: 0.75rem; }
-  .brochure-card {
-    display: flex; align-items: center; gap: 1.5rem;
-    border: 1px solid var(--border); padding: 1.5rem 2rem;
-    text-decoration: none; color: inherit;
-    transition: background 0.3s, border-color 0.3s;
-  }
-  .brochure-card:hover { background: rgba(201,168,76,0.04); border-color: var(--accent-dim); }
-  .brochure-icon { color: var(--accent); flex-shrink: 0; }
-  .brochure-info { flex: 1; }
-  .brochure-title { font-family: var(--serif); font-size: 1.1rem; font-weight: 400; color: var(--parchment); margin-bottom: 0.25rem; }
-  .brochure-sub { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; color: var(--muted); }
-  .brochure-open { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); flex-shrink: 0; }
-  @media (max-width: 700px) {
-    .jeevartan-portfolio-grid { gap: 0.5rem; }
-    .brochure-card { flex-wrap: wrap; padding: 1rem; gap: 1rem; }
-    .brochure-open { width: 100%; }
-  }
-
   @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
   .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
@@ -587,64 +534,18 @@
   /* RESPONSIVE */
   @media (max-width: 900px) {
     nav { padding: 1rem 1.5rem; flex-direction: row; align-items: center; }
-    .hero { padding: 7rem 1.5rem 4rem; min-height: 100svh; }
-    .hero-name { font-size: clamp(2.8rem, 11vw, 5rem); }
-    .hero-tagline { font-size: 1.05rem; max-width: 100%; }
-    .hero-scroll { right: 1.5rem; bottom: 2rem; }
-    .about { grid-template-columns: 1fr; gap: 2rem; padding: 4rem 1.5rem; }
-    .about-number { font-size: 5rem; }
-    .posts-section { padding: 3rem 1.5rem 2rem; }
+    .hero { padding: 0 2rem 5rem; }
+    .about { grid-template-columns: 1fr; gap: 2rem; padding: 4rem 2rem; }
+    .posts-section { padding: 3rem 2rem 2rem; }
     .posts-grid { grid-template-columns: 1fr; }
-    .post-card { padding: 1.75rem; }
     .post-card.featured { grid-column: span 1; }
-    .quote-section { padding: 4rem 1.5rem; }
-    .pull-quote blockquote::before { display: none; }
-    footer { grid-template-columns: 1fr; padding: 3rem 1.5rem 2rem; gap: 2.5rem; }
+    .quote-section { padding: 5rem 2rem; }
+    footer { grid-template-columns: 1fr; padding: 4rem 2rem 2rem; }
     .footer-nav { align-items: flex-start; flex-direction: row; }
     .footer-bottom { grid-column: span 1; flex-direction: column; gap: 1rem; align-items: flex-start; }
-    .divider { padding: 0 1.5rem; }
-    .article-back { left: 1.5rem; }
-    .article-inner { padding: 6rem 1.25rem 4rem; }
-
-    /* quicknav — shrink on mobile so it doesn't overflow */
-    .quicknav { max-width: calc(100vw - 2rem); overflow-x: auto; scrollbar-width: none; border-radius: 3px; }
-    .quicknav::-webkit-scrollbar { display: none; }
-    .qn-item { padding: 0.6rem 0.75rem; font-size: 0.52rem; }
-
-    /* portfolio touch — always show overlay on mobile */
-    .portfolio-item-overlay { opacity: 1; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%); }
-    .event-item-overlay { opacity: 1; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%); }
-    .portfolio-section { padding: 3rem 1.5rem 4rem; }
-    .portfolio-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-
-    /* lightbox swipe hint */
-    .lb-img-wrap { max-width: 92vw; }
-    .lb-close { top: 1rem; right: 1rem; }
-
-    /* ryan prince */
-    .ryan-prince-section { padding: 1.5rem 1.5rem 2.5rem; }
-    .rp-inner { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem; }
-
-    /* academics */
-    .academics-section { padding: 3rem 1.5rem; }
-    .academics-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .academic-card { padding: 1.25rem; }
-    .academic-card-value { font-size: 1.5rem; }
-
-    /* leadership */
-    .leadership-section { padding: 1.5rem 1.5rem 3rem; }
-    .leadership-pill { font-size: 0.55rem; padding: 0.4rem 0.85rem; }
-
-    /* event grid */
-    .event-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-    .event-item-overlay { opacity: 1; }
-  }
-
-  @media (max-width: 480px) {
-    .hero-name { font-size: clamp(2.4rem, 12vw, 3.5rem); }
-    .portfolio-grid { grid-template-columns: 1fr; }
-    .academics-grid { grid-template-columns: 1fr; }
-    .section-title { font-size: 2.2rem; }
+    .divider { padding: 0 2rem; }
+    .article-back { left: 2rem; }
+    .article-inner { padding: 7rem 1.5rem 4rem; }
   }
 </style>
 </head>
@@ -793,16 +694,6 @@
       </div>
       <p class="exp-role-title">Graphic Designer</p>
       <p class="exp-excerpt">Designing visual communication for the foundation's initiatives and outreach campaigns.</p>
-      <div class="exp-full" id="jeevartanFull">
-        <p style="margin-bottom:0.75rem; font-family:var(--mono); font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent-dim);">Social media designs</p>
-        <div class="jeevartan-grid">
-          <img src="1.png" alt="Jeevartan post 1" loading="lazy">
-          <img src="2.png" alt="Jeevartan post 2" loading="lazy">
-          <img src="3.png" alt="Jeevartan post 3" loading="lazy">
-          <img src="4.png" alt="Jeevartan post 4" loading="lazy">
-        </div>
-      </div>
-      <button class="exp-toggle" onclick="toggleExp('jeevartanFull', this)">Read more →</button>
     </div>
 
     <div class="exp-category-label"></div>
@@ -812,48 +703,7 @@
         <span class="exp-date">Dec 2025 – Feb 2026</span>
       </div>
       <p class="exp-role-title">Editor-in-Chief</p>
-      <p class="exp-excerpt">Led editorial direction and content strategy for the student-run law magazine's operational run.</p>
-      <div class="exp-full" id="amicusFull">
-        <p style="margin-bottom:0.75rem; font-family:var(--mono); font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent-dim);">Articles published under the organisation</p>
-        <div class="amicus-articles">
-          <a class="amicus-article" href="https://www.linkedin.com/posts/write-amicuscuriae_does-the-law-protect-only-those-we-are-willing-activity-7407245735416573952-S9HR" target="_blank" rel="noopener">
-            <span class="amicus-num">01</span>
-            <span class="amicus-title">Does the law protect only those we are willing to see?</span>
-            <span class="amicus-arrow">↗</span>
-          </a>
-          <a class="amicus-article" href="https://www.linkedin.com/posts/write-amicuscuriae_faith-was-meant-to-heal-not-hunt-a-secular-activity-7412681548551909376-RP_a" target="_blank" rel="noopener">
-            <span class="amicus-num">02</span>
-            <span class="amicus-title">Faith was meant to heal, not hunt — a secular critique</span>
-            <span class="amicus-arrow">↗</span>
-          </a>
-          <a class="amicus-article" href="https://www.linkedin.com/posts/write-amicuscuriae_progress-isnt-fewer-headlines-about-pollution-activity-7415707445098127360-g9UV" target="_blank" rel="noopener">
-            <span class="amicus-num">03</span>
-            <span class="amicus-title">Progress isn't fewer headlines about pollution</span>
-            <span class="amicus-arrow">↗</span>
-          </a>
-          <a class="amicus-article" href="https://www.linkedin.com/posts/write-amicuscuriae_rebranding-welfare-doesnt-automatically-activity-7416320532746600449-9_vu" target="_blank" rel="noopener">
-            <span class="amicus-num">04</span>
-            <span class="amicus-title">Rebranding welfare doesn't automatically reform it</span>
-            <span class="amicus-arrow">↗</span>
-          </a>
-          <a class="amicus-article" href="https://www.linkedin.com/posts/write-amicuscuriae_when-the-courtroom-becomes-a-battleground-activity-7417487101782519808-UOON" target="_blank" rel="noopener">
-            <span class="amicus-num">05</span>
-            <span class="amicus-title">When the courtroom becomes a battleground</span>
-            <span class="amicus-arrow">↗</span>
-          </a>
-          <a class="amicus-article" href="https://www.linkedin.com/posts/write-amicuscuriae_not-every-disagreement-belongs-in-court-activity-7418202445618663424-VDOW" target="_blank" rel="noopener">
-            <span class="amicus-num">06</span>
-            <span class="amicus-title">Not every disagreement belongs in court</span>
-            <span class="amicus-arrow">↗</span>
-          </a>
-          <a class="amicus-article" href="https://www.linkedin.com/posts/write-amicuscuriae_the-greenland-dilemma-activity-7420661772853956608-ZSy-" target="_blank" rel="noopener">
-            <span class="amicus-num">07</span>
-            <span class="amicus-title">The Greenland dilemma</span>
-            <span class="amicus-arrow">↗</span>
-          </a>
-        </div>
-      </div>
-      <button class="exp-toggle" onclick="toggleExp('amicusFull', this)">Read more →</button>
+      <p class="exp-excerpt">Led editorial direction and content strategy for the publication's run.</p>
     </div>
 
     <div class="exp-category-label"></div>
@@ -1063,56 +913,35 @@
 <section class="portfolio-section reveal" id="portfolio">
   <div class="section-header">
     <h2 class="section-title">Design</h2>
-    <span class="section-meta">MUN · NGO · Magazine · Brochures</span>
-  </div>
-
-  <!-- MUN Designs -->
-  <div class="portfolio-subsection">
-    <div class="portfolio-sub-header">
-      <span class="portfolio-sub-title">MUN Designs</span>
-      <span class="portfolio-sub-count">RISGNMUN'25 — Conference Convenor</span>
-    </div>
-    <div class="event-grid" id="munGrid"></div>
-  </div>
-
-  <!-- NGO / Jeevartan -->
-  <div class="portfolio-subsection" style="margin-top: 3rem;">
-    <div class="portfolio-sub-header">
-      <span class="portfolio-sub-title">NGO Designs</span>
-      <span class="portfolio-sub-count">Jeevartan Foundation — Social Media</span>
-    </div>
-    <div class="jeevartan-portfolio-grid" id="ngoGrid"></div>
-  </div>
-
-  <!-- Brochures -->
-  <div class="portfolio-subsection" style="margin-top: 3rem;">
-    <div class="portfolio-sub-header">
-      <span class="portfolio-sub-title">Brochures</span>
-      <span class="portfolio-sub-count">1 publication</span>
-    </div>
-    <div class="brochure-grid">
-      <a class="brochure-card" href="RISGNMUN_25_Brochure.pdf" target="_blank" rel="noopener">
-        <div class="brochure-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
-        </div>
-        <div class="brochure-info">
-          <p class="brochure-title">RISGNMUN'25 — Official Brochure</p>
-          <p class="brochure-sub">Ryan International School, Greater Noida · Second Edition</p>
-        </div>
-        <span class="brochure-open">Open PDF ↗</span>
-      </a>
-    </div>
+    <span class="section-meta">Magazine &amp; Event work</span>
   </div>
 
   <!-- Magazine Designs -->
-  <div class="portfolio-subsection" style="margin-top: 3rem;">
+  <div class="portfolio-subsection">
     <div class="portfolio-sub-header">
       <span class="portfolio-sub-title">Magazine Designs</span>
-      <span class="portfolio-sub-count">Amicus Curiae — 8 covers</span>
+      <span class="portfolio-sub-count">9 covers</span>
     </div>
     <div class="portfolio-grid" id="portfolioGrid"></div>
   </div>
 
+  <!-- Event Designs -->
+  <div class="portfolio-subsection" style="margin-top: 3rem;">
+    <div class="portfolio-sub-header">
+      <span class="portfolio-sub-title">Event Designs</span>
+      <span class="portfolio-sub-count">5 pieces</span>
+    </div>
+    <div class="event-grid" id="eventGrid"></div>
+  </div>
+
+  <!-- NGO / Social Work Designs -->
+  <div class="portfolio-subsection" style="margin-top: 3rem;">
+    <div class="portfolio-sub-header">
+      <span class="portfolio-sub-title">NGO &amp; Social Work Designs</span>
+      <span class="portfolio-sub-count">4 pieces</span>
+    </div>
+    <div class="event-grid" id="ngoGrid"></div>
+  </div>
 </section>
 
 <!-- LIGHTBOX -->
@@ -1552,7 +1381,8 @@ const portfolioItems = [
   { src: '5.png',  tag: 'Budget',             title: 'Union Budget 2026' },
   { src: '6.png',  tag: 'Political Analysis', title: 'The Fall of Titans' },
   { src: '7.png',  tag: 'Economics',          title: 'Dead Economy?' },
-  { src: '10.png', tag: 'Political Analysis', title: 'The Fall of Titans (Alt.)' },
+  { src: '8.png',  tag: 'Legal Affairs',      title: 'Denial' },
+  { src: '9.png',  tag: 'Legal Affairs',      title: 'Farce' },
 ];
 
 let lbIndex = 0;
@@ -1610,47 +1440,21 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* ═══ LIGHTBOX TOUCH SWIPE ═══ */
-(function() {
-  const lb = document.getElementById('lbOverlay');
-  let startX = 0;
-  lb.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
-  lb.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - startX;
-    if (Math.abs(dx) > 50) lbStep(dx < 0 ? 1 : -1);
-  }, { passive: true });
-})();
-
-/* ═══ MUN DESIGNS DATA ═══ */
-const munItems = [
-  { src: 'Title_Post_Grid.png',              tag: 'RISGNMUN\'25', title: 'Conference Announcement' },
-  { src: 'Secretariat_Grid.jpeg',            tag: 'RISGNMUN\'25', title: 'Secretariat Grid' },
-  { src: 'Executive_Board_Panel_Grid.jpeg',  tag: 'RISGNMUN\'25', title: 'Executive Board Panel' },
-  { src: 'Committee_Agendas_.jpeg',          tag: 'RISGNMUN\'25', title: 'Committees & Agendas' },
-  { src: 'Cash_Prize_Grid.jpeg',             tag: 'RISGNMUN\'25', title: 'Cash Prize Grid' },
-  { src: 'Itinerary_Dress_Code_.jpeg',       tag: 'RISGNMUN\'25', title: 'Itinerary & Dress Code' },
-  { src: 'RISGNMUN_25_PLACARDS_2025.png',    tag: 'RISGNMUN\'25', title: 'Placards' },
-  { src: 'RISGNMUN_24_Certificates_of_Appreciation_and_Achievement.png', tag: 'RISGNMUN\'24', title: 'Certificate Design' },
-  { src: 'RISGNMUN_25_-_vedansh_arora.png',  tag: 'RISGNMUN\'25', title: 'Chairperson Feature — Vedansh Arora' },
-  { src: 'RISGNMUN_25_-_unga_vedansh.png',   tag: 'RISGNMUN\'25', title: 'UNGA Feature' },
-  { src: 'Add_a_heading.png',                tag: 'RISGNMUN\'25', title: 'Announcement Banner' },
-];
-
-/* ═══ NGO DESIGNS DATA ═══ */
-const ngoItems = [
-  { src: '1.png', tag: 'Jeevartan Foundation', title: 'Social Media — Post 1' },
-  { src: '2.png', tag: 'Jeevartan Foundation', title: 'Social Media — Post 2' },
-  { src: '3.png', tag: 'Jeevartan Foundation', title: 'Social Media — Post 3' },
-  { src: '4.png', tag: 'Jeevartan Foundation', title: 'Social Media — Post 4' },
+/* ═══ EVENT PORTFOLIO DATA ═══ */
+const eventItems = [
+  { src: 'RISGNMUN_25_PLACARDS_2025.png',  tag: 'MUN Design', title: 'RISGNMUN\'25 — Placards' },
+  { src: 'RISGNMUN_24_Certificates_of_Appreciation_and_Achievement.png', tag: 'MUN Design', title: 'RISGNMUN\'24 — Certificate Design' },
+  { src: 'RISGNMUN_25_-_vedansh_arora.png', tag: 'MUN Design', title: 'RISGNMUN\'25 — Chairperson Feature' },
+  { src: 'RISGNMUN_25_-_unga_vedansh.png',  tag: 'MUN Design', title: 'RISGNMUN\'25 — UNGA Feature' },
+  { src: 'Add_a_heading.png',               tag: 'MUN Design', title: 'RISGNMUN\'25 — Announcement' },
 ];
 
 let lbAllItems = [];
 let lbAllIndex = 0;
 
-function renderMunGrid() {
-  const grid = document.getElementById('munGrid');
-  if (!grid) return;
-  munItems.forEach((item, i) => {
+function renderEventGrid() {
+  const grid = document.getElementById('eventGrid');
+  eventItems.forEach((item, i) => {
     const el = document.createElement('div');
     el.className = 'event-item';
     el.setAttribute('aria-label', 'View: ' + item.title);
@@ -1660,29 +1464,22 @@ function renderMunGrid() {
         <p class="event-item-tag">${item.tag}</p>
         <p class="event-item-title">${item.title}</p>
       </div>`;
-    el.addEventListener('click', () => openLbUnified('mun', i));
+    el.addEventListener('click', () => openLbUnified('event', i));
     grid.appendChild(el);
   });
 }
 
-function renderNgoGrid() {
-  const grid = document.getElementById('ngoGrid');
-  if (!grid) return;
-  ngoItems.forEach((item, i) => {
-    const img = document.createElement('img');
-    img.src = item.src;
-    img.alt = item.title;
-    img.loading = 'lazy';
-    img.addEventListener('click', () => openLbUnified('ngo', i));
-    grid.appendChild(img);
-  });
-}
-
 function openLbUnified(type, i) {
-  if (type === 'mag') { lbAllItems = portfolioItems; }
-  else if (type === 'mun') { lbAllItems = munItems; }
-  else if (type === 'ngo') { lbAllItems = ngoItems; }
-  lbAllIndex = i;
+  if (type === 'mag') {
+    lbAllItems = portfolioItems;
+    lbAllIndex = i;
+  } else if (type === 'ngo') {
+    lbAllItems = ngoItems.filter(it => !it.src.endsWith('.pdf'));
+    lbAllIndex = i;
+  } else {
+    lbAllItems = eventItems;
+    lbAllIndex = i;
+  }
   updateLbUnified();
   document.getElementById('lbOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -1695,9 +1492,46 @@ function updateLbUnified() {
   document.getElementById('lbCaption').textContent = item.tag + ' · ' + item.title;
 }
 
-renderMunGrid();
+/* ═══ NGO PORTFOLIO DATA ═══ */
+const ngoItems = [
+  { src: 'Needed_.png',                     tag: 'NGO Design',  title: 'Jeevartan — Awareness Poster' },
+  { src: 'Brochure_Jeevartan_Rabies_Drive.png', tag: 'NGO Design', title: 'Jeevartan × RSSA — Rabies Drive Brochure' },
+  { src: 'RISGNMUN_25_AIPPM_BG.pdf',        tag: 'MUN Document', title: 'RISGNMUN\'25 — AIPPM Background Guide' },
+];
+
+function renderNgoGrid() {
+  const grid = document.getElementById('ngoGrid');
+  ngoItems.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'event-item';
+    el.setAttribute('aria-label', 'View: ' + item.title);
+    if (item.src.endsWith('.pdf')) {
+      el.innerHTML = `
+        <a href="${item.src}" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:200px;text-decoration:none;padding:2rem;gap:1rem;">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.6"><rect x="8" y="4" width="32" height="40" rx="3" stroke="#c9a84c" stroke-width="2"/><path d="M16 14h16M16 20h16M16 26h10" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/><path d="M28 34l4-4 4 4" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);text-align:center">${item.tag}</p>
+          <p style="font-family:var(--serif);font-size:0.95rem;color:var(--parchment);text-align:center;line-height:1.4">${item.title}</p>
+          <p style="font-family:var(--mono);font-size:0.55rem;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase">Open PDF →</p>
+        </a>`;
+    } else {
+      el.innerHTML = `
+        <img src="${item.src}" alt="${item.title}" loading="lazy">
+        <div class="event-item-overlay">
+          <p class="event-item-tag">${item.tag}</p>
+          <p class="event-item-title">${item.title}</p>
+        </div>`;
+      el.addEventListener('click', () => openLbUnified('ngo', i));
+    }
+    grid.appendChild(el);
+  });
+}
+
+renderEventGrid();
+
 renderNgoGrid();
+
 renderPortfolio();
+
 renderGrid();</script>
 </body>
 </html>
