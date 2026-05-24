@@ -938,7 +938,7 @@
   <div class="portfolio-subsection" style="margin-top: 3rem;">
     <div class="portfolio-sub-header">
       <span class="portfolio-sub-title">NGO &amp; Social Work Designs</span>
-      <span class="portfolio-sub-count">4 pieces</span>
+      <span class="portfolio-sub-count">6 pieces</span>
     </div>
     <div class="event-grid" id="ngoGrid"></div>
   </div>
@@ -1494,9 +1494,12 @@ function updateLbUnified() {
 
 /* ═══ NGO PORTFOLIO DATA ═══ */
 const ngoItems = [
-  { src: 'Needed_.png',                     tag: 'NGO Design',  title: 'Jeevartan — Awareness Poster' },
-  { src: 'Brochure_Jeevartan_Rabies_Drive.png', tag: 'NGO Design', title: 'Jeevartan × RSSA — Rabies Drive Brochure' },
-  { src: 'RISGNMUN_25_AIPPM_BG.pdf',        tag: 'MUN Document', title: 'RISGNMUN\'25 — AIPPM Background Guide' },
+  { src: 'Jeevartan1.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Meet the Architects' },
+  { src: 'Jeevartan2.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Social Media Team (I)' },
+  { src: 'Jeevartan3.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Social Media Team (II)' },
+  { src: 'Jeevartan4.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Graphic Designer Feature' },
+  { src: 'Jeevartan5.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Awareness Poster' },
+  { src: 'Jeevartan6.png', tag: 'NGO Design', title: 'Jeevartan × RSSA — Rabies Drive Brochure' },
 ];
 
 function renderNgoGrid() {
@@ -1505,25 +1508,28 @@ function renderNgoGrid() {
     const el = document.createElement('div');
     el.className = 'event-item';
     el.setAttribute('aria-label', 'View: ' + item.title);
-    if (item.src.endsWith('.pdf')) {
-      el.innerHTML = `
-        <a href="${item.src}" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:200px;text-decoration:none;padding:2rem;gap:1rem;">
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.6"><rect x="8" y="4" width="32" height="40" rx="3" stroke="#c9a84c" stroke-width="2"/><path d="M16 14h16M16 20h16M16 26h10" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/><path d="M28 34l4-4 4 4" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <p style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);text-align:center">${item.tag}</p>
-          <p style="font-family:var(--serif);font-size:0.95rem;color:var(--parchment);text-align:center;line-height:1.4">${item.title}</p>
-          <p style="font-family:var(--mono);font-size:0.55rem;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase">Open PDF →</p>
-        </a>`;
-    } else {
-      el.innerHTML = `
-        <img src="${item.src}" alt="${item.title}" loading="lazy">
-        <div class="event-item-overlay">
-          <p class="event-item-tag">${item.tag}</p>
-          <p class="event-item-title">${item.title}</p>
-        </div>`;
-      el.addEventListener('click', () => openLbUnified('ngo', i));
-    }
+    el.innerHTML = `
+      <img src="${item.src}" alt="${item.title}" loading="lazy">
+      <div class="event-item-overlay">
+        <p class="event-item-tag">${item.tag}</p>
+        <p class="event-item-title">${item.title}</p>
+      </div>`;
+    el.addEventListener('click', () => openLbUnified('ngo', i));
     grid.appendChild(el);
   });
+
+  // AIPPM BG PDF card
+  const pdfEl = document.createElement('div');
+  pdfEl.className = 'event-item';
+  pdfEl.setAttribute('aria-label', 'Open: RISGNMUN\'25 — AIPPM Background Guide');
+  pdfEl.innerHTML = `
+    <a href="RISGNMUN_25_AIPPM_BG.pdf" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:220px;text-decoration:none;padding:2rem;gap:1rem;background:#0d0d0d;">
+      <svg width="44" height="44" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.55"><rect x="8" y="4" width="32" height="40" rx="3" stroke="#c9a84c" stroke-width="2"/><path d="M16 14h16M16 20h16M16 26h10" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/></svg>
+      <p style="font-family:var(--mono);font-size:0.52rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:0.2rem">MUN Document</p>
+      <p style="font-family:var(--serif);font-size:0.95rem;color:var(--parchment);text-align:center;line-height:1.4">RISGNMUN'25 — AIPPM Background Guide</p>
+      <p style="font-family:var(--mono);font-size:0.52rem;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;margin-top:0.4rem">Open PDF →</p>
+    </a>`;
+  grid.appendChild(pdfEl);
 }
 
 renderEventGrid();
