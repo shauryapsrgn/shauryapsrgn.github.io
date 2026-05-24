@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shaurya Pratap Singh — Law, Politics & Words</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0d0c0a;
+    --parchment: #f5f0e8;
+    --muted: #8a8070;
+    --accent: #c9a84c;
+    --accent-dim: #8a6a28;
+    --border: rgba(180,160,120,0.2);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+  }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background-color: var(--ink);
+    color: var(--parchment);
+    font-family: var(--serif);
+    line-height: 1.8;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 1000; opacity: 0.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.5rem 4rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(13,12,10,0.9); backdrop-filter: blur(14px);
+  }
+  .nav-logo { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); text-decoration: none; }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--parchment); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: flex-end; padding: 0 4rem 6rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg-text {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--serif); font-size: clamp(9rem, 18vw, 20rem);
+    font-weight: 300; color: transparent;
+    -webkit-text-stroke: 1px rgba(180,160,120,0.06);
+    white-space: nowrap; user-select: none; pointer-events: none;
+  }
+  .hero-eyebrow { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 1s ease 0.3s forwards; }
+  .hero-name { font-family: var(--serif); font-size: clamp(3.5rem, 7.5vw, 7.5rem); font-weight: 300; line-height: 0.95; letter-spacing: -0.02em; margin-bottom: 2rem; opacity: 0; animation: fadeUp 1s ease 0.5s forwards; }
+  .hero-name em { font-style: italic; color: var(--accent); }
+  .hero-tagline { font-family: var(--serif); font-size: clamp(1rem, 1.8vw, 1.25rem); font-weight: 300; font-style: italic; color: var(--muted); max-width: 46ch; line-height: 1.7; opacity: 0; animation: fadeUp 1s ease 0.7s forwards; }
+  .hero-tags { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 2rem; opacity: 0; animation: fadeUp 1s ease 0.9s forwards; }
+  .hero-tag { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent-dim); border: 1px solid rgba(138,106,40,0.35); padding: 0.35rem 0.85rem; border-radius: 2px; }
+  .hero-scroll { position: absolute; bottom: 3rem; right: 4rem; font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); writing-mode: vertical-rl; display: flex; align-items: center; gap: 1rem; opacity: 0; animation: fadeUp 1s ease 1.1s forwards; }
+  .hero-scroll::after { content: ''; display: block; width: 1px; height: 60px; background: linear-gradient(to bottom, var(--muted), transparent); }
+
+  /* HERO PHOTO */
+  .hero-photo {
+    position: absolute; top: 0; right: 0; bottom: 0;
+    width: 44%; pointer-events: none;
+    mask-image: linear-gradient(to left, rgba(0,0,0,0.7) 40%, transparent 100%),
+                linear-gradient(to top, transparent 0%, black 20%);
+    -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.65) 40%, transparent 100%);
+    mask-composite: intersect;
+  }
+  .hero-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: top center;
+    filter: brightness(0.7) contrast(1.1);
+    mix-blend-mode: luminosity;
+    opacity: 0.55;
+  }
+
+  /* QUICK-NAV PANEL */
+  .quicknav {
+    position: fixed; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    z-index: 190;
+    display: flex; align-items: center; gap: 0;
+    background: rgba(8,11,18,0.88); backdrop-filter: blur(16px);
+    border: 1px solid var(--border); border-radius: 3px;
+    padding: 0 0.25rem;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    transform: translateX(-50%) translateY(6px);
+  }
+  .quicknav.visible {
+    opacity: 1; pointer-events: all;
+    transform: translateX(-50%) translateY(0);
+  }
+  .qn-item {
+    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted);
+    text-decoration: none; padding: 0.7rem 1.1rem;
+    transition: color 0.25s;
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .qn-item:last-child { border-right: none; }
+  .qn-item:hover { color: var(--accent); }
+  .qn-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); opacity: 0.5; margin: 0 0.5rem; flex-shrink: 0; }
+
+  /* SHOW MORE BUTTON */
+  .show-more-wrap { display: flex; justify-content: center; padding: 2.5rem 0 1rem; }
+  .show-more-btn {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+    background: none; border: 1px solid var(--border);
+    padding: 0.75rem 2.2rem; cursor: pointer; border-radius: 2px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+  .show-more-btn:hover { color: var(--accent); border-color: var(--accent-dim); }
+  .post-card.hidden { display: none; }
+
+  /* DIVIDER */
+  .divider { display: flex; align-items: center; gap: 2rem; padding: 0 4rem; margin: 3rem 0; }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+  .divider-mark { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.3em; color: var(--accent-dim); text-transform: uppercase; }
+
+  /* ABOUT */
+  .about { padding: 6rem 4rem; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 2fr; gap: 6rem; align-items: start; }
+  .about-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .about-number { font-family: var(--serif); font-size: 8rem; font-weight: 300; color: transparent; -webkit-text-stroke: 1px rgba(180,160,120,0.15); line-height: 1; }
+  .about-text p { font-size: 1.15rem; font-weight: 300; color: var(--muted); line-height: 1.9; margin-bottom: 1.5rem; }
+  .about-text p strong { color: var(--parchment); font-weight: 400; }
+  .credentials { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem; border-top: 1px solid var(--border); padding-top: 2rem; }
+  .credential-item { display: flex; gap: 1.5rem; align-items: baseline; }
+  .credential-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 0.6rem; }
+  .credential-text { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.05em; color: var(--muted); line-height: 1.6; }
+  .credential-text strong { color: var(--parchment); font-weight: 400; }
+
+  /* WRITING INDEX */
+  .posts-section { padding: 4rem 4rem 2rem; max-width: 1200px; margin: 0 auto; }
+  .section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .section-title { font-family: var(--serif); font-size: 3rem; font-weight: 300; font-style: italic; }
+  .section-meta { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+
+  .posts-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; }
+  .post-card {
+    border: 1px solid var(--border); padding: 2.5rem;
+    position: relative; overflow: hidden;
+    cursor: pointer; transition: background 0.4s ease;
+    text-decoration: none; color: inherit; display: block;
+  }
+  .post-card:hover { background: rgba(201,168,76,0.04); }
+  .post-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
+  .post-card:hover::before { transform: scaleX(1); }
+  .post-number { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.2em; color: var(--accent-dim); margin-bottom: 1.5rem; }
+  .post-category { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+  .post-title { font-family: var(--serif); font-size: 1.35rem; font-weight: 400; line-height: 1.3; margin-bottom: 1.25rem; color: var(--parchment); }
+  .post-excerpt { font-size: 0.95rem; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 2rem; }
+  .post-footer { display: flex; justify-content: space-between; align-items: center; }
+  .post-date { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; color: rgba(138,128,112,0.55); }
+  .post-arrow { font-family: var(--mono); font-size: 0.7rem; color: var(--accent); transition: transform 0.3s ease; }
+  .post-card:hover .post-arrow { transform: translateX(4px); }
+  .post-card.featured { grid-column: span 2; background: rgba(26,24,21,0.5); }
+  .post-card.featured .post-title { font-size: 1.9rem; font-style: italic; }
+
+  /* ARTICLE VIEW */
+  .article-overlay {
+    position: fixed; inset: 0; z-index: 300;
+    background: var(--ink);
+    overflow-y: auto;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .article-overlay.open { opacity: 1; pointer-events: all; }
+  .article-inner { max-width: 720px; margin: 0 auto; padding: 8rem 2rem 6rem; }
+  .article-back {
+    position: fixed; top: 1.8rem; left: 4rem; z-index: 400;
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--muted);
+    background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: color 0.3s;
+  }
+  .article-back:hover { color: var(--parchment); }
+  .article-eyebrow { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; }
+  .article-title { font-family: var(--serif); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 300; line-height: 1.15; margin-bottom: 2.5rem; }
+  .article-body { font-family: var(--serif); font-size: 1.15rem; font-weight: 300; color: rgba(245,240,232,0.85); line-height: 1.9; }
+  .article-body p { margin-bottom: 1.5rem; }
+  .article-body blockquote { border-left: 2px solid var(--accent); padding-left: 1.5rem; margin: 2rem 0; font-style: italic; color: var(--muted); font-size: 1.2rem; }
+  .article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .article-sig { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.15em; color: var(--accent-dim); margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .article-meta-bar { display: flex; gap: 2rem; align-items: center; margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .article-meta-item { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+
+  /* QUOTE */
+  .quote-section { padding: 6rem 4rem; display: flex; justify-content: center; position: relative; }
+  .quote-section::before, .quote-section::after { content: ''; position: absolute; left: 4rem; right: 4rem; height: 1px; background: var(--border); }
+  .quote-section::before { top: 0; }
+  .quote-section::after { bottom: 0; }
+  .pull-quote { max-width: 55ch; text-align: center; }
+  .pull-quote blockquote { font-family: var(--serif); font-size: clamp(1.4rem, 2.8vw, 2.3rem); font-weight: 300; font-style: italic; line-height: 1.55; color: var(--parchment); margin-bottom: 2rem; position: relative; }
+  .pull-quote blockquote::before { content: '\201C'; font-size: 7rem; color: var(--accent); opacity: 0.25; position: absolute; top: -2rem; left: -3rem; line-height: 1; }
+  .pull-quote cite { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent-dim); font-style: normal; }
+
+  /* FOOTER */
+  footer { padding: 6rem 4rem 3rem; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: end; }
+  .footer-title { font-family: var(--serif); font-size: clamp(2rem, 5vw, 4.5rem); font-weight: 300; font-style: italic; line-height: 1.1; margin-bottom: 2rem; }
+  .footer-title em { color: var(--accent); }
+  .footer-desc { font-size: 1rem; font-weight: 300; color: var(--muted); line-height: 1.8; max-width: 40ch; margin-bottom: 2.5rem; }
+  .contact-email { display: inline-block; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.15em; color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(201,168,76,0.3); padding-bottom: 0.25rem; transition: border-color 0.3s; }
+  .contact-email:hover { border-color: var(--accent); }
+  .footer-nav { display: flex; flex-direction: column; align-items: flex-end; gap: 1rem; }
+  .footer-nav a { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s; }
+  .footer-nav a:hover { color: var(--parchment); }
+  .footer-bottom { grid-column: span 2; padding-top: 3rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .footer-copy { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.15em; color: rgba(138,128,112,0.45); text-transform: uppercase; }
+
+  /* EXPERIENCE */
+  .exp-section { padding: 4rem 4rem 2rem; max-width: 1200px; margin: 0 auto; }
+
+  .exp-track { display: grid; grid-template-columns: 180px 1fr; gap: 0 3rem; position: relative; }
+  .exp-track::before { content: ''; position: absolute; left: 180px; top: 0; bottom: 0; width: 1px; background: var(--border); transform: translateX(-50%); }
+
+  .exp-category-label {
+    font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--accent-dim);
+    padding: 2.5rem 2rem 0 0; text-align: right;
+    position: sticky; top: 6rem; align-self: start;
+  }
+
+  .exp-role-col { grid-column: 2; padding: 2rem 0; border-bottom: 1px solid var(--border); position: relative; }
+  .exp-role-col::before {
+    content: ''; position: absolute; left: -3rem;
+    top: 2.6rem; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--ink); border: 1px solid var(--accent-dim);
+    transform: translateX(-50%);
+  }
+  .exp-role-col.last-in-cat { border-bottom: none; }
+
+  .exp-meta { display: flex; align-items: baseline; gap: 1.2rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+  .exp-org { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+  .exp-date { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em; color: var(--muted); }
+  .exp-role-title { font-family: var(--serif); font-size: 1.3rem; font-weight: 400; color: var(--parchment); line-height: 1.3; margin-bottom: 0.75rem; }
+
+  .exp-excerpt { font-size: 0.95rem; font-weight: 300; color: var(--muted); line-height: 1.75; }
+  .exp-full { font-size: 0.95rem; font-weight: 300; color: var(--muted); line-height: 1.75; display: none; margin-top: 0.75rem; }
+  .exp-full.open { display: block; }
+  .exp-toggle {
+    display: inline-block; margin-top: 0.6rem;
+    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent-dim);
+    background: none; border: none; cursor: pointer; padding: 0;
+    transition: color 0.3s;
+  }
+  .exp-toggle:hover { color: var(--accent); }
+
+  .mun-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2rem; }
+  .mun-item { display: flex; justify-content: space-between; align-items: baseline; padding: 0.5rem 0; border-bottom: 1px solid rgba(180,160,120,0.08); gap: 0.75rem; }
+  .mun-left { display: flex; flex-direction: column; gap: 0.1rem; }
+  .mun-conf { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; color: var(--parchment); }
+  .mun-committee { font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.06em; color: var(--muted); }
+  .mun-award { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.06em; color: var(--accent-dim); white-space: nowrap; text-align: right; }
+
+  .mun-overflow { display: none; }
+  .mun-overflow.open { display: contents; }
+  .mun-toggle-wrap { grid-column: 1 / -1; padding-top: 0.75rem; }
+
+  .school-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+  .school-pill { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border); padding: 0.35rem 0.9rem; border-radius: 2px; }
+
+  .exp-section-break { grid-column: 1 / -1; height: 1px; background: rgba(180,160,120,0.12); margin: 1rem 0; }
+
+  @media (max-width: 900px) {
+    .exp-section { padding: 3rem 2rem 2rem; }
+    .exp-track { grid-template-columns: 1fr; }
+    .exp-track::before { display: none; }
+    .exp-category-label { text-align: left; padding: 1.5rem 0 0.25rem; grid-column: 1; position: static; }
+    .exp-role-col { padding-left: 1.25rem; border-left: 1px solid var(--border); grid-column: 1; }
+    .exp-role-col::before { left: 0; }
+    .mun-cols { grid-template-columns: 1fr; }
+  }
+
+  /* PORTFOLIO */
+  .portfolio-section { padding: 4rem 4rem 6rem; max-width: 1200px; margin: 0 auto; }
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 0;
+  }
+  .portfolio-item {
+    position: relative; overflow: hidden;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    aspect-ratio: 4/5;
+    background: #111;
+  }
+  .portfolio-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease, filter 0.4s ease;
+    filter: brightness(0.92);
+  }
+  .portfolio-item:hover img {
+    transform: scale(1.04);
+    filter: brightness(0.55);
+  }
+  .portfolio-item-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.5rem;
+    background: linear-gradient(to top, rgba(13,12,10,0.92) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .portfolio-item:hover .portfolio-item-overlay { opacity: 1; }
+  .portfolio-item-tag {
+    font-family: var(--mono); font-size: 0.52rem;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.4rem;
+  }
+  .portfolio-item-title {
+    font-family: var(--serif); font-size: 1.05rem;
+    font-weight: 400; line-height: 1.3;
+    color: var(--parchment);
+  }
+  /* lightbox */
+  .lb-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(13,12,10,0.96);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .lb-overlay.open { opacity: 1; pointer-events: all; }
+  .lb-img-wrap { position: relative; max-width: min(480px, 90vw); }
+  .lb-img-wrap img { width: 100%; display: block; box-shadow: 0 40px 120px rgba(0,0,0,0.8); }
+  .lb-close {
+    position: fixed; top: 2rem; right: 2.5rem;
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--muted);
+    background: none; border: none; cursor: pointer;
+    transition: color 0.3s;
+  }
+  .lb-close:hover { color: var(--parchment); }
+  .lb-caption {
+    margin-top: 1.25rem; text-align: center;
+    font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase;
+  }
+  .lb-nav {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer;
+    font-family: var(--mono); font-size: 1.2rem; color: var(--muted);
+    transition: color 0.3s; padding: 1rem;
+  }
+  .lb-nav:hover { color: var(--accent); }
+  .lb-prev { left: 2rem; }
+  .lb-next { right: 2rem; }
+
+  @media (max-width: 900px) {
+    .portfolio-section { padding: 3rem 2rem 4rem; }
+    .portfolio-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .lb-nav { display: none; }
+  }
+  @media (max-width: 480px) {
+    .portfolio-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 2rem; }
+    .hero { padding: 0 2rem 5rem; }
+    .about { grid-template-columns: 1fr; gap: 2rem; padding: 4rem 2rem; }
+    .posts-section { padding: 3rem 2rem 2rem; }
+    .posts-grid { grid-template-columns: 1fr; }
+    .post-card.featured { grid-column: span 1; }
+    .quote-section { padding: 5rem 2rem; }
+    footer { grid-template-columns: 1fr; padding: 4rem 2rem 2rem; }
+    .footer-nav { align-items: flex-start; }
+    .footer-bottom { grid-column: span 1; flex-direction: column; gap: 1rem; align-items: flex-start; }
+    .divider { padding: 0 2rem; }
+    .article-back { left: 2rem; }
+    .article-inner { padding: 7rem 1.5rem 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Article reader overlay -->
+<div class="article-overlay" id="articleOverlay" role="dialog" aria-modal="true" aria-label="Article reader">
+  <button class="article-back" id="articleBack" onclick="closeArticle()">← Back</button>
+  <div class="article-inner">
+    <p class="article-eyebrow" id="articleCategory"></p>
+    <h1 class="article-title" id="articleTitle"></h1>
+    <div class="article-meta-bar">
+      <span class="article-meta-item" id="articleDate"></span>
+      <span class="article-meta-item" id="articleReadTime"></span>
+    </div>
+    <div class="article-body" id="articleBody"></div>
+    <p class="article-sig">~ Shaurya Pratap Singh</p>
+  </div>
+</div>
+
+<nav>
+  <a href="#" class="nav-logo">SPS</a>
+  <ul class="nav-links">
+    <li><a href="#writing" onclick="showIndex()">Writing</a></li>
+    <li><a href="#portfolio">Design</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Connect</a></li>
+  </ul>
+</nav>
+
+<!-- QUICK NAV -->
+<div class="quicknav" id="quicknav" aria-label="Quick navigation">
+  <a class="qn-item" href="#writing" onclick="showIndex()">Writing</a>
+  <a class="qn-item" href="#portfolio">Design</a>
+  <a class="qn-item" href="#experience">Experience</a>
+  <a class="qn-item" href="#about">About</a>
+  <a class="qn-item" href="#contact">Connect</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-text" aria-hidden="true">Lex</div>
+  <div class="hero-photo" aria-hidden="true">
+    <img src="shaurya-photo.jpg" alt="">
+  </div>
+  <p class="hero-eyebrow">Law · Politics · Words</p>
+  <h1 class="hero-name">Shaurya<br><em>Pratap Singh</em></h1>
+  <p class="hero-tagline">An aspiring student of the Law, with a penchant for political theory, writing, and a conglomerate of both.</p>
+  <div class="hero-tags" aria-label="Interests">
+    <span class="hero-tag">Constitutional Law</span>
+    <span class="hero-tag">Political Theory</span>
+    <span class="hero-tag">Journalism</span>
+    <span class="hero-tag">Social Welfare</span>
+    <span class="hero-tag">Student Leadership</span>
+  </div>
+  <span class="hero-scroll" aria-hidden="true">scroll</span>
+</section>
+
+<div class="divider" aria-hidden="true">
+  <div class="divider-line"></div>
+  <span class="divider-mark">Ryan International School · Greater Noida</span>
+  <div class="divider-line"></div>
+</div>
+
+<!-- ABOUT -->
+<section class="about reveal" id="about">
+  <div>
+    <p class="about-label">About</p>
+    <div class="about-number" aria-hidden="true">01</div>
+  </div>
+  <div class="about-text">
+    <p>I'm a high schooler at <strong>Ryan International School, Greater Noida</strong> — currently navigating the intersection of law, political thought, and the written word. My academic interests are inseparable from my convictions: that institutions matter, that language shapes power, and that both are worth studying seriously.</p>
+    <p>My affinity for humanistic studies is grounded in action. I've engaged with <strong>social-welfare initiatives</strong> including interactions with <strong>Mr. Ramveer Tanwar</strong> (the Pond Man of India), and associations with organisations such as the <strong>Goonj Foundation</strong> and <strong>Say Earth</strong>.</p>
+    <p>My journalistic work — through school-sponsored platforms <strong>RyanTV</strong> and <strong>BBN</strong> — has given me the opportunity to interview public figures including <strong>Mr. Om Birla</strong> and <strong>Mrs. Kiran Bedi</strong>. Across every role, I seek to learn and to contribute something meaningful.</p>
+    <div class="credentials">
+      <div class="credential-item"><div class="credential-dot"></div><span class="credential-text">Editorial roles · <strong>RyanTV &amp; BBN</strong> — school journalism platforms</span></div>
+      <div class="credential-item"><div class="credential-dot"></div><span class="credential-text">Interviews with <strong>Om Birla</strong> (Speaker, Lok Sabha) &amp; <strong>Kiran Bedi</strong> (IPS, ret.)</span></div>
+      <div class="credential-item"><div class="credential-dot"></div><span class="credential-text">Collaboration with <strong>Ramveer Tanwar</strong>, <strong>Goonj Foundation</strong> &amp; <strong>Say Earth</strong></span></div>
+      <div class="credential-item"><div class="credential-dot"></div><span class="credential-text">Graphic design · Student leadership · 3+ years diverse portfolio</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<div class="quote-section reveal">
+  <div class="pull-quote">
+    <blockquote>The Constitution is not a mere lawyers' document; it is a vehicle of life, and its spirit is always the spirit of the age.</blockquote>
+    <cite>— Dr. B.R. Ambedkar</cite>
+  </div>
+</div>
+
+<!-- WRITING -->
+<!--
+  ════════════════════════════════════════════════════
+  HOW TO ADD A NEW ARTICLE
+  ════════════════════════════════════════════════════
+  1. Add a new entry to the `articles` array in the
+     <script> block below (near the bottom of the file).
+     Copy an existing object and fill in:
+       id        – unique slug, no spaces (e.g. "my-new-piece")
+       number    – next number, zero-padded (e.g. "010")
+       category  – e.g. "Opinion", "Essay", "Interview"
+       date      – e.g. "Jun 2026"
+       title     – your headline
+       excerpt   – 2–3 sentence teaser shown on the index
+       body      – full article HTML (wrap paragraphs in <p>)
+                   Use <blockquote> for pull-quotes.
+                   Use <a href="..."> for links.
+       featured  – true for the wide card (only one at a time)
+
+  2. Save the file. The grid and article count update
+     automatically.
+  ════════════════════════════════════════════════════
+-->
+<section class="posts-section reveal" id="writing">
+  <div class="section-header">
+    <h2 class="section-title">Writing</h2>
+    <span class="section-meta" id="post-count"></span>
+  </div>
+  <div class="posts-grid" id="postsGrid"></div>
+  <div class="show-more-wrap" id="showMoreWrap" style="display:none">
+    <button class="show-more-btn" onclick="showAllArticles()">Check out more writing →</button>
+  </div>
+</section>
+
+<div style="height:4rem"></div>
+
+<!-- EXPERIENCE -->
+<section class="exp-section reveal" id="experience">
+  <div class="section-header">
+    <h2 class="section-title">Experience</h2>
+    <span class="section-meta">NGOs · MUN · School</span>
+  </div>
+
+  <div class="exp-track">
+
+    <!-- ── NGOs ── -->
+    <div class="exp-category-label">NGOs &amp;<br>Organisations</div>
+
+    <div class="exp-role-col">
+      <div class="exp-meta">
+        <span class="exp-org">Jeevartan Foundation</span>
+        <span class="exp-date">Apr 2026 – Present</span>
+      </div>
+      <p class="exp-role-title">Graphic Designer</p>
+      <p class="exp-excerpt">Designing visual communication for the foundation's initiatives and outreach campaigns.</p>
+    </div>
+
+    <div class="exp-category-label"></div>
+    <div class="exp-role-col">
+      <div class="exp-meta">
+        <span class="exp-org">Amicus Curiae</span>
+        <span class="exp-date">Dec 2025 – Feb 2026</span>
+      </div>
+      <p class="exp-role-title">Editor-in-Chief</p>
+      <p class="exp-excerpt">Led editorial direction and content strategy for the publication's run.</p>
+    </div>
+
+    <div class="exp-category-label"></div>
+    <div class="exp-role-col">
+      <div class="exp-meta">
+        <span class="exp-org">Project Aspasia</span>
+        <span class="exp-date">Sep 2024 – Nov 2024</span>
+      </div>
+      <p class="exp-role-title">Head of Marketing</p>
+      <p class="exp-excerpt">Oversaw marketing strategy and outreach for the duration of the project.</p>
+    </div>
+
+    <div class="exp-category-label"></div>
+    <div class="exp-role-col">
+      <div class="exp-meta">
+        <span class="exp-org">Project Badlav</span>
+        <span class="exp-date">Aug 2024 – Oct 2024</span>
+      </div>
+      <p class="exp-role-title">Secretary of Logistics &amp; Operations</p>
+      <p class="exp-excerpt">Managed end-to-end logistics and operational coordination for the project's lifecycle.</p>
+    </div>
+
+    <div class="exp-category-label"></div>
+    <div class="exp-role-col last-in-cat">
+      <div class="exp-meta">
+        <span class="exp-org">CommitTea.org</span>
+        <span class="exp-date">Apr 2024 – Oct 2024</span>
+      </div>
+      <p class="exp-role-title">Co-Founder &amp; Chief Operating Officer</p>
+      <p class="exp-excerpt">Co-founded a Model UN platform connecting student organisers with sponsors, designers, and delegate networks — addressing a longstanding gap in the MUN ecosystem.</p>
+      <div class="exp-full" id="committeaFull">
+        <p>CommitTea.org was built as a middleman for MUN founders: armed with contacts, skills, and on-demand accessibility in the MUN OT market. The platform provided a full suite of services — marketing, cold-calling, and freelance design — to conference organisers who lacked the infrastructure to source these independently.</p>
+        <p>In its operational tenure, CommitTea.org collaborated with over 20 Model UN platforms, built a following of a thousand on Instagram, and established itself as a recognised collaborator across the MUN circuit. The venture was ultimately transferred to a new team in November 2025.</p>
+      </div>
+      <button class="exp-toggle" onclick="toggleExp('committeaFull', this)">Read more →</button>
+    </div>
+
+    <!-- spacer -->
+    <div class="exp-section-break"></div>
+
+    <!-- ── MUN DELEGATE ── -->
+    <div class="exp-category-label">MUN — Delegate</div>
+
+    <div class="exp-role-col">
+      <div class="mun-cols">
+        <!-- visible by default: top 6 -->
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">DIMUN 2025</span><span class="mun-committee">UNEP</span></div>
+          <span class="mun-award">Best Delegate</span>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">INMUN 2025</span><span class="mun-committee">WSF</span></div>
+          <span class="mun-award">High Commendation</span>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">RISMUN 2024 (1)</span><span class="mun-committee">WHSR</span></div>
+          <span class="mun-award">Special Mention 1</span>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">RISMUN 2024 (2)</span><span class="mun-committee">UNCSW</span></div>
+          <span class="mun-award">High Commendation</span>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">BIMUN 2024</span><span class="mun-committee">DISEC</span></div>
+          <span class="mun-award">High Commendation 2</span>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">HorizonMUN 2024</span><span class="mun-committee">SOCHUM</span></div>
+          <span class="mun-award">Verbal Mention</span>
+        </div>
+
+        <!-- collapsed: remaining 6 -->
+        <div class="mun-overflow" id="munDelegateMore">
+          <div class="mun-item">
+            <div class="mun-left"><span class="mun-conf">RISGMUN 2023 (2)</span><span class="mun-committee">AIPPM</span></div>
+            <span class="mun-award">Special Mention 3</span>
+          </div>
+          <div class="mun-item">
+            <div class="mun-left"><span class="mun-conf">MeridianMUN 2023</span><span class="mun-committee">ECOSOC</span></div>
+            <span class="mun-award">Special Mention</span>
+          </div>
+          <div class="mun-item">
+            <div class="mun-left"><span class="mun-conf">SVMUN 2023</span><span class="mun-committee">UNSC</span></div>
+            <span class="mun-award">Special Mention</span>
+          </div>
+          <div class="mun-item">
+            <div class="mun-left"><span class="mun-conf">RISVKMUN 2023</span><span class="mun-committee">UNHRC</span></div>
+            <span class="mun-award">Verbal Mention 1</span>
+          </div>
+          <div class="mun-item">
+            <div class="mun-left"><span class="mun-conf">ZesteMUN 2023</span><span class="mun-committee">DISEC</span></div>
+            <span class="mun-award">Special Mention 1</span>
+          </div>
+          <div class="mun-item">
+            <div class="mun-left"><span class="mun-conf">MayoorMUN 2023</span><span class="mun-committee">DISEC</span></div>
+            <span class="mun-award">Special Mention 1</span>
+          </div>
+        </div>
+
+        <div class="mun-toggle-wrap">
+          <button class="exp-toggle" onclick="toggleMun('munDelegateMore', this)">Show 6 more →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- spacer -->
+    <div class="exp-section-break"></div>
+
+    <!-- ── MUN SECRETARIAT ── -->
+    <div class="exp-category-label">MUN — Secretariat</div>
+
+    <div class="exp-role-col">
+      <div class="mun-cols">
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">RISGNMUN 2025</span><span class="mun-committee">Conference Convenor</span></div>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">IMUN 2025</span><span class="mun-committee">Online Ambassador</span></div>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">Eximius MUN 2024</span><span class="mun-committee">Chef de Cabinet</span></div>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">DIMUN 2024</span><span class="mun-committee">Online Ambassador</span></div>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">IIMUN 2024</span><span class="mun-committee">Ambassador</span></div>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">RISGNMUN 2024</span><span class="mun-committee">USG IT Affairs</span></div>
+        </div>
+
+        <div class="mun-overflow" id="munSecMore">
+          <div class="mun-item">
+            <div class="mun-left"><span class="mun-conf">ALMAMUN 2024</span><span class="mun-committee">USG IT Affairs</span></div>
+          </div>
+          <div class="mun-item">
+            <div class="mun-left"><span class="mun-conf">HIMUN 2024</span><span class="mun-committee">Human Resources</span></div>
+          </div>
+          <div class="mun-item">
+            <div class="mun-left"><span class="mun-conf">NDGYS 2024</span><span class="mun-committee">Lead, Human Resources</span></div>
+          </div>
+          <div class="mun-item">
+            <div class="mun-left"><span class="mun-conf">RISMUN 2024</span><span class="mun-committee">Technical Director (Afterfilm)</span></div>
+          </div>
+        </div>
+
+        <div class="mun-toggle-wrap">
+          <button class="exp-toggle" onclick="toggleMun('munSecMore', this)">Show 4 more →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- spacer -->
+    <div class="exp-section-break"></div>
+
+    <!-- ── MUN EB ── -->
+    <div class="exp-category-label">MUN — Executive Board</div>
+
+    <div class="exp-role-col">
+      <div class="mun-cols">
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">RISGNMUN 2025</span><span class="mun-committee">HUNSC (Crisis)</span></div>
+          <span class="mun-award">Asst. Vice President</span>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">LIMUN 2025</span><span class="mun-committee">DISEC</span></div>
+          <span class="mun-award">Rapporteur</span>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">DMUN 2025</span><span class="mun-committee">SOCHUM</span></div>
+          <span class="mun-award">Rapporteur</span>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">HCAMUN 2025</span><span class="mun-committee">International Press</span></div>
+          <span class="mun-award">Editor-in-Chief</span>
+        </div>
+        <div class="mun-item">
+          <div class="mun-left"><span class="mun-conf">HCAMUN 2024</span><span class="mun-committee">UNCSW</span></div>
+          <span class="mun-award">Chairperson</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- spacer -->
+    <div class="exp-section-break"></div>
+
+    <!-- ── SCHOOL ── -->
+    <div class="exp-category-label">School<br>Leadership</div>
+
+    <div class="exp-role-col last-in-cat">
+      <p class="exp-role-title">Ryan International School, Greater Noida</p>
+      <p class="exp-excerpt">A range of leadership roles across editorial, parliamentary, environmental, journalistic, and MUN governance spheres.</p>
+      <div class="school-pills">
+        <span class="school-pill">Editor-in-Chief</span>
+        <span class="school-pill">Speaker, Student Parliament</span>
+        <span class="school-pill">President, Environmental Committee</span>
+        <span class="school-pill">Head, Journalism Branch</span>
+        <span class="school-pill">MUN Directorate</span>
+      </div>
+    </div>
+
+  </div><!-- end .exp-track -->
+</section>
+
+<!-- PORTFOLIO -->
+<section class="portfolio-section reveal" id="portfolio">
+  <div class="section-header">
+    <h2 class="section-title">Design</h2>
+    <span class="section-meta">8 covers</span>
+  </div>
+  <div class="portfolio-grid" id="portfolioGrid"></div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lb-overlay" id="lbOverlay" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="lb-close" onclick="closeLb()">✕ close</button>
+  <button class="lb-nav lb-prev" onclick="lbStep(-1)">←</button>
+  <div class="lb-img-wrap">
+    <img id="lbImg" src="" alt="">
+    <p class="lb-caption" id="lbCaption"></p>
+  </div>
+  <button class="lb-nav lb-next" onclick="lbStep(1)">→</button>
+</div>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="reveal">
+    <h2 class="footer-title">Connect<br>with <em>me.</em></h2>
+    <p class="footer-desc">If my work interests you — whether you want to discuss law, collaborate on a project, or explore ideas at the intersection of politics and writing — I'd be glad to hear from you.</p>
+    <a href="mailto:shauryaps.rgn@gmail.com" class="contact-email">shauryaps.rgn@gmail.com</a>
+  </div>
+  <nav class="footer-nav reveal" aria-label="Footer navigation">
+    <a href="#home">Home</a>
+    <a href="#writing" onclick="showIndex()">Writing</a>
+    <a href="#portfolio">Design</a>
+    <a href="#experience">Experience</a>
+    <a href="#about">About</a>
+    <a href="#contact">Connect</a>
+    <a href="https://www.linkedin.com/in/shaurya-pratap-singh-4a3632311/" target="_blank" rel="noopener">LinkedIn</a>
+  </nav>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2025 Shaurya Pratap Singh</p>
+    <p class="footer-copy">Written with intention.</p>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════
+   ARTICLES DATA
+   Add new articles at the TOP of this array
+   so they appear first on the site.
+═══════════════════════════════════════════ */
+const articles = [
+  {
+    id: "fall-of-titans",
+    number: "001",
+    category: "Analysis",
+    date: "May 2026",
+    featured: true,
+    title: "The Fall of Titans: Analysing the May 2026 Elections",
+    excerpt: "Tipu Sultan died on the 4th of May, 1799. Synonymously, on this date wither the legacies of decadal local parties, once considered impenetrable within their states' bastions. The aberrations set this week truly underscore the burgeoning affinity for the Saffron's administration.",
+    body: `<p>Tipu Sultan, the revered opposer of the Raj, died on the 4th of May, 1799. Synonymously, albeit with even greater fervor, on this date wither the legacies of decadal local parties, once considered impenetrable within their states' bastions. The aberrations set this week truly underscore the burgeoning affinity for the Saffron's administration, a sweeping victory leaving the opposition's bulwark on its knees.</p>
+<p>With the Didi's 4th term left asunder, West Bengal found its new play-thing in the BJP's first government. Tamil Nadu's Stalin and <a href="https://en.wikipedia.org/wiki/Edappadi_K._Palaniswami">Palaniswami</a> stood awestruck as their "Dravidian Duopoly" surrendered to the wrath of Vijay's newbie, the TVK. Kerala's case was no different, with the UDF kicking in with a massive comeback, on the expense of the LDF's landslide failure.</p>
+<p>Simply put, the tenuous Opposition has been further weakened. Drastically, that is.</p>
+<p>Grabbing the eyeballs are Kejriwal's recent feud with Delhi High Court Justice S.K. Sharma (plus the merger with BJP), consternations precipitating by the Election Commission's conduct, and the BJP's gaze now over Punjab. The coming couple of years shall seal the fate of the contemporary INDIA Bloc and its spars with the NDA's sweeping whip.</p>
+<p>This election left a meagre sum of states of an already splintered Opposition at bay. Only Jharkhand, Karnataka, Telangana, Kerala, Tamil Nadu, Himachal, Mizoram, and Punjab remain un-saffronised, with 4 of these states under the 'Grand Old Party' (INC). Rest, the pearls stay stashed with the BJP's NDA.</p>
+<p>The pertinent question that arises in every liberal's head is simply this. How? I seek to answer precisely this dilemma, encasing the ingenuity of the BJP's political strategic penetration of opposition helms in a nutshell, while concomitantly underscoring these opposition-CMs' horrid slips.</p>
+<p>I'll start with the biggest shocker of this election, i.e., the oust of Mamata Banerjee from the state residency. Prima Facie the Didi should've swept this election without much trouble. 2021 marked her largest landslide against the BJP, with a mark of 215 under the TMC's feather, in contrast to the BJP's mere 77. 2026 quite literally turned the tables around, with the BJP at 206 and Mamata at 81.</p>
+<p>But look at these numbers. The BJP's vote share was 38% in 2021, 39% in 2024, and 45% in 2026. The vote-share trends seem to have steadily increased, not drastically, with the only difference cited being the anti-incumbency vote now completely garnered by the BJP and not its sister opposition parties trotting in the same race (conspicuously, the mere 2 seat margin won by the INC).</p>
+<p>Structurally, the TMC's formidable electoral machine, despite 30% of the polling booths not covered by it, lost to the BJP's far disadvantaged position. Citing the Election Commission's SIR exercise, at least in the Supreme Court's implicit understanding, is nothing more than an obstruction of a Constitutional practice, one that is fundamentally unbiased. However, that's a debate for another day.</p>
+<p>One major scandal that took the TMC by the jaws was the SCC Case, with an estimated 400+ Crore valuation. Despite the contents of the scam and the Court's verdict, Mamata continued to rally high-profile accused members in her 2024 campaign — something the Opposition juiced vehemently.</p>
+<p>Additionally, the R.G. Kar Case and the Matri Shakti Vandan Yojana in tandem eroded the 'Didi' status of Mamata, leaving her without the women vote bank she had cherished for a decade and a half. The former's mother, Ratna Debnath, won in the Panihati Constituency, vowing to avenge her daughter's murder through Didi's defeat. The latter, on the other hand, effectively turned the Lakshmir Bhandar obsolete.</p>
+<p>And, of course, the Gunda Raj, Nepotism, and Syndicate Politics. The most conspicuous of the musketeers. So, to sum up, Mamata's defeat was not uncalled for. Rather, the BJP had been placing the sheets since 2021. In 2026, the Leader of Opposition's seat stood vacant for the former-Didi to take over.</p>
+<p>Only fate can construe if she can ever recover from such a gloomy loss at the state elections.</p>
+<p>The second shocker was the Dravidian Binary's defeat against film-star Vijay, the newbie TVK's founder. To be fair, I underestimated this man. It is since 1967 that a party other than the Dravidians have ruled this South Indian state, simultaneously making him the state's first Christian Chief Minister. The failure of the Dravidians' political structure and planning is what I seek to emphasise here.</p>
+<p>The defection of O. Panneerselvam to the formerly-ruling DMK, and Palaniswami's confusing alliance with the NDA only marred the winning case for both the feuding parties. The AIADMK's internecine bloodletting, in essence, was a gift wrapped for Vijay. Palaniswami's NDA flirtation, ideologically jarring for a party rooted in Dravidian social justice and anti-Brahminism, chased away precisely the secular and minority vote he needed to consolidate.</p>
+<p>That the BJP itself managed a solitary seat despite the formal alliance tells the whole story of what the pact was worth. And Stalin's studied silence on Vijay, a sort of deliberate stratagem to deny the upstart oxygen, seemed to only fan the flames. The media vacuum that the DMK refused to fill, TVK occupied wholesale. And the results are a testament to them.</p>
+<p>The arithmetic, hence, delivered its verdict. A 34.92% debut in a three-way race, under FPTP (first-past-the-post), was all Vijay needed. The Dravidians, splitting the residual 45% between them in constituency after constituency, handed him the throne by their own mutual consumption. C.N. Annadurai's spirit must've watched with bemusement.</p>
+<p>The third, and perhaps most historically resonant, collapse was that of the Left in Kerala. The last of the Left in all of India. Pinarayi Vijayan, 81, sought a third consecutive term, a feat no southern Chief Minister has achieved in the modern democratic era. The electorate, obligingly, reminded him why that was the case. The UDF's (approx.) 95-seat haul, against the LDF's catastrophic 43, marks the extinguishing of the last ember of Communist governance in India, a distinction the country last held in 1977.</p>
+<p>Vijayan's undoing was, peculiarly, of his own making. The 2021 victory, extraordinary in its own right — the first consecutive second term in Kerala's history — was secured on the back of COVID governance so commendable it earned international admiration. The podium briefings at 6 p.m., the flattening of the curve, the KK Shailaja phenomenon. Yet it was Shailaja herself whom Vijayan quietly sidelined before the 2021 campaign, unwilling, it would seem, to share the limelight with a colleague who'd eclipsed him in the public imagination.</p>
+<p>That decision, read as Stalinist even by sympathisers, planted the first seeds of discontent among the Left's own constituency.</p>
+<p>What germinated over the subsequent five years was a cascade. The Gold Smuggling Case, drawing Vijayan's own Principal Secretary into its net. The Sprinklr data row. The cooperative banking irregularities. The KIIFB's off-budget opacity. Piece by piece, the CPI(M)'s foundational moral authority — its central electoral asset, its differentiation from a Congress perennially accused of graft — was simply, and amazingly, stripped away.</p>
+<p>Vijayan's defiant posture in the face of each accusation, whatever its legal merit, came across as nothing but imperious dismissal of accountability. An 81-year-old man seeking a third term, surrounded by controversies and a party hollowed of successor talent, asking Kerala for yet more patience.</p>
+<p>Kerala did not oblige.</p>
+<p>The rump of un-saffronised India — Jharkhand, Karnataka, Telangana, Kerala, Tamil Nadu, Himachal, Mizoram, Punjab — is smaller still, and internally incoherent. A TVK that is neither opposition nor ally. A Kerala UDF whose Congress anchor cannot quite claim credit for a win delivered by the LDF's implosion. A Himachal and Karnataka that remain perpetually contested.</p>
+<p>The INDIA Bloc, already a leaky vessel after 2024, has now lost its most combative admiral in Didi. Whether what follows is genuine consolidation of governance under the NDA's expanded mandate, or the slow germination of a new opposition architecture from the rubble of these three — that, as the man said, is a question for another day.</p>`
+  },
+  {
+    id: "three-governors",
+    number: "002",
+    category: "Constitutional Law",
+    date: "Jan 2026",
+    featured: false,
+    title: "The Three Musketeers of Federal Overreach: The Three Governors Case of Early 2026",
+    excerpt: "Spars midst the Legislature and its Gubernatorial bearers have regurgitated, following the customary state addresses omitted, altered, and abandoned by the Governors of Kerala, Karnataka and Tamil Nadu — tripartites setting aberrations against New Delhi.",
+    body: `<p>Spars midst the Legislature and its Gubernatorial bearers have regurgitated, following the customary state addresses that were omitted, altered, and abandoned by the respective Governors of Kerala, Karnataka and Tamil Nadu earlier this January; tripartites setting aberrations against the saffron helm at New Delhi, precisely the premise for their offices now standing skewed and inimical against the Legislatures they ought to serve.</p>
+<p>As the Raj Bhavans express their discontent towards the ostensibly 'biased, incendiary' remarks under the policy addresses, made to present by their respective Councils of Ministers, the evident question persists: do their claims stand?</p>
+<p>For any student of the humanities, the answer is veiled behind the political landscape during the 1970s, a period where the Congress hegemony percolated deeply, marked by the outreach of Governors, a daily affair till the demise of the Iron Lady.</p>
+<p>Since then, the Saffron harbingers seem to have rejuvenated such tactics, with the former oppressors now the oppressed.</p>
+<p>The Supreme Court, in its landmark judgement the year before (<em>State of Tamil Nadu v. The Governor of Tamil Nadu</em>, 2025) made clear the meagre role of the Governor in statecraft, and instead, relegated the office to that of a tinpot, an aberration, both in the conflating terms of judicial activism and much-needed scrutiny.</p>
+<p>However, the President, adroitly exercising its discretion through Article 143, questioned the Court's outreach, which it accepted.</p>
+<p>Considering such developments, alongside the Saffron party now eyeing to settle its presence at the Opposition's sinews, the gubernatorial outreach as seen comes as no shock.</p>
+<p>Addressing the question aforementioned — whether their claims stand or not — they clearly do not. Here's why.</p>
+<p>Article 163 of the Indian Constitution mandates the Governor to act on the aid and advice of the Council of Ministers, except in narrowly defined discretionary areas, which are seldom exercised and limited. Article 176, which pertains to the Policy Address, does not fall under its remit. Essentially, the Policy Address 'delivered' by the Gubernator is but an address representing the elected government. Circumventing such provisions as established by the Constitution essentially implies a veto authority, one which it does not confer.</p>
+<p>The Apex Court reiterates such principles.</p>
+<p><em>Shamsher Singh v. the State of Punjab</em> (1974) clarified the formal, stamp-post authority of the Raj Bhavan, establishing the prerogative of executive authority as belonging solely to the elected government, and not the Governor heading it. In <em>Nabam Rebia v. Deputy Speaker</em> (2016), the Court went further to strip the stamp-post of its implicit 'veto silence', objecting to gubernatorial forces acting parallel to the wider power centres in place.</p>
+<p>More pertinently, <em>Rameshwar Prasad v. Union of India</em> (2006) re-established the seldom-used constitutional discretion the Governor enjoys, tethering its gubernatorial discretion further.</p>
+<p>As Babasaheb introduced draft Article 143 (later Article 163) of the Constitution, he made clear the meagre authority of the Governor, a Constitutional Head who holds no personal discretion, an office of no authority in itself.</p>
+<p>Dr. B.R. Ambedkar clarified that "except in so far as he is required to exercise his functions in his discretion" was not a general licence, but a narrow exception, meant to be used only where the Constitution expressly says so. The default position, Ambedkar stressed, was aid and advice.</p>
+<p>As dissent from his learned colleagues followed, including K.T. Shah reiterating the Central outreach stance, Babasaheb responded that the maturity of state machinery shall curtail such incidents. A platinum Jubilee later, the Governor's office continues to, as Pandit Nehru once quoted, "poison the roots of federalism." Babasaheb trusted the good faith of the leaders yet to be born, only to be marred by skewed politicians 70 years later.</p>
+<p>The aforementioned makes clear a basic fact — the Governor is bound to the Council of Ministers and does not stand as a parallel power centre. Though she/he may serve in the "President's pleasure" (Article 156), the whip stays with the elected government.</p>
+<p>Governors R.N. Ravi (Tamil Nadu), alongside T.C. Gehlot (Karnataka), and R.V. Arlekar (Kerala) stand as perpetrators of an unconstitutional practice, with the former infamous for the landmark ruling held against his office last year. As we reach a new era of constitutional outreach, the Courts of the Constitution's nation must iterate a stance it so deeply requires and rest the case of a Pandora's box long left open.</p>`
+  },
+  {
+    id: "mamata-suit",
+    number: "003",
+    category: "Judicial Politics",
+    date: "Feb 2026",
+    featured: false,
+    title: "Mamata's Suit: How the Helm at West Bengal is Setting Aberrations at the Apex Court",
+    excerpt: "Aberrancy brewing at the helm of Lutyen's Delhi isn't a new reality, and stands more so iterated ever since the matriarch of West Bengal presented her statements at the Hon'ble Supreme Court on 4th February, 2026, setting her as the first Chief Minister to indulge in such an optic.",
+    body: `<blockquote>"Please, Save Democracy."<br>— Mamata Banerjee addressing the Court of Chief Justice Surya, on 4th February, 10 days before the West Bengal EC rollout.</blockquote>
+<p>Aberrancy brewing at the helm of Lutyen's Delhi isn't a new reality, and stands more so iterated ever since the matriarch of West Bengal presented her statements at the Hon'ble Supreme Court on 4th February, 2026, setting her as the first Chief Minister to indulge in such an optic.</p>
+<p>The 'Didi' of West Bengal and the Election Commission have openly been at odds, with the latter ostensibly a veneer of Saffron, one leaving consternations midst the Opposition strongholds pan-India. What truly sets her case apart, albeit a plethora remain sub judice at the Apex Court, is one I seek to answer through this article, while concomitantly offering a fundamental summary of the dictums offered by the Benches seated till date.</p>
+<p>The 'Bhagini' of the East-Indian state, no matter what her detractors seek to emphasise, is an erudite scholar, so juxtaposed with the Opposition marring her. Watching the lawyer-turned-Chief Minister argue her case should seldom be shocking, pertinently so at a time her throne is envied, threatened even, by the Saffron helm.</p>
+<p>TMC Member of Parliament Mahua Moitra, quoting "Ye sab ladu peda, diwali ke liye hora hai kya?" earlier this January encapsulates the overarching nature of this trial. Ever since I-PAC stood paralyzed by the ED raid, the Waqf Bill antagonized the Muslim cadre (that form a quarter of Bengal's demographic), and now the Election Commission's inimical stance over Mamata's vote bank cascade the imperative of this optic with the state elections now knocking at her doorstep.</p>
+<p>The Saffron party continues to buttress the EC's actions, glamourising it a 'movement' against the illegal encroachments set by Bangladeshi Muslims residing in the state's premises. Ironically enough, such a remit stays under the BJP incumbent Union Home Ministry, though such a rationale stays dormant as the election crisis persists.</p>
+<p>Albeit the Chief Minister stands firm in her spar against the Election Commission, as made clear through her arguments, a move potentially disastrous considering the mercuriality of Supreme Court Justices and their affront opinions to political optics.</p>
+<p>Regardless of what the Hon'ble Court edifies, Mamata's statement at the Supreme Court — a 15-minute polemic — has certainly built her political edifice as a leader of the people.</p>
+<p>Ever since the Election Commission embarked on the Special Intensive Revision (SIR) exercise, one it has a statutory right to under Article 324 of the Constitution of India and Section 21(3) of the RPA, its supposedly skewed nature has been emphasised drastically, swamping the waiting-tray of the Court's indices.</p>
+<p>24th June, 2025, was the date marking the announcement of the Special Intensive Revision exercise in Bihar. Having barred both EPIC and Aadhar cards as documents suited for verification, the Association of Democratic Reforms et al filed a writ under Article 32, with the replication of unconstitutional practices and arbitrary functioning of the aforementioned. The Bench, albeit a dictum, stressed the need for the Right to Vote, in pursuance of Article 326, and urged the commission to adopt an inclusive approach. Essentially, the Court validated the Election Commission's right over such an exercise, a decision celebrated for its institutional consideration and jostled for political hostility.</p>
+<p>As the Bihar draft roll rekindled mass angst, the Supreme Court (ADR et al v. the ECI) in its order directed the Election Commission to espouse a transparent modus operandi. EPIC and Aadhar cards were made a part of the SIR exercise (in September), with the inclusion of booth and district-level lists for the electors omitted in the published draft rolls.</p>
+<p>Fundamentally, the Hon'ble Bench in its interim order iterated an "en-masse inclusionary, not en-masse exclusionary" stance, while also protecting the integrity of the Election Commission — an extant mirror of the Iron Lady's policies, as many now consider it marred by the Saffron party.</p>
+<p>Notwithstanding the reserved judgement on the matter, the Supreme Court presented unprecedented patience to Mamata's plea as a party-in-person, adding her case in the roster of the Court.</p>
+<p>Commenting on a matter sub-judice is one where I cannot, or at least want to, strive upon. Nevertheless, what I believe many call a "political stunt" is an act of bravery if you weigh the circumstances and risks associated. Mamata Banerjee, in spite of her winning this case or not, has irrefutably etched her name as an advocate for her people, one which the homeland of renowned freedom fighters shall reminisce profoundly.</p>`
+  },
+  {
+    id: "27th-amendment",
+    number: "004",
+    category: "Foreign Policy",
+    date: "Nov 2025",
+    featured: false,
+    title: "The 27th Amendment: Pakistan's Constitutional Dictatorship & the Judiciary's Fall",
+    excerpt: "The 'Land of the Pure', till date hasn't seen a full government's tenure, but only a stratocracy marred by civilian-dressed Generals and jailed civilian-leaders. The 27th Constitutional Amendment introduces what copious claims corroborate the murder of Pakistan's democracy.",
+    body: `<p>The Iliad's redemption, now in its rather fashionable apparel of the Election Commission versus the Opposition it threatens seem to have swamped our news-dailies, veiling a perpetuating crisis elsewhere. The 'Land of the Pure' as its name translates, till date hasn't seen a full government's tenure, but only a stratocracy marred by civilian-dressed Generals and jailed civilian-leaders.</p>
+<p>The 27th Constitutional Amendment, passed with a 2/3rds majority by the bi-cameral Pakistani Parliament and signed by its President, Asif Ali Zardari on 13th November, 2025, introduced what copious claims corroborate the murder of Pakistan's democracy. Notwithstanding the justifications offered by the Sharif-led government, a mere skim through the amendment conspicuously strips what was left of the already tenuous government structure that kept our neighbour's democratic structure bridled.</p>
+<p>Erstwhile Field Marshal, now the Chief of Defence (CDF), Syed Asim Munir, seems to have perpetuated the cycle of unelected Army Chiefs running the people's will yet again. To reminisce, Munir is whom the Oval Office favourited, emblematically knighting the stratocrat. It is pertinent to note the CDF's burgeoning presence in remits earlier led by civilian leaders, inclusive of foreign and public policy.</p>
+<p>Asim Munir's signing of the Saudi-Pakistani Defence Pact, notwithstanding its rather unrealistic compatibility, strips the reality clear of his presence in the chambers of governance. The Pakistani government stands tethered while silent coups mare it, all under the world's aperture. And if I haven't already mentioned, he can easily get away with all of this since the amendment now offers a lifetime legal immunity to the stratocrat, or at least to his office. To put it more clearly, Asim Munir, despite what the Sharif-led civilian government seems to claim, runs the latter. At least predominantly.</p>
+<p>However, a certain provision under this amendment piques my interest, while also concomitantly my consternations for our nuclear-armed neighbour. The inclusion of a Federal Constitutional Court. Till now the Supreme Court's powers were only pilfered; however, this amendment, as the former's title suggests, relegates the latter's stature on constitutional interpretation. A move effectively sidelining its authority. A bout on its judiciary.</p>
+<p>The Federal Constitutional Court is now a judicial arm nominated majorly by the Executive, while High Court judges can be transferred without notice (punishment transferring) — an extant reality seen under Indira's regime five decades ago. As the International Commission of Jurists state it to be a "full-frontal assault on the rule of law," and Amnesty International corroborates this amendment a systemic tethering of the judicial arm, this crescendo of arbitrary-military rule shatters foreign policy commitments we once entrusted with our, no matter how hostile, Muslim-majority neighbour.</p>
+<p>Nevertheless, only fate will decide what comes forth for the 'Land of the Pure'. As PTI's Imran Khan, recognised to assuage this impediment, is held incarcerated, with even the Judiciary not at his side, the chances of redemption stay slim.</p>
+<p>For India, this marks a foreign policy crisis, with the once imperative sinews of mutual strategic interest besieged by mercurial circumstances. It is now for the Pakistani populace to decide — between either a stratocracy, or a democracy. If you ask me, the former seems the perpetuating reality, and the latter an extant dream.</p>`
+  },
+  {
+    id: "arnab-spiral",
+    number: "005",
+    category: "Media",
+    date: "2025",
+    featured: false,
+    title: "Change of Hearts: Arnab's Political Spiral",
+    excerpt: "While reading the newspaper, I stumbled upon an unexpected name in a list of activists opposing the Centre on the recent Aravalli definition dispute. Hold on. I'm sorry, who? Arnab?",
+    body: `<p>While reading the newspaper, I stumbled upon an unexpected name in a list of activists opposing the Centre on the recent Aravalli definition dispute, where the Ruling Party and Opposition are now openly at odds.</p>
+<blockquote>"...Neelam Ahluwalia, Jyoti Raghavan, Vikrant Tongad, Jairam Singh Tanwar, Arnab Goswami, Kavita Srivastava raised concerns..."</blockquote>
+<p>Hold on. I'm sorry, who? Arnab?</p>
+<p>I've never been a TV-news sort of a person, but that name does not have to be read twice for recognition (at this point, an elaboration isn't even required).</p>
+<p>Mr. Goswami, Chairperson, Editor-in-Chief, and Lead Anchor of Republic TV today stands with his journalistic onus after basing the entire media-house off Modiesque narratives, led since its inception in 2017.</p>
+<p>And there I was, traversing the dark paths of Republic TV's Youtube Page, in hopes of tracing back what had happened and where it all started. Ostensibly, this change in perspective has only precipitated recently.</p>
+<p>Here's an overview.</p>
+<blockquote>"This Nation's Politicians don't care for you! The Ruling Party has to explain itself!" — Arnab on the National Capital Territory's Air Pollution crisis</blockquote>
+<blockquote>"The Ruling Party wants only a Duo-poly in this nation!" — Arnab on the Mass-Indigo-Cancellations issue, whilst targeting the Tata-owned Air India brand</blockquote>
+<p>Since then, Arnab has essentially left the Godi-Sangh and embarked towards the more Anti-NDA (and riskier) path of journalism. It's clear he isn't making any amends with the Godis anytime soon.</p>
+<p>But again, you clicked this article for a "Why?"; I'll not keep you waiting.</p>
+<p>To begin, the 'enemies' have officially changed. The trend around Arnab's RTV earlier hailed the "Opposition > Judiciary > Activists > Literal Urban Naxals" hierarchy like any other Godi channel. It has now morphed into a "Governance failures > Institutional decay > Political complacency" sort of view. When a channel stops manufacturing villains and starts pointing to systems, it heralds the former isn't profitable any longer.</p>
+<p>To put this quite colloquially, except the subscription-based Newslaundry, the rest of the Big-Players in India's English News Broadcasting contours churn down to Palki and Rahul Shivshankar (RSS, as some like to call him), both of whom are infamous for their pro-NDA, pro-Modi stance. I think the only thing keeping them from their Hindi-Medium counterparts is their use of rhetorical expressions and well-timed pauses, with literally nothing else to cite.</p>
+<p>Arnab's RTV recognised this gap and seeks to capitalise it.</p>
+<p>And no, there's no big "Anti-Modi Billionaire Donation!" or "Hindenburgist!" motive behind his shift — there's nothing proving that (ostensibly, that is) — but a business-shift that was long overdue. RTV will either dissolve into yet another ABP or entrench itself as the field's monopolist.</p>
+<p>Only time shall decide its fate.</p>`
+  },
+  {
+    id: "rohingyas-supreme-court",
+    number: "006",
+    category: "Human Rights",
+    date: "Dec 2025",
+    featured: false,
+    title: "The Rohingyas v. The Supreme Court: A Dehumanising Case",
+    excerpt: "A syndicate of Retired Justices and Legal Veterans issued a letter to the Chief Justice of India, condemning his statements against the Rohingya Community in a Habeas Corpus petition — and the letter's words highlight an issue that goes to the heart of the Court's moral authority.",
+    body: `<blockquote>"Dehumanising Rhetoric!" — Law Veterans allege the Chief Justice of India</blockquote>
+<p>Earlier today (6th December, 2025), a syndicate of Retired Justices (inclusive of erstwhile Chief Justice of the Delhi High Court, A. P. Shah) and Legal Veterans issued a letter to the Chief Justice of India, condemning his statements against the Rohingya Community earlier in a Habeas Corpus petition filed on 2nd December, 2025.</p>
+<p>On 5th December, I had given my analysis on the Hon'ble Chief Justice's statements, which were largely shared with the open letter's opinions and recommendations.</p>
+<p>The open letter presented a critique of the Hon'ble Chief Justice's partisan viewpoint and objected to his barring of Article 21 or former precedents to grant the five Rohingyas, under prima facie illegal detention, the Habeas Corpus writ. The petition, filed by prominent social activist Rita Manchanda, was rebuked.</p>
+<blockquote>"When those who flee violence and persecution are dismissed with rhetoric that is hostile to their very dignity… it weakens the moral authority of the Judiciary. [The] majesty of the Supreme Court and your office is measured not merely by the number of verdicts or administrative measures but more by the humanity."</blockquote>
+<p>The statements given in this open letter highlight an important issue. The Chief Justice of India's remarks represent the judicial viewpoint of that nation, and in turn, the national policy. What the Hon'ble Chief Justice stated earlier can decide the fate of countless unregistered immigrants inside India.</p>
+<p>Personally, I stand with the letter's arguments. The Hon'ble Chief Justice did not recognise the undeniable right to Article 21 of the Indian Constitution, established by former precedents (<em>NHRC v. Andhra Pradesh</em>, 1996 / <em>Louis De Raedt v. Union of India</em>, 1991). Seeking the Right to Life and Liberty through Article 32 (Habeas Corpus) is something the Court is obliged to perform.</p>
+<p>This is not a Charity of the Court. It is a Constitutional Order.</p>
+<p>The signatories of the open letter include (Data from LiveLaw): Justice A.P. Shah (Former Chief Justice of the Delhi High Court), Justice K. Chandru (Former Judge, Madras High Court), Justice Anjana Prakash (Former Judge, Patna High Court), Prof. Mohan Gopal (Former Director, National Judicial Academy), Senior Advocates Rajeev Dhavan, Chander Uday Singh, Colin Gonsalves, and Mihir Desai, alongside Advocates and Activists Kamini Jaiswal, Prashant Bhushan, Nikhil Dey, and Anjali Bhardwaj.</p>`
+  },
+  {
+    id: "arundhati-roy",
+    number: "007",
+    category: "Judiciary",
+    date: "Dec 2025",
+    featured: false,
+    title: "Publicity? Not for this Court: Arundhati Roy's Case",
+    excerpt: "Surprise — Arundhati Roy's not getting convicted. Obviously. Yet another case that reiterated the same principle: approaching a Court simply out of resentment isn't a reason. It's an opinion. And opinions don't work in Court.",
+    body: `<p>Surprise, Arundhati Roy's not getting convicted. Obviously.</p>
+<p>Yet another case that reiterated the same principle: "Approaching a Court simply out of resentment isn't a reason. It's an opinion. And opinions don't work in Court."</p>
+<p>I don't think Arundhati Roy requires any introduction. Author of 'The God of Small Things', any avid reader would recognise her name across the aisle. Especially now, since her case has ended up in the chambers of the highest court.</p>
+<p>The memoir penned by Mrs Roy titled 'Mother Mary Comes to Me' received widespread scrutiny for displaying her smoking a cigar on the book cover, to the point that a Public Interest Litigation was filed against her for such an act.</p>
+<p>The Court ruled in favour of Arundhati Roy. Dismissing it outright, the bench held to what its former precedents stated.</p>
+<p>In the case titled <em>Cyril Alexander v. the Union of India</em>, the Court held that mere depiction of tobacco products shouldn't be barred under Section 5 of the COTPA if it concerns only artistic depiction and holds no commercial intent. Reiterating that stance, the Court withheld its position and dismissed the petitioner's prayer since disclaimers for the same were appropriately mentioned on the book's blurb.</p>
+<p>What makes this case particularly unique, however, is the Court's consideration of the readership. Highlighting the point of credibility and preference of the readers, the Chief Justice noted that good literature will not be bought for the purpose of using tobacco or the picture, but only for the contents of the book. Mrs Roy is not associated with any tobacco brand, nor does she outright promote any company; it is all done with artistic integrity.</p>
+<blockquote>"The author is an eminent person; she has her own name in the literary world. The publisher is also a renowned publisher … the literature as such does not promote it, why is it your problem? Unnecessarily for popularity." — Hon'ble Chief Justice Surya Kant</blockquote>`
+  },
+  {
+    id: "bci-reservation",
+    number: "008",
+    category: "Legal Reform",
+    date: "Dec 2025",
+    featured: false,
+    title: "The 33% BCI Reservation Case: And the Arguments Against It",
+    excerpt: "On 4th December 2025, the Supreme Court directed the Bar Council of India to ensure that women hold at least 30% of seats in State Bar Councils. This is a long overdue correction to a system that kept women at roughly 2% representation in bar governance.",
+    body: `<blockquote>"No longer a Boys' Club..."</blockquote>
+<p>On 4th December 2025, the Supreme Court directed the Bar Council of India to ensure that women hold at least 30% of seats in State Bar Councils.</p>
+<p>This is a long overdue correction to a system that kept women at roughly 2% representation in bar governance, even as they entered the legal profession in unprecedented numbers.</p>
+<p>Predictably enough, familiar arguments resurfaced.</p>
+<p>"Won't this damage meritocracy? How will male members of the bar earn? Won't male lawyers feel the competition is unfair?"</p>
+<p>No. Here's why.</p>
+<p>The foundation of the Bar Councils in India is not built upon gender neutrality, and that's a fact. This continues to resonate despite decades of establishment.</p>
+<p>The stereotype that women are 'unsuited' for a profession seen as vociferous, aggressive, and intellectually tough still decides how senior advocates endorse their successors and groom juniors under them. It continues to persist despite exemplary figures such as those of Justice B.V. Nagarathna, Justice Hima Kohli, Zia Mody, and Maneka Guruswamy, whose works have reshaped the modern legal landscape.</p>
+<p>Even as opportunities are improving in the Bench for female judges and justices in the District and High Courts, the same does not apply for the Bar.</p>
+<p>The judiciary may offer a fairer path. But the State Bar Councils do not. They have been built upon the foundations of keeping male circles in positions of power, something that has continued for generations.</p>
+<p>Considering meritocracy as a defence in a system with deep-rooted bias against female members is not meritocracy. It is sheer patriarchy.</p>
+<p>And that difference is one that society will have to redress.</p>`
+  },
+  {
+    id: "vb-gramg",
+    number: "009",
+    category: "Policy",
+    date: "2025",
+    featured: false,
+    title: "Ram ka Naam Badnam mat Karo: The Case of VB-GRAMG",
+    excerpt: "The Viksit Bharat Guarantee for Rozgar and Ajeevika Mission (Gramin) Bill, 2025 has recently been tabled in Parliament, ought to set apart the former MGNREGA Framework. Three provisions in particular warrant scrutiny.",
+    body: `<blockquote>"Ram ka Naam Badnam Mat Karo!"</blockquote>
+<p>I never knew this adage would ever be relevant in any political context. But surprises aren't a new thing around Lutyen's Delhi.</p>
+<p>Viksit Bharat Guarantee for Rozgar and Ajeevika Mission (Gramin) Bill, 2025, abbreviated "VK G-RAM-G", has recently been tabled in Parliament, ought to set apart the former MGNREGA Framework, while instating a new rural job guarantee initiative, 20 years after the former.</p>
+<p>Now, if you're an updated citizen, you'll be aware of the usual theatrics coming into play. With the Mahatma being sidelined, and Hindi iterated once again in a majorly non-Hindi speaking nation, the ruling party has yet again proved its bulwark against a weakening opposition, no matter how preposterous.</p>
+<p>However, what interests me is the act's greater intent. What really is up with these 'Viksit Bharat' prefixed bills? Cutting to the chase, three provisions in particular warrant scrutiny in the tabled bill.</p>
+<p><strong>Firstly, the 125 days of guaranteed employment.</strong></p>
+<p>This is the headline of the hour. 25 more days for everyone. Looks lovely on paper, till you realise how baseless these numbers look on graphs. The minimum-100-day MGNREGA Scheme barely achieved its targets in most states, and here we are, at the Parliament, inducting a delusionally written charter, to put colloquially. Switching 100 days to 125 won't change the Union's 50–60 averaged apathy.</p>
+<p><strong>Secondly, higher state investments.</strong></p>
+<p>Mainstream media turned a blind eye to this, fairly conveniently. In a fiscal era where State governments grow increasingly reliant on the Union for additional funds, the bill tends to divide the Union and State contribution respectively by 60:40 (excluding North Eastern & Himalayan States, and UTs without Legislatures).</p>
+<p>40 percent paid entirely by the State. Additionally, unemployment allowances, state council costs, and a quarter of material costs all fall under the ambit of the states' treasury. Essentially, what this heralds is a more constrained, opposition-run states' relationship, meanwhile the Union allows its ruling-states uninterrupted cashflow. Political bargaining is what will run our governments in the coming years.</p>
+<p><strong>Lastly, the proposed Normative Model.</strong></p>
+<p>Adopting a Tops-Down downstream rather than the former Bottoms-Up approach in the MGNREGA Scheme sounds alright, but its implications do not. I'm no economist, but I'm certain the Center cannot simply "predict", or at least accurately approximate costs without regional enumeration that the Manmohan Singh-led bill had formerly established.</p>
+<p>Add this to the State's liability to pay any costs additional to the funds offered by the Center, and you'll find yourself in yet another fiscal constraint. Dependency to the exchequer — that's the theme of the era.</p>
+<p>In a nutshell, the Viksit Bharat so proclaimed is clayed out by hollow bills. Bills that only promise but bring miniscule change, while the Center continues with its puppetry. There's nothing Viksit about it.</p>`
+  }
+];
+
+/* ═══ RENDER GRID ═══ */
+const CARDS_INITIAL = 5;
+function renderGrid() {
+  const grid = document.getElementById('postsGrid');
+  const countEl = document.getElementById('post-count');
+  const showMoreWrap = document.getElementById('showMoreWrap');
+  grid.innerHTML = '';
+  countEl.textContent = articles.length + ' piece' + (articles.length !== 1 ? 's' : '');
+  articles.forEach((a, i) => {
+    const card = document.createElement('a');
+    card.href = '#';
+    card.className = 'post-card' + (a.featured ? ' featured' : '') + (i >= CARDS_INITIAL ? ' hidden' : '');
+    card.setAttribute('aria-label', 'Read: ' + a.title);
+    card.innerHTML = `
+      <p class="post-number">${a.number}</p>
+      <p class="post-category">${a.category}</p>
+      <h3 class="post-title">${a.title}</h3>
+      <p class="post-excerpt">${a.excerpt}</p>
+      <div class="post-footer">
+        <span class="post-date">${a.date}</span>
+        <span class="post-arrow">→</span>
+      </div>`;
+    card.addEventListener('click', (e) => { e.preventDefault(); openArticle(i); });
+    grid.appendChild(card);
+  });
+  if (articles.length > CARDS_INITIAL) showMoreWrap.style.display = 'flex';
+}
+
+function showAllArticles() {
+  document.querySelectorAll('.post-card.hidden').forEach(c => c.classList.remove('hidden'));
+  document.getElementById('showMoreWrap').style.display = 'none';
+}
+
+/* ═══ QUICK-NAV ═══ */
+(function() {
+  const qn = document.getElementById('quicknav');
+  const hero = document.getElementById('home');
+  let heroBottom = 0;
+  function measure() { heroBottom = hero.getBoundingClientRect().bottom + window.scrollY; }
+  measure();
+  window.addEventListener('resize', measure);
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > heroBottom * 0.6) {
+      qn.classList.add('visible');
+    } else {
+      qn.classList.remove('visible');
+    }
+  }, { passive: true });
+})();
+
+/* ═══ ARTICLE READER ═══ */
+function openArticle(index) {
+  const a = articles[index];
+  const words = a.body.replace(/<[^>]+>/g,'').split(/\s+/).length;
+  const mins = Math.max(1, Math.round(words / 200));
+  document.getElementById('articleCategory').textContent = a.category;
+  document.getElementById('articleTitle').textContent = a.title;
+  document.getElementById('articleDate').textContent = a.date;
+  document.getElementById('articleReadTime').textContent = mins + ' min read';
+  document.getElementById('articleBody').innerHTML = a.body;
+  const overlay = document.getElementById('articleOverlay');
+  overlay.classList.add('open');
+  overlay.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeArticle() {
+  document.getElementById('articleOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function showIndex() {
+  closeArticle();
+}
+
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeArticle(); });
+
+/* ═══ SCROLL REVEAL ═══ */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ═══ EXPERIENCE TOGGLES ═══ */
+function toggleExp(id, btn) {
+  const el = document.getElementById(id);
+  const open = el.classList.toggle('open');
+  btn.textContent = open ? 'Read less ↑' : 'Read more →';
+}
+
+function toggleMun(id, btn) {
+  const el = document.getElementById(id);
+  const open = el.classList.toggle('open');
+  const count = el.querySelectorAll('.mun-item').length;
+  btn.textContent = open ? 'Show less ↑' : 'Show ' + count + ' more →';
+}
+
+/* ═══ PORTFOLIO DATA ═══ */
+const portfolioItems = [
+  { src: '1.png',  tag: 'Political Analysis', title: 'The Three Musketeers of Federal Overreach' },
+  { src: '2.png',  tag: 'Legal Affairs',      title: "Mamata's Suit" },
+  { src: '3.png',  tag: 'Constitutional Law', title: '27th Amendment' },
+  { src: '4.png',  tag: 'Economics',          title: 'Credit Flow & Migration' },
+  { src: '5.png',  tag: 'Budget',             title: 'Union Budget 2026' },
+  { src: '6.png',  tag: 'Political Analysis', title: 'The Fall of Titans' },
+  { src: '7.png',  tag: 'Economics',          title: 'Dead Economy?' },
+  { src: '10.png', tag: 'Political Analysis', title: 'The Fall of Titans (Alt.)' },
+];
+
+let lbIndex = 0;
+
+function renderPortfolio() {
+  const grid = document.getElementById('portfolioGrid');
+  portfolioItems.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'portfolio-item';
+    el.setAttribute('aria-label', 'View: ' + item.title);
+    el.innerHTML = `
+      <img src="${item.src}" alt="${item.title}" loading="lazy">
+      <div class="portfolio-item-overlay">
+        <p class="portfolio-item-tag">${item.tag}</p>
+        <p class="portfolio-item-title">${item.title}</p>
+      </div>`;
+    el.addEventListener('click', () => openLb(i));
+    grid.appendChild(el);
+  });
+}
+
+function openLb(i) {
+  lbIndex = i;
+  updateLb();
+  document.getElementById('lbOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLb() {
+  document.getElementById('lbOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function lbStep(dir) {
+  lbIndex = (lbIndex + dir + portfolioItems.length) % portfolioItems.length;
+  updateLb();
+}
+
+function updateLb() {
+  const item = portfolioItems[lbIndex];
+  document.getElementById('lbImg').src = item.src;
+  document.getElementById('lbImg').alt = item.title;
+  document.getElementById('lbCaption').textContent = item.tag + ' · ' + item.title;
+}
+
+document.getElementById('lbOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeLb();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('lbOverlay').classList.contains('open')) {
+    if (e.key === 'ArrowRight') lbStep(1);
+    if (e.key === 'ArrowLeft') lbStep(-1);
+    if (e.key === 'Escape') closeLb();
+  }
+});
+
+renderPortfolio();
+
+renderGrid();
+</script>
+</body>
+</html>
