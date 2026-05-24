@@ -534,18 +534,64 @@
   /* RESPONSIVE */
   @media (max-width: 900px) {
     nav { padding: 1rem 1.5rem; flex-direction: row; align-items: center; }
-    .hero { padding: 0 2rem 5rem; }
-    .about { grid-template-columns: 1fr; gap: 2rem; padding: 4rem 2rem; }
-    .posts-section { padding: 3rem 2rem 2rem; }
+    .hero { padding: 7rem 1.5rem 4rem; min-height: 100svh; }
+    .hero-name { font-size: clamp(2.8rem, 11vw, 5rem); }
+    .hero-tagline { font-size: 1.05rem; max-width: 100%; }
+    .hero-scroll { right: 1.5rem; bottom: 2rem; }
+    .about { grid-template-columns: 1fr; gap: 2rem; padding: 4rem 1.5rem; }
+    .about-number { font-size: 5rem; }
+    .posts-section { padding: 3rem 1.5rem 2rem; }
     .posts-grid { grid-template-columns: 1fr; }
+    .post-card { padding: 1.75rem; }
     .post-card.featured { grid-column: span 1; }
-    .quote-section { padding: 5rem 2rem; }
-    footer { grid-template-columns: 1fr; padding: 4rem 2rem 2rem; }
+    .quote-section { padding: 4rem 1.5rem; }
+    .pull-quote blockquote::before { display: none; }
+    footer { grid-template-columns: 1fr; padding: 3rem 1.5rem 2rem; gap: 2.5rem; }
     .footer-nav { align-items: flex-start; flex-direction: row; }
     .footer-bottom { grid-column: span 1; flex-direction: column; gap: 1rem; align-items: flex-start; }
-    .divider { padding: 0 2rem; }
-    .article-back { left: 2rem; }
-    .article-inner { padding: 7rem 1.5rem 4rem; }
+    .divider { padding: 0 1.5rem; }
+    .article-back { left: 1.5rem; }
+    .article-inner { padding: 6rem 1.25rem 4rem; }
+
+    /* quicknav — shrink on mobile so it doesn't overflow */
+    .quicknav { max-width: calc(100vw - 2rem); overflow-x: auto; scrollbar-width: none; border-radius: 3px; }
+    .quicknav::-webkit-scrollbar { display: none; }
+    .qn-item { padding: 0.6rem 0.75rem; font-size: 0.52rem; }
+
+    /* portfolio touch — always show overlay on mobile */
+    .portfolio-item-overlay { opacity: 1; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%); }
+    .event-item-overlay { opacity: 1; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%); }
+    .portfolio-section { padding: 3rem 1.5rem 4rem; }
+    .portfolio-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+
+    /* lightbox swipe hint */
+    .lb-img-wrap { max-width: 92vw; }
+    .lb-close { top: 1rem; right: 1rem; }
+
+    /* ryan prince */
+    .ryan-prince-section { padding: 1.5rem 1.5rem 2.5rem; }
+    .rp-inner { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem; }
+
+    /* academics */
+    .academics-section { padding: 3rem 1.5rem; }
+    .academics-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .academic-card { padding: 1.25rem; }
+    .academic-card-value { font-size: 1.5rem; }
+
+    /* leadership */
+    .leadership-section { padding: 1.5rem 1.5rem 3rem; }
+    .leadership-pill { font-size: 0.55rem; padding: 0.4rem 0.85rem; }
+
+    /* event grid */
+    .event-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .event-item-overlay { opacity: 1; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-name { font-size: clamp(2.4rem, 12vw, 3.5rem); }
+    .portfolio-grid { grid-template-columns: 1fr; }
+    .academics-grid { grid-template-columns: 1fr; }
+    .section-title { font-size: 2.2rem; }
   }
 </style>
 </head>
@@ -920,7 +966,7 @@
   <div class="portfolio-subsection">
     <div class="portfolio-sub-header">
       <span class="portfolio-sub-title">Magazine Designs</span>
-      <span class="portfolio-sub-count">9 covers</span>
+      <span class="portfolio-sub-count">8 covers</span>
     </div>
     <div class="portfolio-grid" id="portfolioGrid"></div>
   </div>
@@ -932,15 +978,6 @@
       <span class="portfolio-sub-count">5 pieces</span>
     </div>
     <div class="event-grid" id="eventGrid"></div>
-  </div>
-
-  <!-- NGO / Social Work Designs -->
-  <div class="portfolio-subsection" style="margin-top: 3rem;">
-    <div class="portfolio-sub-header">
-      <span class="portfolio-sub-title">NGO &amp; Social Work Designs</span>
-      <span class="portfolio-sub-count">6 pieces</span>
-    </div>
-    <div class="event-grid" id="ngoGrid"></div>
   </div>
 </section>
 
@@ -1381,8 +1418,7 @@ const portfolioItems = [
   { src: '5.png',  tag: 'Budget',             title: 'Union Budget 2026' },
   { src: '6.png',  tag: 'Political Analysis', title: 'The Fall of Titans' },
   { src: '7.png',  tag: 'Economics',          title: 'Dead Economy?' },
-  { src: '8.png',  tag: 'Legal Affairs',      title: 'Denial' },
-  { src: '9.png',  tag: 'Legal Affairs',      title: 'Farce' },
+  { src: '10.png', tag: 'Political Analysis', title: 'The Fall of Titans (Alt.)' },
 ];
 
 let lbIndex = 0;
@@ -1440,6 +1476,17 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+/* ═══ LIGHTBOX TOUCH SWIPE ═══ */
+(function() {
+  const lb = document.getElementById('lbOverlay');
+  let startX = 0;
+  lb.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 50) lbStep(dx < 0 ? 1 : -1);
+  }, { passive: true });
+})();
+
 /* ═══ EVENT PORTFOLIO DATA ═══ */
 const eventItems = [
   { src: 'RISGNMUN_25_PLACARDS_2025.png',  tag: 'MUN Design', title: 'RISGNMUN\'25 — Placards' },
@@ -1473,9 +1520,6 @@ function openLbUnified(type, i) {
   if (type === 'mag') {
     lbAllItems = portfolioItems;
     lbAllIndex = i;
-  } else if (type === 'ngo') {
-    lbAllItems = ngoItems.filter(it => !it.src.endsWith('.pdf'));
-    lbAllIndex = i;
   } else {
     lbAllItems = eventItems;
     lbAllIndex = i;
@@ -1492,49 +1536,7 @@ function updateLbUnified() {
   document.getElementById('lbCaption').textContent = item.tag + ' · ' + item.title;
 }
 
-/* ═══ NGO PORTFOLIO DATA ═══ */
-const ngoItems = [
-  { src: 'Jeevartan1.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Meet the Architects' },
-  { src: 'Jeevartan2.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Social Media Team (I)' },
-  { src: 'Jeevartan3.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Social Media Team (II)' },
-  { src: 'Jeevartan4.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Graphic Designer Feature' },
-  { src: 'Jeevartan5.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Awareness Poster' },
-  { src: 'Jeevartan6.png', tag: 'NGO Design', title: 'Jeevartan × RSSA — Rabies Drive Brochure' },
-];
-
-function renderNgoGrid() {
-  const grid = document.getElementById('ngoGrid');
-  ngoItems.forEach((item, i) => {
-    const el = document.createElement('div');
-    el.className = 'event-item';
-    el.setAttribute('aria-label', 'View: ' + item.title);
-    el.innerHTML = `
-      <img src="${item.src}" alt="${item.title}" loading="lazy">
-      <div class="event-item-overlay">
-        <p class="event-item-tag">${item.tag}</p>
-        <p class="event-item-title">${item.title}</p>
-      </div>`;
-    el.addEventListener('click', () => openLbUnified('ngo', i));
-    grid.appendChild(el);
-  });
-
-  // AIPPM BG PDF card
-  const pdfEl = document.createElement('div');
-  pdfEl.className = 'event-item';
-  pdfEl.setAttribute('aria-label', 'Open: RISGNMUN\'25 — AIPPM Background Guide');
-  pdfEl.innerHTML = `
-    <a href="RISGNMUN_25_AIPPM_BG.pdf" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:220px;text-decoration:none;padding:2rem;gap:1rem;background:#0d0d0d;">
-      <svg width="44" height="44" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.55"><rect x="8" y="4" width="32" height="40" rx="3" stroke="#c9a84c" stroke-width="2"/><path d="M16 14h16M16 20h16M16 26h10" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/></svg>
-      <p style="font-family:var(--mono);font-size:0.52rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:0.2rem">MUN Document</p>
-      <p style="font-family:var(--serif);font-size:0.95rem;color:var(--parchment);text-align:center;line-height:1.4">RISGNMUN'25 — AIPPM Background Guide</p>
-      <p style="font-family:var(--mono);font-size:0.52rem;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;margin-top:0.4rem">Open PDF →</p>
-    </a>`;
-  grid.appendChild(pdfEl);
-}
-
 renderEventGrid();
-
-renderNgoGrid();
 
 renderPortfolio();
 
