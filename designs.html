@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Portfolio — Shaurya Pratap Singh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #000000;
+    --parchment: #f5f0e8;
+    --muted: #8a8070;
+    --accent: #c9a84c;
+    --accent-dim: #8a6a28;
+    --border: rgba(180,160,120,0.2);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+  }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background-color: var(--ink);
+    color: var(--parchment);
+    font-family: var(--serif);
+    line-height: 1.8;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 1000; opacity: 0.6;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    top: -20%; left: -20%;
+    width: 140%; height: 140%;
+    background:
+      radial-gradient(ellipse 600px 400px at 20% 30%, rgba(201,168,76,0.045) 0%, transparent 60%),
+      radial-gradient(ellipse 500px 350px at 80% 70%, rgba(138,106,40,0.035) 0%, transparent 55%),
+      radial-gradient(ellipse 700px 500px at 50% 100%, rgba(201,168,76,0.025) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+    animation: ambientDrift 28s ease-in-out infinite alternate;
+  }
+  @keyframes ambientDrift {
+    0%   { transform: translate(0, 0) scale(1); opacity: 0.85; }
+    50%  { transform: translate(2%, -2%) scale(1.04); opacity: 1; }
+    100% { transform: translate(-2%, 2%) scale(1); opacity: 0.9; }
+  }
+  body > * { position: relative; z-index: 1; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.5rem 4rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.92); backdrop-filter: blur(14px);
+  }
+  .nav-logo { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); text-decoration: none; flex-shrink: 0; }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--parchment); }
+  .nav-links a.active { color: var(--accent); }
+
+  @media (max-width: 700px) {
+    nav { padding: 0.9rem 1.25rem; gap: 1rem; }
+    .nav-links { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 1.2rem; flex-shrink: 1; min-width: 0; }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links li { flex-shrink: 0; }
+    .nav-links a { font-size: 0.55rem; white-space: nowrap; letter-spacing: 0.15em; }
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    padding: 9rem 4rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  .page-back {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    margin-bottom: 2rem;
+    transition: color 0.3s, gap 0.3s;
+  }
+  .page-back:hover { color: var(--accent); gap: 0.9rem; }
+  .page-eyebrow {
+    font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1rem;
+  }
+  .page-title {
+    font-family: var(--serif); font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 300; line-height: 1; letter-spacing: -0.02em;
+    margin-bottom: 1.25rem;
+  }
+  .page-title em { font-style: italic; color: var(--accent); }
+  .page-desc {
+    font-family: var(--serif); font-size: 1.1rem; font-weight: 300;
+    color: var(--muted); max-width: 60ch; line-height: 1.7;
+    font-style: italic;
+  }
+
+  /* SUBSECTIONS */
+  .portfolio-section { padding: 0 4rem 4rem; max-width: 1200px; margin: 0 auto; }
+  .portfolio-subsection { margin-bottom: 4rem; }
+  .portfolio-sub-header {
+    display: flex; align-items: baseline; gap: 1.5rem;
+    margin-bottom: 1.5rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .portfolio-sub-title {
+    font-family: var(--mono); font-size: 0.7rem;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .portfolio-sub-count {
+    font-family: var(--mono); font-size: 0.55rem;
+    letter-spacing: 0.15em; color: var(--muted);
+  }
+
+  /* MAGAZINE GRID */
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .portfolio-item {
+    position: relative; overflow: hidden;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    aspect-ratio: 4/5;
+    background: #111;
+    transition: border-color 0.4s, transform 0.4s;
+  }
+  .portfolio-item:hover {
+    border-color: rgba(201,168,76,0.4);
+    transform: translateY(-2px);
+  }
+  .portfolio-item img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform 0.6s ease, filter 0.4s ease;
+    filter: brightness(0.92);
+  }
+  .portfolio-item:hover img {
+    transform: scale(1.04);
+    filter: brightness(0.55);
+  }
+  .portfolio-item-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.5rem;
+    background: linear-gradient(to top, rgba(13,12,10,0.92) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .portfolio-item:hover .portfolio-item-overlay { opacity: 1; }
+  .portfolio-item-tag {
+    font-family: var(--mono); font-size: 0.52rem;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.4rem;
+  }
+  .portfolio-item-title {
+    font-family: var(--serif); font-size: 1.05rem;
+    font-weight: 400; line-height: 1.3;
+    color: var(--parchment);
+  }
+
+  /* EVENT GRID */
+  .event-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .event-item {
+    position: relative; overflow: hidden;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    background: #111;
+    transition: border-color 0.4s, transform 0.4s;
+  }
+  .event-item:hover {
+    border-color: rgba(201,168,76,0.4);
+    transform: translateY(-2px);
+  }
+  .event-item img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform 0.6s ease, filter 0.4s ease;
+    filter: brightness(0.92);
+  }
+  .event-item:hover img { transform: scale(1.04); filter: brightness(0.55); }
+  .event-item-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.25rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .event-item:hover .event-item-overlay { opacity: 1; }
+  .event-item-tag { font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
+  .event-item-title { font-family: var(--serif); font-size: 0.95rem; font-weight: 400; line-height: 1.3; color: var(--parchment); }
+
+  /* LIGHTBOX */
+  .lb-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(13,12,10,0.96);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .lb-overlay.open { opacity: 1; pointer-events: all; }
+  .lb-img-wrap { position: relative; max-width: min(480px, 90vw); }
+  .lb-img-wrap img { width: 100%; display: block; box-shadow: 0 40px 120px rgba(0,0,0,0.8); }
+  .lb-close {
+    position: fixed; top: 2rem; right: 2.5rem;
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--muted);
+    background: none; border: none; cursor: pointer;
+    transition: color 0.3s;
+  }
+  .lb-close:hover { color: var(--parchment); }
+  .lb-caption {
+    margin-top: 1.25rem; text-align: center;
+    font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase;
+  }
+  .lb-nav {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer;
+    font-family: var(--mono); font-size: 1.2rem; color: var(--muted);
+    transition: color 0.3s; padding: 1rem;
+  }
+  .lb-nav:hover { color: var(--accent); }
+  .lb-prev { left: 2rem; }
+  .lb-next { right: 2rem; }
+
+  /* FOOTER */
+  footer {
+    padding: 4rem 4rem 3rem;
+    border-top: 1px solid var(--border);
+    margin-top: 4rem;
+    text-align: center;
+  }
+  .footer-copy {
+    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.15em;
+    color: rgba(138,128,112,0.45); text-transform: uppercase;
+  }
+
+  /* Reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(4px);
+    transition: opacity 0.9s cubic-bezier(0.2, 0.7, 0.3, 1),
+                transform 0.9s cubic-bezier(0.2, 0.7, 0.3, 1),
+                filter 0.9s ease;
+  }
+  .reveal.visible {
+    opacity: 1; transform: translateY(0); filter: blur(0);
+  }
+  .reveal-child {
+    opacity: 0; transform: translateY(18px);
+    transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.3, 1),
+                transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .reveal-child.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    .page-header { padding: 7rem 2rem 2rem; }
+    .portfolio-section { padding: 0 2rem 4rem; }
+    .portfolio-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .event-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .lb-nav { display: none; }
+    footer { padding: 3rem 2rem 2rem; }
+  }
+  @media (max-width: 480px) {
+    .portfolio-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">SPS</a>
+  <ul class="nav-links">
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="designs.html" class="active">Design</a></li>
+    <li><a href="index.html#experience">Experience</a></li>
+    <li><a href="index.html#academics">Academic</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#library">Reading</a></li>
+    <li><a href="index.html#admired">Admired</a></li>
+    <li><a href="index.html#contact">Connect</a></li>
+  </ul>
+</nav>
+
+<!-- HEADER -->
+<header class="page-header reveal">
+  <a href="index.html" class="page-back">← Back to home</a>
+  <p class="page-eyebrow">Portfolio</p>
+  <h1 class="page-title">Design <em>Work</em></h1>
+  <p class="page-desc">Magazine covers, event collateral, and social-impact campaign design — a record of visual work undertaken across publications, MUN conferences, and NGO initiatives.</p>
+</header>
+
+<!-- PORTFOLIO -->
+<section class="portfolio-section">
+
+  <!-- Magazine Designs -->
+  <div class="portfolio-subsection reveal">
+    <div class="portfolio-sub-header">
+      <span class="portfolio-sub-title">Magazine Designs</span>
+      <span class="portfolio-sub-count">7 covers</span>
+    </div>
+    <div class="portfolio-grid" id="portfolioGrid"></div>
+  </div>
+
+  <!-- Event Designs -->
+  <div class="portfolio-subsection reveal">
+    <div class="portfolio-sub-header">
+      <span class="portfolio-sub-title">Event Designs</span>
+      <span class="portfolio-sub-count">5 pieces</span>
+    </div>
+    <div class="event-grid" id="eventGrid"></div>
+  </div>
+
+  <!-- NGO / Social Work Designs -->
+  <div class="portfolio-subsection reveal">
+    <div class="portfolio-sub-header">
+      <span class="portfolio-sub-title">NGO &amp; Social Work Designs</span>
+      <span class="portfolio-sub-count">6 pieces</span>
+    </div>
+    <div class="event-grid" id="ngoGrid"></div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lb-overlay" id="lbOverlay" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="lb-close" onclick="closeLb()">✕ close</button>
+  <button class="lb-nav lb-prev" onclick="lbStep(-1)">←</button>
+  <div class="lb-img-wrap">
+    <img id="lbImg" src="" alt="">
+    <p class="lb-caption" id="lbCaption"></p>
+  </div>
+  <button class="lb-nav lb-next" onclick="lbStep(1)">→</button>
+</div>
+
+<footer>
+  <p class="footer-copy">© 2026 Shaurya Pratap Singh · All work shown is original</p>
+</footer>
+
+<script>
+/* ═══ SCROLL REVEAL ═══ */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+function applyStagger(parentSelector, childSelector) {
+  document.querySelectorAll(parentSelector).forEach(parent => {
+    const kids = parent.querySelectorAll(childSelector);
+    kids.forEach((child, i) => {
+      child.classList.add('reveal-child');
+      child.style.transitionDelay = (i * 70) + 'ms';
+      const childObserver = new IntersectionObserver((entries) => {
+        entries.forEach(ent => {
+          if (ent.isIntersecting) {
+            ent.target.classList.add('visible');
+            childObserver.unobserve(ent.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      childObserver.observe(child);
+    });
+  });
+}
+
+/* ═══ MAGAZINE PORTFOLIO ═══ */
+const portfolioItems = [
+  { src: '1.png',  tag: 'Political Analysis', title: 'The Three Musketeers of Federal Overreach' },
+  { src: '2.png',  tag: 'Legal Affairs',      title: "Mamata's Suit" },
+  { src: '3.png',  tag: 'Constitutional Law', title: '27th Amendment' },
+  { src: '4.png',  tag: 'Economics',          title: 'Credit Flow & Migration' },
+  { src: '5.png',  tag: 'Budget',             title: 'Union Budget 2026' },
+  { src: '6.png',  tag: 'Political Analysis', title: 'The Fall of Titans' },
+  { src: '7.png',  tag: 'Economics',          title: 'Dead Economy?' },
+];
+
+/* ═══ EVENT PORTFOLIO ═══ */
+const eventItems = [
+  { src: 'RISGNMUN_25_PLACARDS_2025.png',                              tag: 'MUN Design', title: "RISGNMUN'25 — Placards" },
+  { src: 'RISGNMUN_24_Certificates_of_Appreciation_and_Achievement.png', tag: 'MUN Design', title: "RISGNMUN'24 — Certificate Design" },
+  { src: 'RISGNMUN_25_-_vedansh_arora.png',                            tag: 'MUN Design', title: "RISGNMUN'25 — Chairperson Feature" },
+  { src: 'RISGNMUN_25_-_unga_vedansh.png',                             tag: 'MUN Design', title: "RISGNMUN'25 — UNGA Feature" },
+  { src: 'Add_a_heading.png',                                          tag: 'MUN Design', title: "RISGNMUN'25 — Announcement" },
+];
+
+/* ═══ NGO PORTFOLIO ═══ */
+const ngoItems = [
+  { src: 'Jeevartan1.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Meet the Architects' },
+  { src: 'Jeevartan2.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Social Media Team (I)' },
+  { src: 'Jeevartan3.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Social Media Team (II)' },
+  { src: 'Jeevartan4.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Editor Feature' },
+  { src: 'Jeevartan5.png', tag: 'NGO Design', title: 'Jeevartan Foundation — Awareness Poster' },
+  { src: 'Jeevartan6.png', tag: 'NGO Design', title: 'Jeevartan × RSSA — Rabies Drive Brochure' },
+];
+
+let lbAllItems = [];
+let lbAllIndex = 0;
+
+function renderPortfolio() {
+  const grid = document.getElementById('portfolioGrid');
+  portfolioItems.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'portfolio-item';
+    el.setAttribute('aria-label', 'View: ' + item.title);
+    el.innerHTML = `
+      <img src="${item.src}" alt="${item.title}" loading="lazy">
+      <div class="portfolio-item-overlay">
+        <p class="portfolio-item-tag">${item.tag}</p>
+        <p class="portfolio-item-title">${item.title}</p>
+      </div>`;
+    el.addEventListener('click', () => openLbUnified('mag', i));
+    grid.appendChild(el);
+  });
+}
+
+function renderEventGrid() {
+  const grid = document.getElementById('eventGrid');
+  eventItems.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'event-item';
+    el.setAttribute('aria-label', 'View: ' + item.title);
+    el.innerHTML = `
+      <img src="${item.src}" alt="${item.title}" loading="lazy">
+      <div class="event-item-overlay">
+        <p class="event-item-tag">${item.tag}</p>
+        <p class="event-item-title">${item.title}</p>
+      </div>`;
+    el.addEventListener('click', () => openLbUnified('event', i));
+    grid.appendChild(el);
+  });
+}
+
+function renderNgoGrid() {
+  const grid = document.getElementById('ngoGrid');
+  ngoItems.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'event-item';
+    el.setAttribute('aria-label', 'View: ' + item.title);
+    el.innerHTML = `
+      <img src="${item.src}" alt="${item.title}" loading="lazy">
+      <div class="event-item-overlay">
+        <p class="event-item-tag">${item.tag}</p>
+        <p class="event-item-title">${item.title}</p>
+      </div>`;
+    el.addEventListener('click', () => openLbUnified('ngo', i));
+    grid.appendChild(el);
+  });
+}
+
+function openLbUnified(type, i) {
+  if (type === 'mag')      lbAllItems = portfolioItems;
+  else if (type === 'ngo') lbAllItems = ngoItems;
+  else                     lbAllItems = eventItems;
+  lbAllIndex = i;
+  updateLbUnified();
+  document.getElementById('lbOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLb() {
+  document.getElementById('lbOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function lbStep(dir) {
+  lbAllIndex = (lbAllIndex + dir + lbAllItems.length) % lbAllItems.length;
+  updateLbUnified();
+}
+
+function updateLbUnified() {
+  const item = lbAllItems[lbAllIndex];
+  document.getElementById('lbImg').src = item.src;
+  document.getElementById('lbImg').alt = item.title;
+  document.getElementById('lbCaption').textContent = item.tag + ' · ' + item.title;
+}
+
+document.getElementById('lbOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeLb();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('lbOverlay').classList.contains('open')) {
+    if (e.key === 'ArrowRight') lbStep(1);
+    if (e.key === 'ArrowLeft')  lbStep(-1);
+    if (e.key === 'Escape')     closeLb();
+  }
+});
+
+renderPortfolio();
+renderEventGrid();
+renderNgoGrid();
+
+// Apply stagger after grids render
+setTimeout(() => {
+  applyStagger('#portfolioGrid', '.portfolio-item');
+  applyStagger('#eventGrid', '.event-item');
+  applyStagger('#ngoGrid', '.event-item');
+}, 50);
+</script>
+</body>
+</html>
