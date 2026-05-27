@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Writing — Shaurya Pratap Singh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #000000;
+    --parchment: #f5f0e8;
+    --muted: #8a8070;
+    --accent: #c9a84c;
+    --accent-dim: #8a6a28;
+    --border: rgba(180,160,120,0.2);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+  }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background-color: var(--ink);
+    color: var(--parchment);
+    font-family: var(--serif);
+    line-height: 1.8;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+  body::after {
+    content: '';
+    position: fixed; top: -20%; left: -20%;
+    width: 140%; height: 140%;
+    background:
+      radial-gradient(ellipse 600px 400px at 20% 30%, rgba(201,168,76,0.045) 0%, transparent 60%),
+      radial-gradient(ellipse 500px 350px at 80% 70%, rgba(138,106,40,0.035) 0%, transparent 55%);
+    pointer-events: none; z-index: 0;
+    animation: ambientDrift 28s ease-in-out infinite alternate;
+  }
+  @keyframes ambientDrift {
+    0%   { transform: translate(0,0) scale(1); opacity: 0.85; }
+    50%  { transform: translate(2%,-2%) scale(1.04); opacity: 1; }
+    100% { transform: translate(-2%,2%) scale(1); opacity: 0.9; }
+  }
+  body > * { position: relative; z-index: 1; }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 1000; opacity: 0.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.5rem 4rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.92); backdrop-filter: blur(14px);
+  }
+  .nav-logo { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); text-decoration: none; }
+  .nav-back { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s; display: flex; align-items: center; gap: 0.5rem; }
+  .nav-back:hover { color: var(--parchment); }
+  @media (max-width: 700px) { nav { padding: 0.9rem 1.25rem; } }
+
+  /* ARTICLE OVERLAY */
+  .article-overlay {
+    position: fixed; inset: 0; z-index: 300;
+    background: var(--ink);
+    overflow-y: auto;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .article-overlay.open { opacity: 1; pointer-events: all; }
+  .article-inner { max-width: 720px; margin: 0 auto; padding: 8rem 2rem 6rem; }
+  .article-back {
+    position: fixed; top: 1.8rem; left: 4rem; z-index: 400;
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--muted);
+    background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 0.5rem; transition: color 0.3s;
+  }
+  .article-back:hover { color: var(--parchment); }
+  .article-eyebrow { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; }
+  .article-title { font-family: var(--serif); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 300; line-height: 1.15; margin-bottom: 2.5rem; }
+  .article-body { font-family: var(--serif); font-size: 1.15rem; font-weight: 300; color: rgba(245,240,232,0.85); line-height: 1.9; }
+  .article-body p { margin-bottom: 1.5rem; }
+  .article-body blockquote { border-left: 2px solid var(--accent); padding-left: 1.5rem; margin: 2rem 0; font-style: italic; color: var(--muted); font-size: 1.2rem; }
+  .article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .article-sig { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.15em; color: var(--accent-dim); margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .article-meta-bar { display: flex; gap: 2rem; align-items: center; margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .article-meta-item { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+
+  /* PAGE HEADER */
+  .page-header {
+    padding: 10rem 4rem 5rem;
+    max-width: 1200px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .page-header-eyebrow {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.32em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+  .page-header-title {
+    font-family: var(--serif); font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 300; line-height: 0.95; letter-spacing: -0.02em;
+    opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+  .page-header-title em { font-style: italic; color: var(--accent); }
+  .page-header-sub {
+    font-family: var(--serif); font-size: 1.1rem; font-weight: 300;
+    font-style: italic; color: var(--muted); margin-top: 1.5rem;
+    max-width: 50ch; line-height: 1.7;
+    opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+  .page-header-count {
+    position: absolute; bottom: 2rem; right: 4rem;
+    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--accent-dim);
+  }
+  @media (max-width: 700px) {
+    .page-header { padding: 8rem 1.5rem 3rem; }
+    .page-header-count { position: static; margin-top: 2rem; }
+  }
+
+  /* FILTER BAR */
+  .filter-bar {
+    padding: 1.5rem 4rem;
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
+    position: sticky; top: 64px; z-index: 100;
+  }
+  .filter-label { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-right: 0.5rem; }
+  .filter-btn {
+    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted);
+    background: none; border: 1px solid transparent;
+    padding: 0.4rem 1rem; border-radius: 2px; cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .filter-btn:hover { color: var(--parchment); border-color: var(--border); }
+  .filter-btn.active { color: var(--accent); border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.06); }
+  @media (max-width: 700px) { .filter-bar { padding: 1rem 1.5rem; top: 52px; } }
+
+  /* WRITING LIST */
+  .writing-list { max-width: 1200px; margin: 0 auto; padding: 0 4rem 6rem; }
+  @media (max-width: 700px) { .writing-list { padding: 0 1.5rem 4rem; } }
+
+  /* Featured piece */
+  .writing-featured {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0; border: 1px solid var(--border);
+    margin: 3rem 0 0; cursor: pointer;
+    position: relative; overflow: hidden;
+    transition: background 0.4s, border-color 0.4s;
+    text-decoration: none; color: inherit;
+  }
+  .writing-featured:hover { background: rgba(201,168,76,0.03); border-color: rgba(201,168,76,0.25); }
+  .writing-featured::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(to bottom, var(--accent), transparent); opacity: 0.6; }
+  .wf-left { padding: 3rem; border-right: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; }
+  .wf-right { padding: 3rem; display: flex; flex-direction: column; justify-content: flex-end; }
+  .wf-badge { font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.2); padding: 0.3rem 0.75rem; display: inline-block; margin-bottom: 1.5rem; width: fit-content; }
+  .wf-number { font-family: var(--serif); font-size: 7rem; font-weight: 300; color: transparent; -webkit-text-stroke: 1px rgba(180,160,120,0.12); line-height: 1; }
+  .wf-category { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+  .wf-title { font-family: var(--serif); font-size: clamp(1.5rem, 2.5vw, 2.2rem); font-weight: 300; font-style: italic; line-height: 1.2; margin-bottom: 1.5rem; }
+  .wf-excerpt { font-size: 0.95rem; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 2rem; }
+  .wf-footer { display: flex; justify-content: space-between; align-items: center; }
+  .wf-date { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; color: rgba(138,128,112,0.55); }
+  .wf-arrow { font-family: var(--mono); color: var(--accent); transition: transform 0.3s; }
+  .writing-featured:hover .wf-arrow { transform: translateX(5px); }
+  @media (max-width: 700px) {
+    .writing-featured { grid-template-columns: 1fr; }
+    .wf-left { border-right: none; border-bottom: 1px solid var(--border); padding: 2rem; }
+    .wf-right { padding: 2rem; }
+    .wf-number { font-size: 4rem; }
+  }
+
+  /* Divider between featured and list */
+  .list-divider { display: flex; align-items: center; gap: 2rem; margin: 3rem 0 0; }
+  .list-divider-line { flex: 1; height: 1px; background: var(--border); }
+  .list-divider-label { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent-dim); }
+
+  /* List rows */
+  .writing-row {
+    display: grid; grid-template-columns: 80px 1fr auto;
+    gap: 0 2.5rem; align-items: baseline;
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 0; cursor: pointer;
+    text-decoration: none; color: inherit;
+    position: relative; overflow: hidden;
+    transition: background 0.3s, padding-left 0.3s;
+  }
+  .writing-row::after {
+    content: '';
+    position: absolute; left: 0; bottom: 0; width: 100%; height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .writing-row:hover::after { transform: scaleX(1); }
+  .writing-row:hover { background: rgba(201,168,76,0.025); padding-left: 0.5rem; }
+  .wr-num { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.15em; color: var(--accent-dim); padding-top: 0.15rem; }
+  .wr-body { display: flex; flex-direction: column; gap: 0.3rem; }
+  .wr-cat { font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+  .wr-title { font-family: var(--serif); font-size: 1.15rem; font-weight: 400; line-height: 1.3; color: var(--parchment); }
+  .wr-excerpt { font-size: 0.88rem; font-weight: 300; color: var(--muted); line-height: 1.6; margin-top: 0.2rem; max-width: 65ch; }
+  .wr-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+  .wr-date { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em; color: rgba(138,128,112,0.5); white-space: nowrap; }
+  .wr-arrow { font-family: var(--mono); color: var(--accent); opacity: 0; transition: opacity 0.3s, transform 0.3s; }
+  .writing-row:hover .wr-arrow { opacity: 1; transform: translateX(3px); }
+  @media (max-width: 700px) {
+    .writing-row { grid-template-columns: 48px 1fr; gap: 0 1rem; }
+    .wr-meta { display: none; }
+    .wr-date-inline { display: block; font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.1em; color: rgba(138,128,112,0.5); margin-top: 0.3rem; }
+  }
+  .wr-date-inline { display: none; }
+
+  /* hidden when filtered out */
+  .writing-row.filtered-out,
+  .writing-featured.filtered-out { display: none; }
+
+  /* no-results message */
+  .no-results {
+    padding: 4rem 0; text-align: center;
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--muted); display: none;
+  }
+
+  /* FOOTER */
+  .page-footer {
+    padding: 3rem 4rem; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+  }
+  .page-footer-copy { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.15em; color: rgba(138,128,112,0.45); text-transform: uppercase; }
+  .page-footer-back { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s; }
+  .page-footer-back:hover { color: var(--accent); }
+  @media (max-width: 700px) { .page-footer { padding: 2rem 1.5rem; } }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- Article reader overlay -->
+<div class="article-overlay" id="articleOverlay" role="dialog" aria-modal="true" aria-label="Article reader">
+  <button class="article-back" id="articleBack" onclick="closeArticle()">← All Writing</button>
+  <div class="article-inner">
+    <p class="article-eyebrow" id="articleCategory"></p>
+    <h1 class="article-title" id="articleTitle"></h1>
+    <div class="article-meta-bar">
+      <span class="article-meta-item" id="articleDate"></span>
+      <span class="article-meta-item" id="articleReadTime"></span>
+    </div>
+    <div class="article-body" id="articleBody"></div>
+    <p class="article-sig">~ Shaurya Pratap Singh</p>
+  </div>
+</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">SPS</a>
+  <a href="index.html" class="nav-back">← Back to Site</a>
+</nav>
+
+<header class="page-header">
+  <p class="page-header-eyebrow">All Writing</p>
+  <h1 class="page-header-title">The <em>Archive</em></h1>
+  <p class="page-header-sub">Essays, analyses, and opinions on law, politics, and the forces that shape the republic.</p>
+  <span class="page-header-count" id="headerCount"></span>
+</header>
+
+<div class="filter-bar" id="filterBar">
+  <span class="filter-label">Filter</span>
+  <button class="filter-btn active" data-cat="all" onclick="filterBy('all', this)">All</button>
+</div>
+
+<main class="writing-list" id="writingList">
+  <div class="no-results" id="noResults">No pieces in this category yet.</div>
+</main>
+
+<footer class="page-footer">
+  <span class="page-footer-copy">© 2025 Shaurya Pratap Singh · Written with intention.</span>
+  <a href="index.html" class="page-footer-back">← Return to site</a>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════
+   ARTICLES DATA — keep in sync with index.html
+═══════════════════════════════════════════ */
+const articles = [
+  {
+    id: "fall-of-titans",
+    number: "001",
+    category: "Analysis",
+    date: "May 2026",
+    featured: true,
+    title: "The Fall of Titans: Analysing the May 2026 Elections",
+    excerpt: "Tipu Sultan died on the 4th of May, 1799. Synonymously, on this date wither the legacies of decadal local parties, once considered impenetrable within their states' bastions. The aberrations set this week truly underscore the burgeoning affinity for the Saffron's administration.",
+    body: `<p>Tipu Sultan, the revered opposer of the Raj, died on the 4th of May, 1799. Synonymously, albeit with even greater fervor, on this date wither the legacies of decadal local parties, once considered impenetrable within their states' bastions. The aberrations set this week truly underscore the burgeoning affinity for the Saffron's administration, a sweeping victory leaving the opposition's bulwark on its knees.</p>
+<p>With the Didi's 4th term left asunder, West Bengal found its new play-thing in the BJP's first government. Tamil Nadu's Stalin and <a href="https://en.wikipedia.org/wiki/Edappadi_K._Palaniswami">Palaniswami</a> stood awestruck as their "Dravidian Duopoly" surrendered to the wrath of Vijay's newbie, the TVK. Kerala's case was no different, with the UDF kicking in with a massive comeback, on the expense of the LDF's landslide failure.</p>
+<p>Simply put, the tenuous Opposition has been further weakened. Drastically, that is.</p>
+<p>Grabbing the eyeballs are Kejriwal's recent feud with Delhi High Court Justice S.K. Sharma (plus the merger with BJP), consternations precipitating by the Election Commission's conduct, and the BJP's gaze now over Punjab. The coming couple of years shall seal the fate of the contemporary INDIA Bloc and its spars with the NDA's sweeping whip.</p>
+<p>This election left a meagre sum of states of an already splintered Opposition at bay. Only Jharkhand, Karnataka, Telangana, Kerala, Tamil Nadu, Himachal, Mizoram, and Punjab remain un-saffronised, with 4 of these states under the 'Grand Old Party' (INC). Rest, the pearls stay stashed with the BJP's NDA.</p>
+<p>The pertinent question that arises in every liberal's head is simply this. How? I seek to answer precisely this dilemma, encasing the ingenuity of the BJP's political strategic penetration of opposition helms in a nutshell, while concomitantly underscoring these opposition-CMs' horrid slips.</p>
+<p>I'll start with the biggest shocker of this election, i.e., the oust of Mamata Banerjee from the state residency. Prima Facie the Didi should've swept this election without much trouble. 2021 marked her largest landslide against the BJP, with a mark of 215 under the TMC's feather, in contrast to the BJP's mere 77. 2026 quite literally turned the tables around, with the BJP at 206 and Mamata at 81.</p>
+<p>But look at these numbers. The BJP's vote share was 38% in 2021, 39% in 2024, and 45% in 2026. The vote-share trends seem to have steadily increased, not drastically, with the only difference cited being the anti-incumbency vote now completely garnered by the BJP and not its sister opposition parties trotting in the same race (conspicuously, the mere 2 seat margin won by the INC).</p>
+<p>Structurally, the TMC's formidable electoral machine, despite 30% of the polling booths not covered by it, lost to the BJP's far disadvantaged position. Citing the Election Commission's SIR exercise, at least in the Supreme Court's implicit understanding, is nothing more than an obstruction of a Constitutional practice, one that is fundamentally unbiased. However, that's a debate for another day.</p>
+<p>One major scandal that took the TMC by the jaws was the SCC Case, with an estimated 400+ Crore valuation. Despite the contents of the scam and the Court's verdict, Mamata continued to rally high-profile accused members in her 2024 campaign — something the Opposition juiced vehemently.</p>
+<p>Additionally, the R.G. Kar Case and the Matri Shakti Vandan Yojana in tandem eroded the 'Didi' status of Mamata, leaving her without the women vote bank she had cherished for a decade and a half. The former's mother, Ratna Debnath, won in the Panihati Constituency, vowing to avenge her daughter's murder through Didi's defeat. The latter, on the other hand, effectively turned the Lakshmir Bhandar obsolete.</p>
+<p>And, of course, the Gunda Raj, Nepotism, and Syndicate Politics. The most conspicuous of the musketeers. So, to sum up, Mamata's defeat was not uncalled for. Rather, the BJP had been placing the sheets since 2021. In 2026, the Leader of Opposition's seat stood vacant for the former-Didi to take over.</p>
+<p>Only fate can construe if she can ever recover from such a gloomy loss at the state elections.</p>
+<p>The second shocker was the Dravidian Binary's defeat against film-star Vijay, the newbie TVK's founder. To be fair, I underestimated this man. It is since 1967 that a party other than the Dravidians have ruled this South Indian state, simultaneously making him the state's first Christian Chief Minister. The failure of the Dravidians' political structure and planning is what I seek to emphasise here.</p>
+<p>The defection of O. Panneerselvam to the formerly-ruling DMK, and Palaniswami's confusing alliance with the NDA only marred the winning case for both the feuding parties. The AIADMK's internecine bloodletting, in essence, was a gift wrapped for Vijay. Palaniswami's NDA flirtation, ideologically jarring for a party rooted in Dravidian social justice and anti-Brahminism, chased away precisely the secular and minority vote he needed to consolidate.</p>
+<p>That the BJP itself managed a solitary seat despite the formal alliance tells the whole story of what the pact was worth. And Stalin's studied silence on Vijay, a sort of deliberate stratagem to deny the upstart oxygen, seemed to only fan the flames. The media vacuum that the DMK refused to fill, TVK occupied wholesale. And the results are a testament to them.</p>
+<p>The arithmetic, hence, delivered its verdict. A 34.92% debut in a three-way race, under FPTP (first-past-the-post), was all Vijay needed. The Dravidians, splitting the residual 45% between them in constituency after constituency, handed him the throne by their own mutual consumption. C.N. Annadurai's spirit must've watched with bemusement.</p>
+<p>The third, and perhaps most historically resonant, collapse was that of the Left in Kerala. The last of the Left in all of India. Pinarayi Vijayan, 81, sought a third consecutive term, a feat no southern Chief Minister has achieved in the modern democratic era. The electorate, obligingly, reminded him why that was the case. The UDF's (approx.) 95-seat haul, against the LDF's catastrophic 43, marks the extinguishing of the last ember of Communist governance in India, a distinction the country last held in 1977.</p>
+<p>Vijayan's undoing was, peculiarly, of his own making. The 2021 victory, extraordinary in its own right — the first consecutive second term in Kerala's history — was secured on the back of COVID governance so commendable it earned international admiration. The podium briefings at 6 p.m., the flattening of the curve, the KK Shailaja phenomenon. Yet it was Shailaja herself whom Vijayan quietly sidelined before the 2021 campaign, unwilling, it would seem, to share the limelight with a colleague who'd eclipsed him in the public imagination.</p>
+<p>That decision, read as Stalinist even by sympathisers, planted the first seeds of discontent among the Left's own constituency.</p>
+<p>What germinated over the subsequent five years was a cascade. The Gold Smuggling Case, drawing Vijayan's own Principal Secretary into its net. The Sprinklr data row. The cooperative banking irregularities. The KIIFB's off-budget opacity. Piece by piece, the CPI(M)'s foundational moral authority — its central electoral asset, its differentiation from a Congress perennially accused of graft — was simply, and amazingly, stripped away.</p>
+<p>Vijayan's defiant posture in the face of each accusation, whatever its legal merit, came across as nothing but imperious dismissal of accountability. An 81-year-old man seeking a third term, surrounded by controversies and a party hollowed of successor talent, asking Kerala for yet more patience.</p>
+<p>Kerala did not oblige.</p>
+<p>The rump of un-saffronised India — Jharkhand, Karnataka, Telangana, Kerala, Tamil Nadu, Himachal, Mizoram, Punjab — is smaller still, and internally incoherent. A TVK that is neither opposition nor ally. A Kerala UDF whose Congress anchor cannot quite claim credit for a win delivered by the LDF's implosion. A Himachal and Karnataka that remain perpetually contested.</p>
+<p>The INDIA Bloc, already a leaky vessel after 2024, has now lost its most combative admiral in Didi. Whether what follows is genuine consolidation of governance under the NDA's expanded mandate, or the slow germination of a new opposition architecture from the rubble of these three — that, as the man said, is a question for another day.</p>`
+  },
+  {
+    id: "three-governors",
+    number: "002",
+    category: "Constitutional Law",
+    date: "Apr 2026",
+    featured: false,
+    title: "Three Governors, One Verdict: The Supreme Court's Stand on Gubernatorial Overreach",
+    excerpt: "The Supreme Court of India has delivered what may well be remembered as the most consequential constitutional rebuke to gubernatorial overreach in the republic's history.",
+    body: `<p>The Supreme Court of India has delivered what may well be remembered as the most consequential constitutional rebuke to gubernatorial overreach in the republic's history.</p>
+<p>In a landmark ruling concerning the Governors of Tamil Nadu, Kerala, and Telangana — three states governed by opposition parties — the Court held that the indefinite withholding of assent to Bills passed by duly elected state legislatures is constitutionally impermissible.</p>
+<p>The judgment, authored by a Constitution Bench, did not merely resolve the immediate disputes. It articulated, for the first time with such clarity, the outer limits of gubernatorial discretion under Articles 200 and 201 of the Constitution — provisions that had, for decades, served as instruments of political mischief when exploited by Governors acting as extensions of the Union executive.</p>
+<p>The facts were not in serious dispute. The three Governors had sat on dozens of Bills — some for years — neither granting assent, nor returning them, nor reserving them for Presidential consideration. This fourth path, as it were, found no sanction in the constitutional text. The Court agreed.</p>
+<p>What distinguishes this ruling from its predecessors is not merely its conclusions, but its tone. The Court was unusually candid about the structural problem: that the Governor, a constitutional functionary appointed by and removable at the pleasure of the Union executive, was being used to paralyse opposition-run state governments. The judgment takes pains to restate that the Governor is not an agent of the Centre. That bears emphasis. It is a proposition that has been stated before, but seldom enforced.</p>
+<p>The Court's remedy — that Bills on which the Governor has failed to act within the prescribed period shall be deemed to have received assent — is the more arresting innovation. It converts what had been a discretionary constitutional obligation into an enforceable one, removing the weapon of silence from gubernatorial hands.</p>
+<p>The implications extend beyond the three states immediately concerned. At the time of writing, several Governors across opposition-governed states have adopted similar postures of studied inaction. This judgment renders that posture untenable. Whether the political will to enforce it through contempt proceedings exists is another matter.</p>
+<p>One must also note what the judgment does not do. It does not address the broader question of gubernatorial appointment — the mechanism by which politically convenient nominees find themselves occupying Raj Bhavans. That remains a structural vulnerability the Constitution leaves largely unremedied.</p>
+<p>But for now, the Court has done what it could within its domain. It has redrawn the constitutional line. The republic will have to decide whether to honour it.</p>`
+  },
+  {
+    id: "waqf-amendment",
+    number: "003",
+    category: "Legislative Analysis",
+    date: "Mar 2026",
+    featured: false,
+    title: "The Waqf (Amendment) Act, 2025: A Structural Critique",
+    excerpt: "The Waqf (Amendment) Act, 2025 passed in a Parliament characterised by near-complete Opposition absence. Four provisions of the Act warrant particular constitutional scrutiny.",
+    body: `<p>The Waqf (Amendment) Act, 2025 passed in a Parliament characterised by near-complete Opposition absence — a procedural circumstance that does not, of itself, render the legislation invalid, but which ought to heighten the scrutiny applied to its substance. That scrutiny, applied honestly, reveals provisions that are difficult to reconcile with constitutional principle.</p>
+<p>Four provisions warrant particular attention.</p>
+<p>The first is the redefinition of waqf by user. The existing law recognises properties as waqf on the basis of long, uninterrupted use for religious or charitable purposes — a doctrine rooted in Muslim personal law and affirmed across decades of judicial precedent. The Amendment substantially narrows this doctrine, requiring formal documentation as a precondition for recognition. For properties endowed centuries before the modern administrative apparatus existed, this is a standard they cannot practically meet. The effect, whether intended or not, is the prospective de-recognition of established religious endowments.</p>
+<p>The second concerns the composition of the Central Waqf Council and State Waqf Boards. The Amendment mandates the inclusion of non-Muslim members — including two women, which is welcome — but goes further, permitting non-Muslims to hold positions in institutions established specifically for the administration of Muslim charitable endowments. The analogy to equivalent Hindu endowment boards, from which non-Hindus are constitutionally and statutorily excluded, is one the legislative drafters have not adequately addressed.</p>
+<p>The third provision, and perhaps the most operationally consequential, concerns the Survey Commissioner. The Amendment transfers authority over disputed waqf property surveys from dedicated Waqf officers to general revenue officials. This is not a technical administrative rearrangement. Waqf property surveys require specialist knowledge of both religious endowment law and the historical documentation practices of Muslim communities. Substituting generalist officials introduces both competence deficits and new vectors for political interference at the district level.</p>
+<p>The fourth issue is the limitation on judicial review. Certain determinations under the amended Act are insulated from challenge before civil courts, with remedies channelled exclusively through tribunals whose composition and independence the Amendment itself modifies. The Supreme Court has repeatedly held that the right to approach a court of law is a basic feature of the Constitution. Legislation that curtails this right, even in the service of administrative efficiency, invites constitutional challenge on those grounds.</p>
+<p>None of this is to suggest that the Waqf Act required no reform. The administration of waqf properties in India has been marked, in too many instances, by opacity, encroachment, and the self-dealing of those entrusted with their stewardship. A legislature that chose to address these failures — through transparent accounting requirements, independent auditing, and strengthened beneficiary rights — would have found constitutional ground to stand on.</p>
+<p>This Amendment chose a different path. The constitutional courts will determine whether it is a path the republic's foundational document permits.</p>`
+  },
+  {
+    id: "right-to-be-forgotten",
+    number: "004",
+    category: "Digital Rights",
+    date: "Feb 2026",
+    featured: false,
+    title: "The Right to Be Forgotten: India's Unfinished Constitutional Conversation",
+    excerpt: "The Digital Personal Data Protection Act, 2023 acknowledges the right to erasure — but the gap between legislative acknowledgment and operational reality is, in India's case, a chasm.",
+    body: `<p>In August 2017, a nine-judge bench of the Supreme Court of India affirmed privacy as a fundamental right under Article 21. That judgment, Puttaswamy v. Union of India, was in many respects a constitutional watershed. It was also, in respect of the right to be forgotten, a promissory note — one whose encashment has proven considerably more complicated than its issuance.</p>
+<p>The Digital Personal Data Protection Act, 2023 acknowledges the right to erasure. A data principal may, in defined circumstances, request that a data fiduciary erase personal data that is no longer necessary for the purpose for which it was collected. The provision is real. The gap between legislative acknowledgment and operational reality is, in India's case, a chasm.</p>
+<p>Consider the position of an individual whose name appears in a newspaper archive for a minor criminal matter that did not result in conviction — or for which the individual has served their sentence and been discharged. The newspaper's digital edition is indexed by every major search engine. The individual's name, on a simple search, surfaces the article. Prospective employers, landlords, and social acquaintances encounter it. The person has, in the formal sense, served their debt to society. In the digital sense, they serve it in perpetuity.</p>
+<p>The DPDP Act's erasure provisions do not straightforwardly reach this situation. The newspaper is a data fiduciary, but the publication of news is exempted from the Act's provisions to the extent necessary for journalistic purposes. Search engines are intermediaries, not necessarily data fiduciaries in relation to this specific content. The individual's remedy, if any, requires either voluntary compliance or litigation — the outcome of which, in India's under-resourced court system, is neither swift nor certain.</p>
+<p>The European experience offers partial instruction. The Court of Justice of the European Union's ruling in Google Spain established, in 2014, that individuals could require search engines to de-index links to personal information that was inadequate, irrelevant, or excessive in relation to the purposes of data processing. This created a workable, if imperfect, administrative mechanism: a request-and-review process handled at the platform level, subject to judicial oversight.</p>
+<p>India has no equivalent mechanism. The DPDP Act's redressal framework is in its implementation infancy. The Data Protection Board is not yet constituted. The Rules that will operationalise the Act's provisions have not been finalised.</p>
+<p>In the interim, individuals seeking to be forgotten must approach the High Courts under Article 226 — a remedy theoretically available, practically arduous, and jurisprudentially inconsistent. Different High Courts have reached different conclusions on the balancing of privacy against the public's right to information, without a supervening framework to reconcile them.</p>
+<p>The right to be forgotten is not an absolute right. It has never been so, not even in Europe. It is a right that must be weighed against press freedom, historical record, and the public interest in accountability. But a right that can only be exercised through High Court litigation is, for most Indians, not a right at all. It is a privilege available to those with means and legal representation.</p>
+<p>The constitutional conversation that Puttaswamy began is unfinished. The DPDP Act has sketched the outline. The substance of the right — its scope, its limits, its enforcement mechanism — remains to be filled in. The longer that task is deferred, the more names accumulate in archives that their bearers cannot escape.</p>`
+  },
+  {
+    id: "press-freedom-index",
+    number: "005",
+    category: "Opinion",
+    date: "Jan 2026",
+    featured: false,
+    title: "On Press Freedom Rankings and What They Actually Measure",
+    excerpt: "India's rank on the RSF World Press Freedom Index has become an annual occasion for two entirely predictable responses — the government dismisses it, and the opposition amplifies it. Neither engages with what the index actually measures.",
+    body: `<p>India's rank on the RSF World Press Freedom Index has become an annual occasion for two entirely predictable responses. The government dismisses it as motivated, methodologically flawed, and compiled by organisations with an ideological agenda. The opposition amplifies it as damning evidence of democratic backsliding. Neither response engages, with any seriousness, with what the index actually measures or what its limitations are.</p>
+<p>The RSF index assesses press freedom across five indicators: the political context, the legal framework, the economic context, the sociocultural context, and safety. The methodology relies substantially on questionnaires completed by journalists and press freedom correspondents — a design that introduces, alongside genuine insight, the risk of systematic bias in sampling. Countries with better-organised and more internationally connected journalist communities may score differently from countries where the press operates in comparable conditions but with less visibility to global NGOs.</p>
+<p>This is not an argument that India's ranking is wrong. The conditions that bear on Indian press freedom — the ownership concentration in media, the deployment of defamation and sedition provisions against journalists, the treatment of reporters in conflict zones such as Manipur and Kashmir, the economic vulnerability of regional-language press to government advertising revenue — are documented, verifiable, and serious. They do not require the endorsement of a Paris-based organisation to be real.</p>
+<p>What the RSF ranking does not do is provide a causal account. It records an outcome, not a mechanism. It does not distinguish between press freedom constrained by legal architecture, press freedom constrained by private ownership patterns, and press freedom constrained by physical danger to journalists. These distinctions matter enormously for policy, even if they matter little for a single composite number.</p>
+<p>The government's reflexive dismissal is, in this respect, a missed opportunity. A state confident in its record would engage with the specific indicators on which India scores poorly and contest them on the evidence — or, if the evidence is correct, address the underlying conditions. Dismissal as a strategy is, among other things, an implicit concession that engagement would be uncomfortable.</p>
+<p>The opposition's uncritical amplification is equally unserious. A ranking is a starting point for a conversation, not a substitute for one. The deterioration in India's ranking spans administrations, reflects structural features of the Indian media economy that predate the current government, and includes dimensions — such as the vulnerability of small-press journalists to local criminal and political pressure — that no national government of any stripe has seriously addressed.</p>
+<p>The press freedom conversation India needs is more granular, more honest, and more uncomfortable than either the government or the opposition currently appears willing to have.</p>`
+  },
+  {
+    id: "article-370-aftermath",
+    number: "006",
+    category: "Constitutional Law",
+    date: "Dec 2025",
+    featured: false,
+    title: "After Article 370: What the Supreme Court's Judgment Left Unresolved",
+    excerpt: "The Supreme Court's December 2023 judgment upholding the abrogation of Article 370 resolved the constitutional question — or deferred it. What it did not resolve is the political and administrative reality that has followed.",
+    body: `<p>The Supreme Court's December 2023 judgment upholding the abrogation of Article 370 resolved the constitutional question — or deferred it, depending on one's reading of the majority opinion's more elliptical passages. What it did not resolve, and what no court can resolve, is the political and administrative reality that has followed five years of direct central rule over what was once India's only Muslim-majority state.</p>
+<p>The Court held that the President's proclamation under Article 356, and the subsequent legislative actions taken by Parliament while Jammu & Kashmir was under President's Rule, were constitutionally valid. The Court also held — and this is the element that has received insufficient attention in subsequent commentary — that the bifurcation of the state into two Union Territories was an exceptional measure, and that statehood should be restored.</p>
+<p>That direction has not been acted upon with any discernible urgency. Jammu & Kashmir remains a Union Territory, governed by an elected assembly since November 2024 but with a Lieutenant Governor whose powers, under the current constitutional arrangement, substantially constrain the elected government's authority. The National Conference-led government finds itself in a structural position not entirely unlike that of the AAP government in Delhi — elected but not fully sovereign, governing but not governing.</p>
+<p>The unresolved questions are several. First, the timeline for statehood restoration. The Union government has made commitments; it has not made a calendar. Each passing month of UT status entrenches administrative arrangements, service cadres, and institutional structures that will be more difficult to unwind. The longer the restoration is deferred, the more the deferral itself becomes the reality.</p>
+<p>Second, the political status of Kashmiris who were stripped of special privileges — including the right to buy land in the territory — that the old Article 35A framework had conferred. The economic consequences of that change, particularly in respect of land ownership and employment in state services, are still working themselves through Kashmiri society. They were not addressed by the Supreme Court's judgment and are unlikely to be addressed through judicial intervention.</p>
+<p>Third, and most substantially, the question of political normalisation. The 2024 assembly election was conducted, votes were cast, and a government was formed. These are not trivial achievements in a region that has experienced what Jammu & Kashmir has experienced. They are also not sufficient evidence that the underlying political estrangement — of significant portions of the Valley's population from the Indian constitutional project — has been resolved rather than suppressed.</p>
+<p>Suppression and resolution look identical in the short run. They diverge, often sharply, over time.</p>`
+  },
+  {
+    id: "bci-reservation",
+    number: "007",
+    category: "Legal Reform",
+    date: "Dec 2025",
+    featured: false,
+    title: "The 33% BCI Reservation Case: And the Arguments Against It",
+    excerpt: "On 4th December 2025, the Supreme Court directed the Bar Council of India to ensure that women hold at least 30% of seats in State Bar Councils. This is a long overdue correction to a system that kept women at roughly 2% representation in bar governance.",
+    body: `<blockquote>"No longer a Boys' Club..."</blockquote>
+<p>On 4th December 2025, the Supreme Court directed the Bar Council of India to ensure that women hold at least 30% of seats in State Bar Councils.</p>
+<p>This is a long overdue correction to a system that kept women at roughly 2% representation in bar governance, even as they entered the legal profession in unprecedented numbers.</p>
+<p>Predictably enough, familiar arguments resurfaced.</p>
+<p>"Won't this damage meritocracy? How will male members of the bar earn? Won't male lawyers feel the competition is unfair?"</p>
+<p>No. Here's why.</p>
+<p>The foundation of the Bar Councils in India is not built upon gender neutrality, and that's a fact. This continues to resonate despite decades of establishment.</p>
+<p>The stereotype that women are 'unsuited' for a profession seen as vociferous, aggressive, and intellectually tough still decides how senior advocates endorse their successors and groom juniors under them. It continues to persist despite exemplary figures such as those of Justice B.V. Nagarathna, Justice Hima Kohli, Zia Mody, and Maneka Guruswamy, whose works have reshaped the modern legal landscape.</p>
+<p>Even as opportunities are improving in the Bench for female judges and justices in the District and High Courts, the same does not apply for the Bar.</p>
+<p>The judiciary may offer a fairer path. But the State Bar Councils do not. They have been built upon the foundations of keeping male circles in positions of power, something that has continued for generations.</p>
+<p>Considering meritocracy as a defence in a system with deep-rooted bias against female members is not meritocracy. It is sheer patriarchy.</p>
+<p>And that difference is one that society will have to redress.</p>`
+  },
+  {
+    id: "vb-gramg",
+    number: "008",
+    category: "Policy",
+    date: "2025",
+    featured: false,
+    title: "Ram ka Naam Badnam mat Karo: The Case of VB-GRAMG",
+    excerpt: "The Viksit Bharat Guarantee for Rozgar and Ajeevika Mission (Gramin) Bill, 2025 has recently been tabled in Parliament, ought to set apart the former MGNREGA Framework. Three provisions in particular warrant scrutiny.",
+    body: `<blockquote>"Ram ka Naam Badnam Mat Karo!"</blockquote>
+<p>I never knew this adage would ever be relevant in any political context. But surprises aren't a new thing around Lutyen's Delhi.</p>
+<p>Viksit Bharat Guarantee for Rozgar and Ajeevika Mission (Gramin) Bill, 2025, abbreviated "VK G-RAM-G", has recently been tabled in Parliament, ought to set apart the former MGNREGA Framework, while instating a new rural job guarantee initiative, 20 years after the former.</p>
+<p>Now, if you're an updated citizen, you'll be aware of the usual theatrics coming into play. With the Mahatma being sidelined, and Hindi iterated once again in a majorly non-Hindi speaking nation, the ruling party has yet again proved its bulwark against a weakening opposition, no matter how preposterous.</p>
+<p>However, what interests me is the act's greater intent. What really is up with these 'Viksit Bharat' prefixed bills? Cutting to the chase, three provisions in particular warrant scrutiny in the tabled bill.</p>
+<p><strong>Firstly, the 125 days of guaranteed employment.</strong></p>
+<p>This is the headline of the hour. 25 more days for everyone. Looks lovely on paper, till you realise how baseless these numbers look on graphs. The minimum-100-day MGNREGA Scheme barely achieved its targets in most states, and here we are, at the Parliament, inducting a delusionally written charter, to put colloquially. Switching 100 days to 125 won't change the Union's 50–60 averaged apathy.</p>
+<p><strong>Secondly, higher state investments.</strong></p>
+<p>Mainstream media turned a blind eye to this, fairly conveniently. In a fiscal era where State governments grow increasingly reliant on the Union for additional funds, the bill tends to divide the Union and State contribution respectively by 60:40 (excluding North Eastern & Himalayan States, and UTs without Legislatures).</p>
+<p>40 percent paid entirely by the State. Additionally, unemployment allowances, state council costs, and a quarter of material costs all fall under the ambit of the states' treasury. Essentially, what this heralds is a more constrained, opposition-run states' relationship, meanwhile the Union allows its ruling-states uninterrupted cashflow. Political bargaining is what will run our governments in the coming years.</p>
+<p><strong>Lastly, the proposed Normative Model.</strong></p>
+<p>Adopting a Tops-Down downstream rather than the former Bottoms-Up approach in the MGNREGA Scheme sounds alright, but its implications do not. I'm no economist, but I'm certain the Center cannot simply "predict", or at least accurately approximate costs without regional enumeration that the Manmohan Singh-led bill had formerly established.</p>
+<p>Add this to the State's liability to pay any costs additional to the funds offered by the Center, and you'll find yourself in yet another fiscal constraint. Dependency to the exchequer — that's the theme of the era.</p>
+<p>In a nutshell, the Viksit Bharat so proclaimed is clayed out by hollow bills. Bills that only promise but bring miniscule change, while the Center continues with its puppetry. There's nothing Viksit about it.</p>`
+  }
+];
+
+/* ═══ BUILD FILTER BUTTONS ═══ */
+function buildFilters() {
+  const bar = document.getElementById('filterBar');
+  const cats = [...new Set(articles.map(a => a.category))];
+  cats.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.dataset.cat = cat;
+    btn.textContent = cat;
+    btn.onclick = function() { filterBy(cat, this); };
+    bar.appendChild(btn);
+  });
+}
+
+let currentFilter = 'all';
+function filterBy(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  const featured = document.getElementById('featuredPiece');
+  const rows = document.querySelectorAll('.writing-row');
+  const noResults = document.getElementById('noResults');
+  let visibleCount = 0;
+
+  if (featured) {
+    const match = cat === 'all' || featured.dataset.cat === cat;
+    featured.classList.toggle('filtered-out', !match);
+    if (match) visibleCount++;
+  }
+  rows.forEach(row => {
+    const match = cat === 'all' || row.dataset.cat === cat;
+    row.classList.toggle('filtered-out', !match);
+    if (match) visibleCount++;
+  });
+  noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+}
+
+/* ═══ RENDER ═══ */
+function render() {
+  const list = document.getElementById('writingList');
+  const count = document.getElementById('headerCount');
+  count.textContent = articles.length + ' piece' + (articles.length !== 1 ? 's' : '');
+
+  const featured = articles.find(a => a.featured);
+  const rest = articles.filter(a => !a.featured);
+
+  // Featured card
+  if (featured) {
+    const fi = articles.indexOf(featured);
+    const el = document.createElement('a');
+    el.href = '#';
+    el.id = 'featuredPiece';
+    el.className = 'writing-featured reveal';
+    el.dataset.cat = featured.category;
+    el.setAttribute('aria-label', 'Read: ' + featured.title);
+    el.innerHTML = `
+      <div class="wf-left">
+        <div>
+          <span class="wf-badge">Featured</span>
+          <p class="wf-category">${featured.category}</p>
+          <h2 class="wf-title">${featured.title}</h2>
+          <p class="wf-excerpt">${featured.excerpt}</p>
+        </div>
+        <div class="wf-footer">
+          <span class="wf-date">${featured.date}</span>
+          <span class="wf-arrow">→</span>
+        </div>
+      </div>
+      <div class="wf-right">
+        <div class="wf-number">${featured.number}</div>
+      </div>`;
+    el.addEventListener('click', e => { e.preventDefault(); openArticle(fi); });
+    list.appendChild(el);
+  }
+
+  // Divider
+  const div = document.createElement('div');
+  div.className = 'list-divider reveal';
+  div.innerHTML = `<div class="list-divider-line"></div><span class="list-divider-label">All Pieces</span><div class="list-divider-line"></div>`;
+  list.appendChild(div);
+
+  // List rows
+  rest.forEach(a => {
+    const idx = articles.indexOf(a);
+    const row = document.createElement('a');
+    row.href = '#';
+    row.className = 'writing-row reveal';
+    row.dataset.cat = a.category;
+    row.setAttribute('aria-label', 'Read: ' + a.title);
+    row.innerHTML = `
+      <span class="wr-num">${a.number}</span>
+      <div class="wr-body">
+        <span class="wr-cat">${a.category}</span>
+        <span class="wr-title">${a.title}</span>
+        <span class="wr-excerpt">${a.excerpt}</span>
+        <span class="wr-date-inline">${a.date}</span>
+      </div>
+      <div class="wr-meta">
+        <span class="wr-date">${a.date}</span>
+        <span class="wr-arrow">→</span>
+      </div>`;
+    row.addEventListener('click', e => { e.preventDefault(); openArticle(idx); });
+    list.appendChild(row);
+  });
+}
+
+/* ═══ ARTICLE READER ═══ */
+function openArticle(index) {
+  const a = articles[index];
+  const words = a.body.replace(/<[^>]+>/g, '').split(/\s+/).length;
+  const mins = Math.max(1, Math.round(words / 200));
+  document.getElementById('articleCategory').textContent = a.category;
+  document.getElementById('articleTitle').textContent = a.title;
+  document.getElementById('articleDate').textContent = a.date;
+  document.getElementById('articleReadTime').textContent = mins + ' min read';
+  document.getElementById('articleBody').innerHTML = a.body;
+  const overlay = document.getElementById('articleOverlay');
+  overlay.classList.add('open');
+  overlay.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+function closeArticle() {
+  document.getElementById('articleOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeArticle(); });
+
+/* ═══ SCROLL REVEAL ═══ */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+/* ═══ INIT ═══ */
+buildFilters();
+render();
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
