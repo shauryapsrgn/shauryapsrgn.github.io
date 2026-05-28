@@ -93,52 +93,56 @@
     }
   }
 
-  /* HERO */
+  /* ═══ HERO ═══ */
   .hero {
-    min-height: 100vh; display: flex; flex-direction: column;
-    justify-content: flex-end; padding: 0 4rem 6rem;
-    position: relative; overflow: hidden;
+    position: relative;
+    height: 100vh; min-height: 600px;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    overflow: hidden;
+    text-align: center;
   }
-  .hero-content { position: relative; z-index: 3; }
-  /* Giant faint watermark that drifts behind the name */
-  .hero-watermark {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: var(--serif);
-    font-size: clamp(16rem, 38vw, 44rem);
-    font-weight: 300;
-    font-style: italic;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(201,168,76,0.07);
-    white-space: nowrap; user-select: none; pointer-events: none;
-    z-index: 1;
-    letter-spacing: 0.05em;
-    animation: watermarkFloat 16s ease-in-out infinite alternate;
+  /* Full-width horizontal photo — fades in on load */
+  .hero-group-photo {
+    position: absolute; inset: 0; z-index: 0;
+    opacity: 0;
+    animation: heroPhotoFade 2s ease 0.3s forwards;
   }
-  @keyframes watermarkFloat {
-    0%   { transform: translate(-50%, -50%) scale(1); }
-    100% { transform: translate(-48%, -52%) scale(1.05); }
+  .hero-group-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center top;
+    filter: brightness(0.5) contrast(1.1) grayscale(0.3);
   }
-  .hero-bg-text {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: var(--serif); font-size: clamp(9rem, 18vw, 20rem);
-    font-weight: 300; color: transparent;
-    -webkit-text-stroke: 1px rgba(180,160,120,0.06);
-    white-space: nowrap; user-select: none; pointer-events: none;
+  @keyframes heroPhotoFade {
+    from { opacity: 0; transform: scale(1.04); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  /* Gradient vignette — stronger at top & bottom, lighter in middle */
+  .hero-vignette {
+    position: absolute; inset: 0; z-index: 1;
+    background:
+      linear-gradient(to bottom,
+        rgba(0,0,0,0.72) 0%,
+        rgba(0,0,0,0.18) 35%,
+        rgba(0,0,0,0.18) 65%,
+        rgba(0,0,0,0.85) 100%
+      );
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 2rem;
   }
   .hero-eyebrow {
     display: inline-flex; align-items: center; gap: 0.7rem;
-    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.32em;
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.38em;
     text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem;
-    opacity: 0; animation: fadeUp 1s ease 0.3s forwards;
+    opacity: 0; animation: fadeUp 1s ease 1.2s forwards;
   }
   .hero-eyebrow-dot {
-    width: 6px; height: 6px; border-radius: 50%;
+    width: 5px; height: 5px; border-radius: 50%;
     background: var(--accent);
-    box-shadow: 0 0 0 0 rgba(201,168,76,0.5);
-    animation: eyebrowPulse 2.4s ease-out infinite;
+    animation: eyebrowPulse 2.4s ease-out 2.2s infinite;
   }
   @keyframes eyebrowPulse {
     0%   { box-shadow: 0 0 0 0 rgba(201,168,76,0.5); }
@@ -146,9 +150,10 @@
     100% { box-shadow: 0 0 0 0 rgba(201,168,76,0); }
   }
   .hero-name {
-    font-family: var(--serif); font-size: clamp(3.5rem, 7.5vw, 7.5rem);
+    font-family: var(--serif); font-size: clamp(3.2rem, 7.5vw, 7.5rem);
     font-weight: 300; line-height: 0.95; letter-spacing: -0.02em;
-    margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 1s ease 0.5s forwards;
+    margin-bottom: 1.5rem; text-align: center;
+    opacity: 0; animation: fadeUp 1.1s ease 1.45s forwards;
   }
   .hero-name em {
     font-style: italic;
@@ -156,78 +161,30 @@
     background-size: 200% auto;
     -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent; color: transparent;
-    animation: shimmerName 6s linear infinite;
+    animation: shimmerName 6s linear 2.5s infinite;
   }
   @keyframes shimmerName {
     0%   { background-position: 0% center; }
     100% { background-position: 200% center; }
   }
   .hero-rule {
-    width: 0; height: 2px; margin-bottom: 1.75rem;
-    background: linear-gradient(to right, var(--accent), transparent);
-    opacity: 0; animation: ruleGrow 1.2s cubic-bezier(0.2,0.7,0.3,1) 0.7s forwards;
+    width: 0; height: 1px; margin-bottom: 1.5rem;
+    background: linear-gradient(to right, transparent, var(--accent), transparent);
+    opacity: 0; animation: ruleGrow 1.2s cubic-bezier(0.2,0.7,0.3,1) 1.7s forwards;
   }
-  @keyframes ruleGrow { to { width: 120px; opacity: 1; } }
+  @keyframes ruleGrow { to { width: 100px; opacity: 0.6; } }
   .hero-tagline {
-    font-family: var(--serif); font-size: clamp(1rem, 1.8vw, 1.25rem);
-    font-weight: 300; font-style: italic; color: var(--muted);
-    max-width: 46ch; line-height: 1.7; opacity: 0;
-    animation: fadeUp 1s ease 0.85s forwards;
-  }
-  .hero-tags { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 2rem; opacity: 0; animation: fadeUp 1s ease 1s forwards; }
-  .hero-tag {
-    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.22em;
-    text-transform: uppercase; color: var(--accent);
-    background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(138,106,40,0.04) 100%);
-    border: 1px solid rgba(201,168,76,0.28);
-    padding: 0.55rem 1.1rem; border-radius: 2px;
-    position: relative; overflow: hidden;
-    transition: all 0.4s ease;
-    cursor: default;
-    backdrop-filter: blur(4px);
-  }
-  .hero-tag::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(120deg, transparent 30%, rgba(201,168,76,0.18) 50%, transparent 70%);
-    transform: translateX(-100%);
-    transition: transform 0.7s ease;
-  }
-  .hero-tag:hover {
-    color: var(--parchment);
-    border-color: var(--accent);
-    box-shadow: 0 0 18px rgba(201,168,76,0.18), inset 0 0 12px rgba(201,168,76,0.06);
-    transform: translateY(-1px);
-  }
-  .hero-tag:hover::before { transform: translateX(100%); }
-
-  /* HERO PHOTO */
-  .hero-photo {
-    position: absolute; top: 0; right: 0; bottom: 0;
-    width: 44%; pointer-events: none; z-index: 2;
-    -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.65) 40%, transparent 100%);
-    mask-image: linear-gradient(to left, rgba(0,0,0,0.65) 40%, transparent 100%);
-  }
-  .hero-photo img {
-    width: 100%; height: 100%;
-    object-fit: cover; object-position: top center;
-    filter: brightness(0.75) contrast(1.05);
-    mix-blend-mode: luminosity;
-    opacity: 0.65;
+    font-family: var(--serif); font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+    font-weight: 300; font-style: italic; color: rgba(245,240,232,0.7);
+    max-width: 44ch; line-height: 1.7; text-align: center;
+    opacity: 0; animation: fadeUp 1s ease 1.9s forwards;
   }
   @media (max-width: 700px) {
-    .hero-photo {
-      width: 100%;
-      height: 55%;
-      top: 0; left: 0; right: 0; bottom: auto;
-      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5) 40%, transparent 100%);
-      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5) 40%, transparent 100%);
-    }
-    .hero-photo img {
-      opacity: 0.45;
-      object-position: top center;
-    }
+    .hero-group-photo img { object-position: 60% top; }
+    .hero-name { font-size: clamp(2.8rem, 12vw, 4.5rem); }
   }
+
+
 
   /* QUICK-NAV PANEL */
   .quicknav {
@@ -268,23 +225,226 @@
     transition: color 0.3s, border-color 0.3s;
   }
   .show-more-btn:hover { color: var(--accent); border-color: var(--accent-dim); }
+  .show-more-btn { text-decoration: none; }
 
   /* DIVIDER */
   .divider { display: flex; align-items: center; gap: 2rem; padding: 0 4rem; margin: 3rem 0; }
   .divider-line { flex: 1; height: 1px; background: var(--border); }
   .divider-mark { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.3em; color: var(--accent-dim); text-transform: uppercase; }
 
-  /* ABOUT */
-  .about { padding: 6rem 4rem; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 2fr; gap: 6rem; align-items: start; }
-  .about-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
-  .about-number { font-family: var(--serif); font-size: 8rem; font-weight: 300; color: transparent; -webkit-text-stroke: 1px rgba(180,160,120,0.15); line-height: 1; }
-  .about-text p { font-size: 1.15rem; font-weight: 300; color: var(--muted); line-height: 1.9; margin-bottom: 1.5rem; }
-  .about-text p strong { color: var(--parchment); font-weight: 400; }
-  .credentials { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem; border-top: 1px solid var(--border); padding-top: 2rem; }
-  .credential-item { display: flex; gap: 1.5rem; align-items: baseline; }
-  .credential-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 0.6rem; }
-  .credential-text { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.05em; color: var(--muted); line-height: 1.6; }
-  .credential-text strong { color: var(--parchment); font-weight: 400; }
+  /* ═══ FADE-SECTION — spotlight effect ═══
+     Every section is dim by default. Only the one whose
+     centre is closest to viewport centre gets .in-view.
+     Others fade out as you scroll past them. */
+  .fade-section {
+    opacity: 0.12;
+    transform: translateY(14px);
+    filter: blur(2px);
+    transition:
+      opacity 0.7s cubic-bezier(0.25, 0.8, 0.25, 1),
+      transform 0.7s cubic-bezier(0.25, 0.8, 0.25, 1),
+      filter 0.7s ease;
+    will-change: opacity, transform, filter;
+    /* Each section tall enough to own its own scroll beat */
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  /* About section overrides — it handles its own height */
+  .about-section { display: block; min-height: unset; }
+
+  .fade-section.in-view {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+  .fade-section.leaving-up {
+    opacity: 0;
+    transform: translateY(-20px);
+    filter: blur(3px);
+  }
+  .fade-section.leaving-down {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(3px);
+  }
+
+  /* ═══ ABOUT — one sentence per screen, sticky scroll ═══
+     .about-section is a tall scroll-track.
+     Each .about-slide is sticky at 0 and fills 100vh.
+     As you scroll the track, each slide sits on top of
+     the previous one — only one is ever "active" at a time.
+     Active = JS adds .active (opacity 1, no blur, no offset).
+     Leaving = JS adds .leaving (opacity 0, moves up).
+  */
+  .about-section {
+    /* Height = number of slides × 100vh so each gets its own scroll beat */
+    position: relative;
+    /* JS will set --slide-count and compute height */
+    height: calc(var(--slide-count, 6) * 100vh);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* The inner wrapper sticks inside the scroll track */
+  .about-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    pointer-events: none; /* slides manage their own pointer events */
+  }
+
+  /* Each slide is absolutely positioned, centred, full-vp */
+  .about-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 clamp(1.5rem, 8vw, 10rem);
+    text-align: center;
+
+    /* Default state — invisible, below */
+    opacity: 0;
+    transform: translateY(48px);
+    filter: blur(6px);
+    transition:
+      opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.55s ease;
+    pointer-events: none;
+  }
+
+  /* Active — snaps in quickly */
+  .about-slide.active {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+    pointer-events: auto;
+  }
+
+  /* Leaving — exits upward, fast */
+  .about-slide.leaving {
+    opacity: 0;
+    transform: translateY(-40px);
+    filter: blur(4px);
+    transition:
+      opacity 0.35s cubic-bezier(0.4, 0, 1, 1),
+      transform 0.35s cubic-bezier(0.4, 0, 1, 1),
+      filter 0.35s ease;
+  }
+
+  .about-sentence {
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 3.2vw, 2.6rem);
+    font-weight: 300; line-height: 1.5;
+    color: var(--parchment);
+    max-width: 22ch;
+  }
+  .about-sentence strong { font-weight: 400; }
+  .about-sentence em { font-style: italic; color: var(--accent); }
+
+  /* Progress indicator — thin vertical line on right */
+  .about-progress {
+    position: absolute;
+    right: clamp(1.2rem, 3vw, 3rem);
+    top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 0.55rem;
+    pointer-events: none;
+  }
+  .about-pip {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .about-pip.active { background: var(--accent); transform: scale(1.5); }
+
+  /* Skill chips — appear beneath each sentence */
+  .about-chips {
+    display: flex; flex-wrap: wrap; gap: 0.55rem;
+    margin-top: 1.6rem;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease 0.25s, transform 0.4s ease 0.25s;
+  }
+  .about-slide.active .about-chips {
+    opacity: 1; transform: translateY(0);
+  }
+  .about-chip {
+    font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--accent-dim);
+    border: 1px solid rgba(138,106,40,0.3); padding: 0.4rem 1.1rem;
+    text-decoration: none; border-radius: 2px;
+    transition: color 0.25s, border-color 0.25s, background 0.25s;
+  }
+  .about-chip:hover {
+    color: var(--accent); border-color: rgba(201,168,76,0.45);
+    background: rgba(201,168,76,0.06);
+  }
+
+  @media (max-width: 700px) {
+    .about-sentence { font-size: clamp(1.3rem, 5.5vw, 1.9rem); }
+    .about-progress { right: 0.8rem; }
+  }
+
+
+  .quotes-block {
+    padding: 5rem 4rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center; gap: 2.5rem;
+    position: relative; overflow: hidden;
+  }
+  .quotes-carousel { position: relative; width: 100%; max-width: 62ch; min-height: 12rem; display: flex; align-items: center; justify-content: center; }
+  .quote-slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    opacity: 0; transform: translateX(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    pointer-events: none;
+  }
+  .quote-slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+  .quote-slide.exit { opacity: 0; transform: translateX(-40px); }
+  .quote-slide blockquote {
+    font-family: var(--serif); font-size: clamp(1.2rem, 2.2vw, 1.7rem);
+    font-weight: 300; font-style: italic; line-height: 1.6;
+    color: var(--parchment); margin-bottom: 1.5rem;
+  }
+  .quote-slide cite {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--accent-dim); font-style: normal;
+  }
+  .quote-dots { position: absolute; bottom: -2rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; }
+  .quote-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .quote-dot.active { background: var(--accent); transform: scale(1.3); }
+  /* People I Admire teaser pill */
+  .admire-teaser {
+    display: inline-flex; align-items: center; gap: 1rem;
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+    border: 1px solid var(--border); padding: 0.8rem 1.8rem;
+    text-decoration: none; border-radius: 2px; margin-top: 1rem;
+    transition: color 0.3s, border-color 0.3s, background 0.3s;
+  }
+  .admire-teaser-label { }
+  .admire-teaser-arrow { color: var(--accent); transition: transform 0.3s; }
+  .admire-teaser:hover { color: var(--parchment); border-color: rgba(201,168,76,0.35); background: rgba(201,168,76,0.04); }
+  .admire-teaser:hover .admire-teaser-arrow { transform: translateX(4px); }
+  @media (max-width: 700px) {
+    .quotes-block { padding: 4rem 1.5rem; }
+    .quotes-carousel { min-height: 15rem; }
+  }
+
+
 
   /* WRITING INDEX */
   .posts-section { padding: 4rem 4rem 2rem; max-width: 1200px; margin: 0 auto; }
@@ -404,16 +564,6 @@
       padding-bottom: 1.5rem;
     }
   }
-
-  /* QUOTE */
-  .quote-section { padding: 6rem 4rem; display: flex; justify-content: center; position: relative; }
-  .quote-section::before, .quote-section::after { content: ''; position: absolute; left: 4rem; right: 4rem; height: 1px; background: var(--border); }
-  .quote-section::before { top: 0; }
-  .quote-section::after { bottom: 0; }
-  .pull-quote { max-width: 55ch; text-align: center; }
-  .pull-quote blockquote { font-family: var(--serif); font-size: clamp(1.4rem, 2.8vw, 2.3rem); font-weight: 300; font-style: italic; line-height: 1.55; color: var(--parchment); margin-bottom: 2rem; position: relative; }
-  .pull-quote blockquote::before { content: '\201C'; font-size: 7rem; color: var(--accent); opacity: 0.25; position: absolute; top: -2rem; left: -3rem; line-height: 1; }
-  .pull-quote cite { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent-dim); font-style: normal; }
 
   /* FOOTER */
   footer { padding: 6rem 4rem 3rem; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: end; }
@@ -853,7 +1003,7 @@
   @media (max-width: 900px) {
     nav { padding: 1rem 1.5rem; flex-direction: row; align-items: center; }
     .hero { padding: 0 2rem 5rem; }
-    .about { grid-template-columns: 1fr; gap: 2rem; padding: 4rem 2rem; }
+    .about-section { padding: 5rem 1.5rem; }
     .posts-section { padding: 3rem 2rem 2rem; }
     .posts-grid { grid-template-columns: 1fr; }
     .post-card.featured { grid-column: span 1; }
@@ -908,22 +1058,18 @@
 
 <!-- HERO -->
 <section class="hero" id="home">
-  <div class="hero-photo" aria-hidden="true">
-    <img src="shaurya-photo.jpg" alt="">
+  <!-- Full-width horizontal group photo, fades in -->
+  <div class="hero-group-photo" aria-hidden="true">
+    <img src="group-photo.jpg" alt="">
   </div>
-  <div class="hero-watermark" aria-hidden="true">LEX</div>
+  <!-- Dark vignette over photo so text is readable -->
+  <div class="hero-vignette" aria-hidden="true"></div>
+  <!-- Minimal centered text -->
   <div class="hero-content">
-    <p class="hero-eyebrow"><span class="hero-eyebrow-dot"></span>Law · Politics · Words</p>
+    <p class="hero-eyebrow"><span class="hero-eyebrow-dot"></span>Law &nbsp;·&nbsp; Politics &nbsp;·&nbsp; Words</p>
     <h1 class="hero-name">Shaurya<br><em>Pratap Singh</em></h1>
     <div class="hero-rule" aria-hidden="true"></div>
     <p class="hero-tagline">An aspiring student of the Law, with a penchant for political theory, writing, and a conglomerate of both.</p>
-    <div class="hero-tags" aria-label="Interests">
-      <span class="hero-tag">Constitutional Law</span>
-      <span class="hero-tag">Political Theory</span>
-      <span class="hero-tag">Journalism</span>
-      <span class="hero-tag">Social Welfare</span>
-      <span class="hero-tag">Student Leadership</span>
-    </div>
   </div>
 </section>
 
@@ -931,27 +1077,62 @@
 
 
 
-<!-- ABOUT -->
-<section class="about reveal" id="about">
-  <div>
-    <p class="about-label">About</p>
-    <div class="about-number" aria-hidden="true">01</div>
-  </div>
-  <div class="about-text">
-    <p>I'm a high schooler at <strong>Ryan International School, Greater Noida</strong> — currently navigating the intersection of law, political thought, and the written word. My academic interests are inseparable from my convictions: that institutions matter, that language shapes power, and that both are worth studying seriously.</p>
-    <p>My affinity for humanistic studies is grounded in action. I've engaged with <strong>social-welfare initiatives</strong> including interactions with <strong>Mr. Ramveer Tanwar</strong> (the Pond Man of India), and associations with organisations such as the <strong>Goonj Foundation</strong> and <strong>Say Earth</strong>.</p>
-    <p>My journalistic work — through school-sponsored platforms <strong>RyanTV</strong> and <strong>BBN</strong> — has given me the opportunity to interview public figures including <strong>Mr. Om Birla</strong> and <strong>Mrs. Kiran Bedi</strong>. Across every role, I seek to learn and to contribute something meaningful.</p>
-    <div class="credentials">
-      <div class="credential-item"><div class="credential-dot"></div><span class="credential-text">Editorial roles · <strong>RyanTV &amp; BBN</strong> — school journalism platforms</span></div>
-      <div class="credential-item"><div class="credential-dot"></div><span class="credential-text">Interviews with <strong>Om Birla</strong> (Speaker, Lok Sabha) &amp; <strong>Kiran Bedi</strong> (IPS, ret.)</span></div>
-      <div class="credential-item"><div class="credential-dot"></div><span class="credential-text">Collaboration with <strong>Ramveer Tanwar</strong>, <strong>Goonj Foundation</strong> &amp; <strong>Say Earth</strong></span></div>
-      <div class="credential-item"><div class="credential-dot"></div><span class="credential-text">Graphic design · Student leadership · 3+ years diverse portfolio</span></div>
+<!-- ABOUT — sticky scroll, one sentence per screen -->
+<section class="about-section fade-section" id="about">
+  <div class="about-sticky">
+
+    <div class="about-slide" data-index="0">
+      <p class="about-sentence">I'm a high schooler at <strong>Ryan International School, Greater Noida</strong> — studying at the intersection of law, political thought, and the written word.</p>
+      <div class="about-chips">
+        <a href="#academics" class="about-chip">Academic Record →</a>
+      </div>
     </div>
+
+    <div class="about-slide" data-index="1">
+      <p class="about-sentence">I believe institutions matter, that language shapes power, and that <em>both are worth studying seriously.</em></p>
+      <div class="about-chips">
+        <a href="#writing" class="about-chip">Writing →</a>
+        <a href="writings.html" class="about-chip">Full Archive →</a>
+      </div>
+    </div>
+
+    <div class="about-slide" data-index="2">
+      <p class="about-sentence">I've worked with <strong>20+ NGOs</strong> — including the <strong>Goonj Foundation</strong>, <strong>Say Earth</strong>, and Mr. <strong>Ramveer Tanwar</strong>, the Pond Man of India.</p>
+      <div class="about-chips">
+        <a href="#experience" class="about-chip">Experience →</a>
+      </div>
+    </div>
+
+    <div class="about-slide" data-index="3">
+      <p class="about-sentence">I've designed <strong>200+ graphic projects</strong> — from editorial covers to NGO campaigns and MUN materials.</p>
+      <div class="about-chips">
+        <a href="#portfolio" class="about-chip">Design →</a>
+        <a href="designs.html" class="about-chip">Full Portfolio →</a>
+      </div>
+    </div>
+
+    <div class="about-slide" data-index="4">
+      <p class="about-sentence">Through <strong>RyanTV</strong> and <strong>BBN</strong>, I've interviewed <strong>Om Birla</strong> (Speaker, Lok Sabha) and <strong>Kiran Bedi</strong> (IPS, ret.) — and participated in <strong>40+ Model UN</strong> conferences.</p>
+      <div class="about-chips">
+        <a href="#experience" class="about-chip">Experience →</a>
+      </div>
+    </div>
+
+    <div class="about-slide" data-index="5">
+      <p class="about-sentence">Across every role — I seek to learn, and to contribute something <em>meaningful.</em></p>
+      <div class="about-chips">
+        <a href="#contact" class="about-chip">Connect →</a>
+      </div>
+    </div>
+
+    <!-- Dot progress indicator -->
+    <div class="about-progress" id="aboutProgress" aria-hidden="true"></div>
+
   </div>
 </section>
 
 <!-- STATS COUNTER -->
-<section class="stats-section reveal" id="stats" aria-label="By the numbers">
+<section class="stats-section fade-section" id="stats" aria-label="By the numbers">
   <div class="stats-grid">
     <div class="stat-item">
       <div class="stat-number" data-target="20" data-suffix="+">0</div>
@@ -976,12 +1157,42 @@
   </div>
 </section>
 
-<!-- QUOTE -->
-<div class="quote-section reveal">
-  <div class="pull-quote">
-    <blockquote>If we wish to maintain democracy not merely in form, but also in fact, we must hold fast to constitutional methods of achieving our social and economic objectives.</blockquote>
-    <cite>— Dr. B.R. Ambedkar</cite>
+<!-- ROTATING QUOTES + PEOPLE I ADMIRE TEASER -->
+<div class="quotes-block fade-section">
+  <!-- Auto-rotating quotes carousel -->
+  <div class="quotes-carousel">
+    <div class="quote-slide active">
+      <blockquote>If we wish to maintain democracy not merely in form, but also in fact, we must hold fast to constitutional methods of achieving our social and economic objectives.</blockquote>
+      <cite>— Dr. B.R. Ambedkar</cite>
+    </div>
+    <div class="quote-slide">
+      <blockquote>The first duty of an intellectual is to dissent — not because dissent is intrinsically right, but because conformity is intrinsically dangerous.</blockquote>
+      <cite>— Romila Thapar</cite>
+    </div>
+    <div class="quote-slide">
+      <blockquote>The greatness of a nation and its moral progress can be judged by the way its animals are treated.</blockquote>
+      <cite>— Mahatma Gandhi</cite>
+    </div>
+    <div class="quote-slide">
+      <blockquote>Injustice anywhere is a threat to justice everywhere. We are caught in an inescapable network of mutuality, tied in a single garment of destiny.</blockquote>
+      <cite>— Dr. Martin Luther King Jr.</cite>
+    </div>
+    <div class="quote-slide">
+      <blockquote>It is not power that corrupts but fear. Fear of losing power corrupts those who wield it and fear of the scourge of power corrupts those who are subject to it.</blockquote>
+      <cite>— Aung San Suu Kyi</cite>
+    </div>
+    <div class="quote-slide">
+      <blockquote>Democracy is not merely a form of government. It is primarily a mode of associated living, of conjoint communicated experience.</blockquote>
+      <cite>— Dr. B.R. Ambedkar</cite>
+    </div>
+    <!-- Dots for visual progress -->
+    <div class="quote-dots" id="quoteDots"></div>
   </div>
+  <!-- People I Admire teaser -->
+  <a href="admired.html" class="admire-teaser">
+    <span class="admire-teaser-label">People I Admire</span>
+    <span class="admire-teaser-arrow">→</span>
+  </a>
 </div>
 
 <!-- WRITING -->
@@ -1007,7 +1218,7 @@
      automatically.
   ════════════════════════════════════════════════════
 -->
-<section class="posts-section reveal" id="writing">
+<section class="posts-section fade-section" id="writing">
   <div class="section-header">
     <h2 class="section-title">Writing</h2>
     <span class="section-meta" id="post-count"></span>
@@ -1020,8 +1231,45 @@
 
 <div style="height:4rem"></div>
 
+<!-- PORTFOLIO (Design) — now above Experience -->
+<section class="portfolio-section fade-section" id="portfolio">
+  <div class="section-header">
+    <h2 class="section-title">Design</h2>
+    <span class="section-meta">A curated preview</span>
+  </div>
+
+  <!-- Preview grid - just 3 highlights -->
+  <div class="design-preview-grid">
+    <a href="designs.html" class="design-preview-item">
+      <img src="cover1.png" alt="Credit Flow & Migration" loading="lazy">
+      <div class="design-preview-overlay">
+        <p class="design-preview-tag">Magazine Design</p>
+        <p class="design-preview-title">Credit Flow &amp; Migration</p>
+      </div>
+    </a>
+    <a href="designs.html" class="design-preview-item">
+      <img src="cover2.png" alt="Truthful Thursdays — Jeevartan" loading="lazy">
+      <div class="design-preview-overlay">
+        <p class="design-preview-tag">NGO &amp; Social Work</p>
+        <p class="design-preview-title">Truthful Thursdays — Jeevartan</p>
+      </div>
+    </a>
+    <a href="designs.html" class="design-preview-item">
+      <img src="cover5.png" alt="Denial — You Can Debate Indices, Not Lungs" loading="lazy">
+      <div class="design-preview-overlay">
+        <p class="design-preview-tag">Editorial Design</p>
+        <p class="design-preview-title">Denial</p>
+      </div>
+    </a>
+  </div>
+
+  <div class="design-view-more-wrap">
+    <a href="designs.html" class="design-view-more-btn">View More Designs →</a>
+  </div>
+</section>
+
 <!-- EXPERIENCE -->
-<section class="exp-section reveal" id="experience">
+<section class="exp-section fade-section" id="experience">
   <div class="section-header">
     <h2 class="section-title">Experience</h2>
     <span class="section-meta">NGOs · MUN · School</span>
@@ -1268,47 +1516,8 @@
   </div><!-- end .exp-track -->
 </section>
 
-<!-- PORTFOLIO -->
-<section class="portfolio-section reveal" id="portfolio">
-  <div class="section-header">
-    <h2 class="section-title">Design</h2>
-    <span class="section-meta">A curated preview</span>
-  </div>
-
-  <!-- Preview grid - just 3 highlights -->
-  <div class="design-preview-grid">
-    <a href="designs.html" class="design-preview-item">
-      <img src="cover1.png" alt="Credit Flow & Migration" loading="lazy">
-      <div class="design-preview-overlay">
-        <p class="design-preview-tag">Magazine Design</p>
-        <p class="design-preview-title">Credit Flow &amp; Migration</p>
-      </div>
-    </a>
-    <a href="designs.html" class="design-preview-item">
-      <img src="cover2.png" alt="Truthful Thursdays — Jeevartan" loading="lazy">
-      <div class="design-preview-overlay">
-        <p class="design-preview-tag">NGO &amp; Social Work</p>
-        <p class="design-preview-title">Truthful Thursdays — Jeevartan</p>
-      </div>
-    </a>
-    <a href="designs.html" class="design-preview-item">
-      <img src="cover5.png" alt="Denial — You Can Debate Indices, Not Lungs" loading="lazy">
-      <div class="design-preview-overlay">
-        <p class="design-preview-tag">Editorial Design</p>
-        <p class="design-preview-title">Denial</p>
-      </div>
-    </a>
-  </div>
-
-  <div class="design-view-more-wrap">
-    <a href="designs.html" class="design-view-more-btn">View More Designs →</a>
-  </div>
-</section>
-
-
-
 <!-- ACADEMICS -->
-<section class="academics-section reveal" id="academics">
+<section class="academics-section fade-section" id="academics">
   <div class="section-header">
     <h2 class="section-title">Academic Record</h2>
     <span class="section-meta">Credentials &amp; Certifications</span>
@@ -1348,7 +1557,7 @@
 </section>
 
 <!-- RYAN PRINCE HIGHLIGHT -->
-<section class="ryan-prince-section reveal" id="ryan-prince">
+<section class="ryan-prince-section fade-section" id="ryan-prince">
   <div class="rp-inner">
     <div class="rp-photo-wrap">
       <img src="ryan-prince.jpeg" alt="Shaurya receiving the Ryan Prince award" class="rp-photo">
@@ -1430,21 +1639,172 @@ function renderGrid() {
   if (articles.length > CARDS_INITIAL) showMoreWrap.style.display = 'flex';
 }
 
+/* ═══════════════════════════════════════════════════════
+   ABOUT — STICKY SCROLL STORY
+   The .about-section is a tall scroll track (6 × 100vh).
+   We watch how far the user has scrolled into it, divide
+   that into 6 equal beats, and show one slide per beat.
+   Entering: flies up from below (fast, 0.55s).
+   Leaving:  flies out upward (faster, 0.35s).
+   ═══════════════════════════════════════════════════════ */
+(function () {
+  const section  = document.querySelector('.about-section');
+  const sticky   = document.querySelector('.about-sticky');
+  const slides   = Array.from(document.querySelectorAll('.about-slide'));
+  const pips     = document.getElementById('aboutProgress');
+  if (!section || !slides.length) return;
+
+  const N = slides.length;
+  // Set CSS variable so height: calc(var(--slide-count)*100vh) works
+  section.style.setProperty('--slide-count', N);
+
+  // Build pip dots
+  slides.forEach((_, i) => {
+    const pip = document.createElement('span');
+    pip.className = 'about-pip';
+    pips.appendChild(pip);
+  });
+  const pipEls = Array.from(pips.querySelectorAll('.about-pip'));
+
+  let current = -1;
+
+  function showSlide(idx) {
+    if (idx === current) return;
+    const prev = current;
+    current = idx;
+
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'leaving');
+      if (i === idx) {
+        s.classList.add('active');
+      } else if (i === prev) {
+        s.classList.add('leaving');
+      }
+    });
+
+    pipEls.forEach((p, i) => p.classList.toggle('active', i === idx));
+  }
+
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const rect = section.getBoundingClientRect();
+    const scrolled = -rect.top;           // how far we've scrolled into the section
+    const total    = rect.height - window.innerHeight; // total scrollable distance
+
+    if (scrolled < 0 || scrolled > total + window.innerHeight * 0.5) return;
+
+    // Which slide are we on?
+    const progress  = Math.max(0, Math.min(scrolled / total, 1));
+    const rawIndex  = progress * (N - 1);
+    const idx       = Math.min(N - 1, Math.round(rawIndex));
+    showSlide(idx);
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+
+  // Show first slide immediately
+  showSlide(0);
+  update();
+})();
+
+/* ═══════════════════════════════════════════════════════
+   SCROLL SPOTLIGHT
+   Every .fade-section (except about-section, which handles
+   itself) dims when not in focus. Only the section whose
+   visible area most covers the viewport gets .in-view.
+   As a section leaves the viewport it picks up a direction
+   class so it exits toward the correct edge.
+   ═══════════════════════════════════════════════════════ */
+(function () {
+  const sections = Array.from(document.querySelectorAll('.fade-section'));
+  if (!sections.length) return;
+
+  let ticking = false;
+
+  function update() {
+    ticking = false;
+    const vpH   = window.innerHeight;
+    const vpMid = vpH * 0.5;
+
+    // Find which section has the most overlap with the viewport
+    let bestSection = null, bestScore = -Infinity;
+
+    sections.forEach(s => {
+      const r = s.getBoundingClientRect();
+      // Visible height within viewport
+      const visTop    = Math.max(0, r.top);
+      const visBottom = Math.min(vpH, r.bottom);
+      const visible   = Math.max(0, visBottom - visTop);
+      // Also weight by how central it is
+      const centre    = r.top + r.height * 0.5;
+      const centrality = vpH - Math.abs(vpMid - centre);
+      const score     = visible * 0.7 + centrality * 0.3;
+      if (score > bestScore) { bestScore = score; bestSection = s; }
+    });
+
+    sections.forEach(s => {
+      const r = s.getBoundingClientRect();
+      const isBest = s === bestSection && r.bottom > 0 && r.top < vpH;
+
+      if (isBest) {
+        s.classList.remove('leaving-up', 'leaving-down');
+        s.classList.add('in-view');
+      } else {
+        if (s.classList.contains('in-view')) {
+          // Determine exit direction
+          const r2 = s.getBoundingClientRect();
+          s.classList.remove('in-view');
+          if (r2.bottom < vpMid) s.classList.add('leaving-up');
+          else                   s.classList.add('leaving-down');
+        }
+      }
+    });
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
+})();
+
 /* ═══ QUICK-NAV ═══ */
 (function() {
-  const qn = document.getElementById('quicknav');
+  const qn   = document.getElementById('quicknav');
   const hero = document.getElementById('home');
-  let heroBottom = 0;
-  function measure() { heroBottom = hero.getBoundingClientRect().bottom + window.scrollY; }
-  measure();
-  window.addEventListener('resize', measure);
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > heroBottom * 0.6) {
-      qn.classList.add('visible');
-    } else {
-      qn.classList.remove('visible');
-    }
-  }, { passive: true });
+  function check() {
+    const heroBottom = hero.getBoundingClientRect().bottom;
+    qn.classList.toggle('visible', heroBottom < 0);
+  }
+  window.addEventListener('scroll', check, { passive: true });
+  check();
+})();
+
+/* ═══ ROTATING QUOTES ═══ */
+(function() {
+  const slides = document.querySelectorAll('.quote-slide');
+  const dotsEl = document.getElementById('quoteDots');
+  if (!slides.length) return;
+  let cur = 0, timer;
+  slides.forEach((_, i) => {
+    const d = document.createElement('span');
+    d.className = 'quote-dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+  function goTo(next) {
+    if (next === cur) return;
+    slides[cur].classList.add('exit'); slides[cur].classList.remove('active');
+    const prev = cur; setTimeout(() => slides[prev].classList.remove('exit'), 700);
+    cur = next; slides[cur].classList.add('active');
+    dotsEl.querySelectorAll('.quote-dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+    reset();
+  }
+  function reset() { clearInterval(timer); timer = setInterval(() => goTo((cur + 1) % slides.length), 5500); }
+  reset();
 })();
 
 /* ═══ ARTICLE READER ═══ */
@@ -1458,100 +1818,61 @@ function openArticle(index) {
   document.getElementById('articleReadTime').textContent = mins + ' min read';
   document.getElementById('articleBody').innerHTML = a.body;
   const overlay = document.getElementById('articleOverlay');
-  overlay.classList.add('open');
-  overlay.scrollTop = 0;
+  overlay.classList.add('open'); overlay.scrollTop = 0;
   document.body.style.overflow = 'hidden';
 }
-
 function closeArticle() {
   document.getElementById('articleOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
+function showIndex() { closeArticle(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeArticle(); });
 
-function showIndex() {
-  closeArticle();
+/* ═══ ANIMATED STAT COUNTERS ═══ */
+function animateCount(el) {
+  const target = parseInt(el.getAttribute('data-target'), 10);
+  const suffix = el.getAttribute('data-suffix') || '';
+  const dur = 1600, start = performance.now();
+  function frame(now) {
+    const p = Math.min((now - start) / dur, 1);
+    const e = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+    el.textContent = Math.round(e * target) + suffix;
+    if (p < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+const statObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { animateCount(e.target); statObs.unobserve(e.target); } });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-number').forEach(el => statObs.observe(el));
+
+/* ═══ EXPERIENCE TOGGLES ═══ */
+function toggleExp(id, btn) {
+  const el = document.getElementById(id);
+  btn.textContent = el.classList.toggle('open') ? 'Read less ↑' : 'Read more →';
+}
+function toggleMun(id, btn) {
+  const el = document.getElementById(id);
+  const open = el.classList.toggle('open');
+  btn.textContent = open ? 'Show less ↑' : 'Show ' + el.querySelectorAll('.mun-item').length + ' more →';
 }
 
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeArticle(); });
-
-/* ═══ SCROLL REVEAL ═══ */
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
-      observer.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-/* Stagger child reveals inside grids/lists — adds liveliness on entry */
-function applyStagger(parentSelector, childSelector) {
-  document.querySelectorAll(parentSelector).forEach(parent => {
-    const kids = parent.querySelectorAll(childSelector);
-    kids.forEach((child, i) => {
+/* ═══ STAGGER GRID CHILDREN ═══ */
+function applyStagger(parentSel, childSel) {
+  document.querySelectorAll(parentSel).forEach(parent => {
+    parent.querySelectorAll(childSel).forEach((child, i) => {
       child.classList.add('reveal-child');
       child.style.transitionDelay = (i * 80) + 'ms';
-      const childObserver = new IntersectionObserver((entries) => {
-        entries.forEach(ent => {
-          if (ent.isIntersecting) {
-            ent.target.classList.add('visible');
-            childObserver.unobserve(ent.target);
-          }
-        });
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(ent => { if (ent.isIntersecting) { ent.target.classList.add('visible'); obs.unobserve(ent.target); } });
       }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-      childObserver.observe(child);
+      obs.observe(child);
     });
   });
 }
 applyStagger('.academics-grid', '.academic-card');
 applyStagger('.design-preview-grid', '.design-preview-item');
 applyStagger('.posts-grid', '.post-card');
-
-/* ═══ ANIMATED STAT COUNTERS ═══ */
-function animateCount(el) {
-  const target = parseInt(el.getAttribute('data-target'), 10);
-  const suffix = el.getAttribute('data-suffix') || '';
-  const duration = 1600; // ms
-  const start = performance.now();
-  function frame(now) {
-    const progress = Math.min((now - start) / duration, 1);
-    // easeOutExpo for a snappy, lively finish
-    const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-    const value = Math.round(eased * target);
-    el.textContent = value + suffix;
-    if (progress < 1) requestAnimationFrame(frame);
-    else el.textContent = target + suffix;
-  }
-  requestAnimationFrame(frame);
-}
-
-const statObserver = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      animateCount(e.target);
-      statObserver.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.5 });
-document.querySelectorAll('.stat-number').forEach(el => statObserver.observe(el));
-
-/* ═══ EXPERIENCE TOGGLES ═══ */
-function toggleExp(id, btn) {
-  const el = document.getElementById(id);
-  const open = el.classList.toggle('open');
-  btn.textContent = open ? 'Read less ↑' : 'Read more →';
-}
-
-function toggleMun(id, btn) {
-  const el = document.getElementById(id);
-  const open = el.classList.toggle('open');
-  const count = el.querySelectorAll('.mun-item').length;
-  btn.textContent = open ? 'Show less ↑' : 'Show ' + count + ' more →';
-}
-
-/* ═══ PORTFOLIO DATA (now lives on designs.html) ═══ */
-/* The 3 preview cards on this page are static and link to designs.html */
 
 renderGrid();
 </script>
