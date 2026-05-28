@@ -6,25 +6,36 @@
 <title>Writing — Shaurya Pratap Singh</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..600&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --ink: #000000;
-    --parchment: #f5f0e8;
-    --muted: #8a8070;
-    --accent: #c9a84c;
-    --accent-dim: #8a6a28;
-    --border: rgba(180,160,120,0.2);
-    --serif: 'Cormorant Garamond', Georgia, serif;
-    --mono: 'DM Mono', monospace;
+    --black:      #050505;
+    --ink:        #0a0a0b;
+    --charcoal:   #121214;
+    --parchment:  #f3efe7;
+    --bone:       #cfc8ba;
+    --muted:      #847d70;
+    --muted-dim:  #5a554b;
+    --brass:      #c9a24b;
+    --brass-lite: #e8cd84;
+    --brass-deep: #8a6a28;
+    --accent:     var(--brass);
+    --accent-dim: var(--brass-deep);
+    --border:     rgba(180,160,120,0.16);
+    --border-lite:rgba(180,160,120,0.30);
+    --display: 'Fraunces', Georgia, serif;
+    --serif:   'Newsreader', Georgia, serif;
+    --mono:    'DM Mono', ui-monospace, monospace;
   }
-  html { font-size: 16px; scroll-behavior: smooth; }
+  ::selection { background: var(--brass); color: var(--black); }
+  html { font-size: 16px; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
   body {
-    background-color: var(--ink);
+    background-color: var(--black);
     color: var(--parchment);
     font-family: var(--serif);
-    line-height: 1.8;
+    font-optical-sizing: auto;
+    line-height: 1.7;
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
