@@ -57,15 +57,31 @@
     content: '';
     position: fixed; top: -25%; left: -25%;
     width: 150%; height: 150%;
+    /* Richer golden hint — three radial pools at varied positions
+       drift slowly. Custom properties --gx / --gy are updated by JS
+       on scroll so the layer shifts a touch as you read, giving a
+       sense of life without becoming distracting. */
     background:
-      radial-gradient(ellipse 620px 440px at 18% 24%, rgba(201,162,75,0.05) 0%, transparent 60%),
-      radial-gradient(ellipse 520px 380px at 82% 72%, rgba(138,106,40,0.04) 0%, transparent 58%);
+      radial-gradient(ellipse 720px 520px at calc(20% + var(--gx, 0px)) calc(26% + var(--gy, 0px)),
+        rgba(201,162,75,0.12) 0%, transparent 62%),
+      radial-gradient(ellipse 620px 460px at calc(80% - var(--gx, 0px) * 0.7) calc(72% - var(--gy, 0px) * 0.5),
+        rgba(232,205,132,0.075) 0%, transparent 60%),
+      radial-gradient(ellipse 820px 620px at calc(50% + var(--gx, 0px) * 0.3) calc(98% - var(--gy, 0px) * 0.3),
+        rgba(138,106,40,0.07) 0%, transparent 64%);
     pointer-events: none; z-index: 0;
-    animation: aura 30s ease-in-out infinite alternate;
+    animation: aura 26s ease-in-out infinite alternate;
+    /* Soft fade when the About carousel takes over the canvas */
+    transition: opacity 0.9s ease;
+    will-change: transform;
   }
+  /* Suppress the golden hint when reading the About carousel —
+     JS toggles this class on <body> based on whether the about
+     section is the active reading surface. */
+  body.dim-ambient::after { opacity: 0.12; }
   @keyframes aura {
-    0%   { transform: translate(0,0) scale(1); opacity: .8; }
-    100% { transform: translate(2%,-2%) scale(1.05); opacity: 1; }
+    0%   { transform: translate(0, 0)   scale(1);    opacity: .92; }
+    50%  { transform: translate(3%,-2%) scale(1.05); opacity: 1;   }
+    100% { transform: translate(-2%,3%) scale(1.02); opacity: .95; }
   }
   body > * { position: relative; z-index: 2; }
   #goldenAura { z-index: 0 !important; }
@@ -176,20 +192,11 @@
   .hero-inner {
     position: relative; z-index: 3; max-width: 1180px; margin: 0 auto; width: 100%;
   }
-  /* === HERO LOAD — everything appears together, one shared fade-up ===
-     No staggered delays. The entire hero content reveals as a single block
-     in ~0.7s. This eliminates the "elements popping in one-by-one" feel
-     that made the page feel slow and glitchy. */
-  .hero-inner > * {
-    opacity: 0;
-    transform: translateY(14px);
-    animation: heroFade 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
-  }
-
   .hero-eyebrow {
     display: inline-flex; align-items: center; gap: 0.8rem;
     font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.34em;
     text-transform: uppercase; color: var(--brass); margin-bottom: 1.8rem;
+    opacity: 0; animation: heroFade 0.9s ease 0.2s forwards;
   }
   .hero-eyebrow .dot {
     width: 7px; height: 7px; border-radius: 50%; background: var(--brass);
@@ -206,7 +213,12 @@
     font-size: clamp(3.6rem, 12vw, 11rem);
   }
   .hero-name .line { display: block; overflow: visible; }
-  .hero-name .line > span { display: block; }
+  .hero-name .line > span {
+    display: block; transform: translateY(110%);
+    animation: heroRise 1.1s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  .hero-name .line:nth-child(1) > span { animation-delay: 0.35s; }
+  .hero-name .line:nth-child(2) > span { animation-delay: 0.5s; }
   .hero-name em {
     font-style: italic; font-weight: 400;
     background: linear-gradient(100deg, var(--brass) 0%, var(--brass-lite) 30%, var(--brass) 55%, var(--brass-deep) 80%, var(--brass) 100%);
@@ -215,21 +227,25 @@
     animation: shimmer 7s linear infinite;
   }
   @keyframes shimmer { to { background-position: 220% center; } }
-  @keyframes heroFade { to { opacity: 1; transform: translateY(0); } }
+  @keyframes heroRise { to { transform: translateY(0); } }
+  @keyframes heroFade { to { opacity: 1; } }
 
   .hero-divider {
     display: flex; align-items: center; gap: 1.4rem; margin: 0 0 1.8rem;
+    opacity: 0; animation: heroFade 1s ease 0.95s forwards;
   }
   .hero-divider .rule {
-    height: 1px; width: 140px;
-    background: linear-gradient(to right, var(--brass), transparent);
+    height: 1px; width: 0; background: linear-gradient(to right, var(--brass), transparent);
+    animation: ruleGrow 1.1s cubic-bezier(.16,1,.3,1) 1s forwards;
   }
+  @keyframes ruleGrow { to { width: 140px; } }
   .hero-divider .tag { display: none; }
 
   .hero-tagline {
     font-family: var(--serif); font-weight: 300; font-style: italic;
     font-size: clamp(1.05rem, 2vw, 1.5rem); color: var(--bone);
     max-width: 30ch; line-height: 1.55; min-height: 2.4em;
+    opacity: 0; animation: heroFade 1s ease 1.15s forwards;
   }
   .hero-tagline .cursor {
     display: inline-block; width: 2px; height: 1.05em; vertical-align: -0.15em;
@@ -240,6 +256,7 @@
   /* CTA row */
   .hero-actions {
     display: flex; gap: 1rem; margin-top: 2.6rem; flex-wrap: wrap;
+    opacity: 0; animation: heroFade 1s ease 1.4s forwards;
   }
   .hero-btn {
     font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.2em;
@@ -257,70 +274,25 @@
   /* vertical index rail — hidden */
   .hero-rail { display: none; }
 
-  /* discipline marquee at bottom — rotating drum on both desktop & mobile */
+  /* discipline marquee at bottom */
   .hero-marquee {
     position: absolute; bottom: 0; left: 0; right: 0; z-index: 3;
     border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-    padding: 0; overflow: hidden; white-space: nowrap;
+    padding: 0.9rem 0; overflow: hidden; white-space: nowrap;
     background: rgba(10,10,11,0.4); backdrop-filter: blur(6px);
-    opacity: 1;
-    /* perspective so the 3-D rotation is visible */
-    perspective: 400px;
-    perspective-origin: 50% 50%;
-    height: 2.8rem;
-    display: flex; align-items: center;
+    opacity: 0; animation: heroFade 1s ease 1.8s forwards;
     -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
     mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
   }
-  /* Outer track scrolls left as before */
-  .hero-marquee-track {
-    display: inline-flex; gap: 3rem;
-    /* combine horizontal scroll + a slow barrel-roll around the X axis */
-    animation: marquee 22s linear infinite, marqueeRoll 8s ease-in-out infinite alternate;
-    will-change: transform;
-    transform-style: preserve-3d;
-    transform-origin: center center;
-  }
-  .hero-marquee:hover .hero-marquee-track { animation-play-state: paused; }
+  .hero-marquee-track { display: inline-flex; gap: 3rem; animation: marquee 28s linear infinite; }
   .hero-marquee-track span {
     font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.28em;
-    text-transform: uppercase; color: var(--muted);
-    display: inline-flex; align-items: center; gap: 3rem;
+    text-transform: uppercase; color: var(--muted); display: inline-flex; align-items: center; gap: 3rem;
     transition: color 0.4s;
   }
-  .hero-marquee-track span::after {
-    content: '✦'; color: var(--brass); font-size: 0.6rem;
-    animation: spinStar 5s linear infinite;
-    display: inline-block;
-  }
+  .hero-marquee-track span::after { content: '✦'; color: var(--brass); font-size: 0.6rem; animation: spinStar 4s linear infinite; }
   @keyframes spinStar { to { transform: rotate(360deg); } }
-  @keyframes marquee {
-    from { transform: translateX(0) rotateX(var(--rx, 0deg)); }
-    to   { transform: translateX(-50%) rotateX(var(--rx, 0deg)); }
-  }
-  /* Barrel-roll: tilt the strip gently around the X axis, like a rotating drum */
-  @keyframes marqueeRoll {
-    0%   { --rx: 0deg; }
-    25%  { --rx: 14deg; }
-    50%  { --rx: 0deg; }
-    75%  { --rx: -14deg; }
-    100% { --rx: 0deg; }
-  }
-  /* Safari / older browsers that don't support CSS custom property in keyframes:
-     fallback uses a separate wrapper element for the tilt */
-  @supports not (animation-timeline: scroll()) {
-    .hero-marquee-track {
-      animation: marquee 22s linear infinite, marqueeRoll 8s ease-in-out infinite alternate;
-    }
-  }
-  /* Explicit combined keyframes for browsers that need it */
-  @keyframes marqueeCombined {
-    0%   { transform: translateX(0)    rotateX(0deg); }
-    25%  { transform: translateX(-12.5%) rotateX(14deg); }
-    50%  { transform: translateX(-25%)  rotateX(0deg); }
-    75%  { transform: translateX(-37.5%) rotateX(-14deg); }
-    100% { transform: translateX(-50%)  rotateX(0deg); }
-  }
+  @keyframes marquee { to { transform: translateX(-50%); } }
 
   .scroll-cue { display: none !important; }
 
@@ -331,21 +303,9 @@
     .hero-tagline { min-height: 3.6em; }
   }
 
-  /* ═══════════════ SCROLL CROSS-FADE ═══════════════
-     Sections cross-fade smoothly. Each is at least 100vh so the reader
-     gets time to absorb one section before the next begins — same
-     "perspectivism" as indexA. JS drives opacity continuously based on
-     proximity to viewport center (no abrupt class snap). */
-  .fade-section {
-    transition: opacity 1.3s cubic-bezier(.25,.8,.25,1),
-                filter 1.3s cubic-bezier(.25,.8,.25,1),
-                transform 1.3s cubic-bezier(.25,.8,.25,1);
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: center;
-    will-change: opacity, transform, filter;
-  }
-  /* About section is sticky-scroll; it manages its own height. */
-  .about-section { display: block; min-height: unset; }
+  /* ═══════════════ SCROLL SPOTLIGHT (dim non-focused sections) ═══════════════ */
+  .fade-section { transition: opacity 1.8s cubic-bezier(.16,1,.3,1), filter 1.8s cubic-bezier(.16,1,.3,1), transform 1.8s cubic-bezier(.16,1,.3,1); }
+  .fade-section.dimmed { opacity: 0.18; filter: blur(2px); transform: scale(0.99); }
 
   /* generic reveal */
   .reveal { opacity: 0; transform: translateY(30px); filter: blur(5px);
@@ -378,8 +338,8 @@
     color: var(--muted-dim); margin-bottom: 1.4rem;
   }
   .about-beat-text {
-    font-family: var(--display); font-weight: 300; letter-spacing: -0.02em;
-    font-size: clamp(2.2rem, 5.5vw, 4.2rem); line-height: 1.15; max-width: 18ch;
+    font-family: var(--display); font-weight: 300; letter-spacing: -0.015em;
+    font-size: clamp(1.7rem, 4vw, 3.1rem); line-height: 1.18; max-width: 20ch;
   }
   .about-beat-text strong { font-weight: 500; color: var(--parchment); }
   .about-beat-text em { font-style: italic; color: var(--brass); }
@@ -442,75 +402,84 @@
   }
 
   /* ═══════════════ QUOTES ═══════════════ */
-  .quotes-block {
-    padding: 6.5rem 3rem; position: relative; overflow: hidden;
-  }
+  .quotes-block { padding: 6.5rem 3rem; position: relative; overflow: hidden; }
   .quotes-block::before {
     content: '“'; position: absolute; top: -2rem; left: 50%; transform: translateX(-50%);
-    font-family: var(--display); font-size: 16rem; color: var(--brass); opacity: 0.07;
-    line-height: 1; pointer-events: none; z-index: 0;
+    font-family: var(--display); font-size: 16rem; color: var(--brass); opacity: 0.07; line-height: 1;
   }
-  /* Viewport: centred container, position:relative so absolute children anchor here */
+  /* Layout: arrows flank the quote, dots sit below. The viewport has
+     enough side padding on PC so arrows never overlap the text. */
+  .quotes-stage {
+    position: relative;
+    max-width: 1080px; margin: 0 auto;
+    display: flex; align-items: stretch; gap: 1rem;
+  }
   .quotes-viewport {
-    max-width: 760px;
-    margin: 0 auto;
-    position: relative;
-    /* The viewport height = tallest invisible slide (they're all in flow at zero opacity).
-       This means no min-height hack needed — content drives height naturally. */
+    flex: 1; position: relative;
+    min-height: 260px;
+    cursor: pointer; /* whole quote is clickable → admired.html */
   }
-  /* Every slide: full-width, stacked on top of each other via absolute positioning.
-     Height is NOT set — it grows with the text content. */
   .quote-slide {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    text-align: center;
-    padding: 0;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(.22,1,.36,1);
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 0 1rem;
+    opacity: 0; transform: translateY(18px);
+    transition: opacity .8s ease, transform .8s ease;
     pointer-events: none;
-    /* visibility:hidden keeps it out of tab order and prevents painting cost */
-    visibility: hidden;
   }
-  .quote-slide.active {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-    visibility: visible;
-    /* position:relative so this slide pushes the viewport to its natural height */
-    position: relative;
-  }
+  .quote-slide.active { opacity: 1; transform: none; pointer-events: auto; }
   .quote-slide blockquote {
     font-family: var(--display); font-weight: 300; font-style: italic;
-    font-size: clamp(1.25rem, 2.5vw, 2rem);
-    line-height: 1.45;
-    color: var(--parchment);
-    margin: 0 0 1.4rem 0;
-    /* No max-width in ch — use the full container width */
-    width: 100%;
+    font-size: clamp(1.2rem, 2.6vw, 1.9rem); line-height: 1.45; color: var(--parchment);
+    margin-bottom: 1.4rem; max-width: 32ch;
   }
   .quote-slide cite {
-    font-family: var(--mono); font-style: normal; font-size: 0.64rem;
+    font-family: var(--mono); font-style: normal; font-size: 0.62rem;
     letter-spacing: 0.22em; text-transform: uppercase; color: var(--brass);
-    display: block;
   }
-  .quote-dots {
-    display: flex; gap: 0.6rem; justify-content: center;
-    margin-top: 2.5rem; position: relative; z-index: 1;
+
+  /* Side arrows — icon only, vertically centred next to the quote */
+  .quote-arrow {
+    flex-shrink: 0; align-self: center;
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: rgba(10,10,11,0.55); backdrop-filter: blur(4px);
+    color: var(--muted);
+    font-family: var(--mono); font-size: 1.1rem; line-height: 1;
+    cursor: pointer;
+    transition: color 0.35s, border-color 0.35s, background 0.35s, transform 0.35s;
   }
-  .quote-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    border: 1px solid var(--muted-dim); cursor: pointer; transition: all 0.3s;
+  .quote-arrow:hover {
+    color: var(--brass); border-color: var(--brass);
+    background: rgba(201,162,75,0.06);
+    transform: scale(1.05);
   }
+  .quote-arrow:active { transform: scale(0.96); }
+
+  .quote-dots { display: flex; gap: 0.6rem; justify-content: center; margin-top: 2.5rem; }
+  .quote-dot { width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--muted-dim);
+    cursor: pointer; transition: all 0.3s; background: transparent; padding: 0; }
   .quote-dot.active { background: var(--brass); border-color: var(--brass); transform: scale(1.15); }
 
+  /* Subtle hint that the quote area itself is clickable */
+  .quotes-hint {
+    text-align: center; margin-top: 1.4rem;
+    font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted-dim);
+    transition: color 0.3s;
+  }
+  .quotes-viewport:hover ~ .quotes-hint,
+  .quotes-stage:hover .quotes-hint { color: var(--brass); }
+
   @media (max-width: 820px) {
-    .quotes-block { padding: 4.5rem 1.5rem; }
-    .quote-slide blockquote { font-size: clamp(1.1rem, 4.5vw, 1.5rem); }
+    .quotes-block { padding: 4.5rem 1rem; }
+    .quotes-stage { gap: 0.4rem; }
+    .quote-arrow { width: 36px; height: 36px; font-size: 0.95rem; }
+    .quote-slide blockquote { font-size: clamp(1.05rem, 4.5vw, 1.4rem); }
+    .quote-slide { padding: 0 0.25rem; }
+    .quotes-viewport { min-height: 220px; }
   }
 
   .admire-teaser {
@@ -536,41 +505,22 @@
     border: 1px solid var(--border); border-right: none; padding: 2.5rem;
     position: relative; overflow: hidden; cursor: pointer;
     text-decoration: none; color: inherit; display: block;
-    min-height: 280px;
-    /* One unified transition — every hover-driven property uses
-       the same duration & easing so they animate as a single block. */
-    transition: background 0.55s cubic-bezier(.22,1,.36,1),
-                border-color 0.55s cubic-bezier(.22,1,.36,1),
-                transform 0.55s cubic-bezier(.22,1,.36,1);
+    transition: background 0.45s, transform 0.45s; min-height: 280px;
   }
   .posts-grid .post-card:nth-child(3n) { border-right: 1px solid var(--border); }
   .post-card:hover { background: var(--charcoal); }
   .post-card::before {
     content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
     background: linear-gradient(90deg, transparent, var(--brass), transparent);
-    transform: scaleX(0); transform-origin: center;
-    /* same duration/easing as the parent transitions so the gold line
-       arrives in lock-step with the background fade */
-    transition: transform 0.55s cubic-bezier(.22,1,.36,1),
-                opacity 0.55s cubic-bezier(.22,1,.36,1);
-    opacity: 0;
-  }
-  .post-card:hover::before { transform: scaleX(1); opacity: 1; }
+    transform: scaleX(0); transform-origin: left; transition: transform 0.5s; }
+  .post-card:hover::before { transform: scaleX(1); }
   .post-number { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.2em; color: var(--accent-dim); margin-bottom: 1.5rem; }
   .post-category { font-family: var(--mono); font-size: 0.54rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.85rem; }
-  .post-title {
-    font-family: var(--display); font-size: 1.45rem; font-weight: 400; line-height: 1.25;
-    margin-bottom: 1rem; color: var(--parchment); letter-spacing: -0.01em;
-    transition: color 0.55s cubic-bezier(.22,1,.36,1);
-  }
-  .post-card:hover .post-title { color: var(--brass-lite); }
+  .post-title { font-family: var(--display); font-size: 1.45rem; font-weight: 400; line-height: 1.25; margin-bottom: 1rem; color: var(--parchment); letter-spacing: -0.01em; }
   .post-excerpt { font-size: 0.98rem; font-weight: 300; color: var(--muted); line-height: 1.65; margin-bottom: 1.8rem; }
   .post-footer { display: flex; justify-content: space-between; align-items: center; position: absolute; bottom: 2.5rem; left: 2.5rem; right: 2.5rem; }
   .post-date { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.1em; color: var(--muted-dim); }
-  .post-arrow {
-    font-family: var(--mono); font-size: 0.8rem; color: var(--brass);
-    transition: transform 0.55s cubic-bezier(.22,1,.36,1);
-  }
+  .post-arrow { font-family: var(--mono); font-size: 0.8rem; color: var(--brass); transition: transform 0.35s; }
   .post-card:hover .post-arrow { transform: translateX(5px); }
   .post-card.featured { grid-column: span 2; background: var(--ink); }
   .post-card.featured .post-title { font-size: 2rem; font-style: italic; }
@@ -596,22 +546,16 @@
   .design-preview-item {
     position: relative; overflow: hidden; border: 1px solid var(--border);
     aspect-ratio: 4/5; background: var(--charcoal); display: block; text-decoration: none; color: inherit;
-    transition: border-color 0.55s cubic-bezier(.22,1,.36,1),
-                transform 0.55s cubic-bezier(.22,1,.36,1);
-  }
+    transition: border-color 0.4s, transform 0.4s; }
   .design-preview-item:hover { border-color: var(--border-lite); transform: translateY(-4px); }
   .design-preview-item img {
     width: 100%; height: 100%; object-fit: cover; display: block;
-    filter: grayscale(0.4) brightness(0.85);
-    transition: transform 0.7s cubic-bezier(.22,1,.36,1),
-                filter 0.55s cubic-bezier(.22,1,.36,1);
-  }
+    filter: grayscale(0.4) brightness(0.85); transition: transform 0.7s, filter 0.5s; }
   .design-preview-item:hover img { transform: scale(1.06); filter: grayscale(0) brightness(0.5); }
   .design-preview-overlay {
     position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end;
     padding: 1.5rem; background: linear-gradient(to top, rgba(5,5,5,0.95) 0%, transparent 60%);
-    opacity: 0; transition: opacity 0.55s cubic-bezier(.22,1,.36,1);
-  }
+    opacity: 0; transition: opacity 0.4s; }
   .design-preview-item:hover .design-preview-overlay { opacity: 1; }
   .design-preview-tag { font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--brass); margin-bottom: 0.4rem; }
   .design-preview-title { font-family: var(--display); font-size: 1.1rem; font-weight: 400; line-height: 1.3; color: var(--parchment); }
@@ -690,20 +634,12 @@
   .academics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
   .academic-card {
     border: 1px solid var(--border); padding: 2rem; position: relative; overflow: hidden;
-    background: var(--ink);
-    transition: background 0.55s cubic-bezier(.22,1,.36,1),
-                border-color 0.55s cubic-bezier(.22,1,.36,1),
-                transform 0.55s cubic-bezier(.22,1,.36,1);
-  }
+    transition: background 0.4s, border-color 0.4s, transform 0.4s; background: var(--ink); }
   .academic-card:hover { background: var(--charcoal); border-color: var(--border-lite); transform: translateY(-3px); }
-  .academic-card::before {
-    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+  .academic-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
     background: linear-gradient(90deg, transparent, var(--brass), transparent);
-    transform: scaleX(0); transform-origin: center; opacity: 0;
-    transition: transform 0.55s cubic-bezier(.22,1,.36,1),
-                opacity 0.55s cubic-bezier(.22,1,.36,1);
-  }
-  .academic-card:hover::before { transform: scaleX(1); opacity: 1; }
+    transform: scaleX(0); transform-origin: left; transition: transform 0.5s; }
+  .academic-card:hover::before { transform: scaleX(1); }
   .academic-card-label { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem; }
   .academic-card-value { font-family: var(--display); font-size: 2.3rem; font-weight: 300; color: var(--brass); line-height: 1; margin-bottom: 0.8rem; letter-spacing: -0.02em; }
   .academic-card-desc { font-size: 0.92rem; font-weight: 300; color: var(--muted); line-height: 1.6; }
@@ -806,202 +742,289 @@
   /* ═══════════════ ANIMATED GOLDEN BACKGROUND (original aura) ═══════════════ */
   #goldenAura { display: none; }
 
-  /* ═══════════════ ABOUT TYPEWRITER ═══════════════
-     Full-viewport centred stage. A typewriter writes each sentence;
-     clicking advances to the next one. */
-  .about-section { position: relative; }
+  /* ═══════════════ ABOUT SCROLL CAROUSEL ═══════════════ */
+  .about-section {
+    position: relative;
+  }
+  .about-scroll-lock {
+    position: relative;
+  }
+  /* The sticky wrapper that holds beats centered */
   .about-sticky-stage {
-    position: relative; height: 100vh;
-    display: flex; align-items: center; justify-content: center;
-    z-index: 5; cursor: pointer;
+    position: sticky; top: 0; height: 100vh; display: flex;
+    align-items: center; justify-content: center;
+    pointer-events: none; z-index: 5; overflow: hidden;
   }
   .about-beat-display {
     position: absolute; inset: 0;
+    /* The display fills the whole stage so .about-orbit items can spread
+       across the full viewport. The centred prose is constrained inside
+       its own .about-beat-content child. */
+    opacity: 0; transform: translateY(60px) scale(0.95);
+    transition: opacity 0.9s cubic-bezier(.16,1,.3,1), transform 0.9s cubic-bezier(.16,1,.3,1);
+    pointer-events: none;
+  }
+  .about-beat-content {
+    position: absolute; inset: 0;
     display: flex; flex-direction: column;
-    align-items: flex-start; justify-content: center;
+    align-items: center; justify-content: center;
     padding: 0 clamp(1.5rem, 8vw, 10rem);
-    max-width: 1200px; margin: 0 auto; left: 0; right: 0;
+    max-width: 900px; margin: 0 auto; left: 0; right: 0;
+    text-align: center;
+    z-index: 3;
     pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.55s ease;
   }
-  .about-beat-display.about-beat-active {
-    opacity: 1;
-    pointer-events: auto;
+  .about-beat-content > * { pointer-events: auto; }
+  .about-beat-display .about-beat-text { max-width: 22ch; }
+  .about-beat-display .about-beat-num {
+    opacity: 0; transform: translateX(-20px);
+    transition: opacity 0.6s ease 0.15s, transform 0.6s cubic-bezier(.16,1,.3,1) 0.15s;
   }
-  .about-beat-text {
-    font-family: var(--display); font-weight: 300; letter-spacing: -0.02em;
-    font-size: clamp(2.2rem, 5.5vw, 4.2rem); line-height: 1.15; max-width: 18ch;
+  .about-beat-display .about-beat-text {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.8s ease 0.25s, transform 0.8s cubic-bezier(.16,1,.3,1) 0.25s;
   }
-  .about-beat-text strong { font-weight: 500; color: var(--parchment); }
-  .about-beat-text em { font-style: italic; color: var(--brass); }
-  .about-beat-text .soft { color: var(--muted); }
-  .about-tw-cursor {
-    display: inline-block; width: 3px; height: 0.85em; vertical-align: -0.1em;
-    background: var(--brass); margin-left: 3px; animation: blink 1s steps(1) infinite;
-    border-radius: 1px;
+  .about-beat-display .about-beat-link, .about-beat-display .about-lead {
+    opacity: 0; transform: translateY(12px);
+    transition: opacity 0.7s ease 0.45s, transform 0.7s cubic-bezier(.16,1,.3,1) 0.45s;
   }
-  .about-click-hint {
-    margin-top: 2.2rem;
-    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.26em;
-    text-transform: uppercase; color: var(--muted-dim);
-    display: flex; align-items: center; gap: 0.8rem;
-    opacity: 0;
-    transition: opacity 0.7s ease;
-    pointer-events: none;
-    user-select: none;
+  .about-beat-display.active {
+    opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
   }
-  .about-click-hint.hint-visible { opacity: 1; }
-  .about-click-hint::before {
-    content: '';
-    display: inline-block; width: 20px; height: 1px;
-    background: var(--muted-dim);
+  .about-beat-display.active .about-beat-num,
+  .about-beat-display.active .about-beat-text,
+  .about-beat-display.active .about-beat-link,
+  .about-beat-display.active .about-lead {
+    opacity: 1; transform: none;
   }
-  /* Decorative visuals next to the sentence — fade in gently, slightly
-     drift up to give a sense of being placed on the page. */
-  .about-visuals {
-    display: flex; flex-wrap: wrap; gap: 1rem;
-    margin-top: 2rem; pointer-events: auto;
+  .about-beat-display.exiting {
+    opacity: 0; transform: translateY(-50px) scale(0.96);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.55,0,1,.45);
   }
-  .about-visual-tile {
-    position: relative; overflow: hidden;
-    border: 1px solid var(--border);
-    background: var(--charcoal);
-    transition: border-color 0.5s ease, transform 0.5s ease;
-    text-decoration: none; color: inherit;
+  .about-scroll-spacer {
+    /* each beat gets 100vh of scroll space */
   }
-  .about-visual-tile:hover {
-    border-color: var(--border-lite);
-    transform: translateY(-3px);
-  }
-  .about-visual-tile img {
-    display: block; width: 100%; height: 100%;
-    object-fit: cover;
-    filter: grayscale(0.3) brightness(0.85);
-    transition: filter 0.6s ease, transform 0.8s ease;
-  }
-  .about-visual-tile:hover img {
-    filter: grayscale(0) brightness(0.95);
-    transform: scale(1.04);
-  }
-  .about-visual-tile.is-design {
-    width: 130px; aspect-ratio: 4/5;
-  }
-  .about-visual-card {
-    border: 1px solid var(--border);
-    padding: 0.95rem 1.1rem;
-    background: rgba(20,20,22,0.6);
-    transition: border-color 0.5s ease, background 0.5s ease, transform 0.5s ease;
-    text-decoration: none; color: inherit;
-    flex: 0 1 220px; min-width: 0;
-  }
-  .about-visual-card:hover {
-    border-color: var(--border-lite);
-    background: rgba(28,28,32,0.7);
-    transform: translateY(-3px);
-  }
-  .about-visual-card-cat {
-    font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.24em;
-    text-transform: uppercase; color: var(--brass); margin-bottom: 0.4rem;
-  }
-  .about-visual-card-title {
-    font-family: var(--display); font-size: 0.95rem; font-weight: 400;
-    color: var(--parchment); line-height: 1.25;
-  }
-  .about-visual-pill {
-    font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--muted);
-    border: 1px solid var(--border); border-radius: 100px;
-    padding: 0.45rem 0.95rem;
-    background: rgba(20,20,22,0.6);
-    transition: color 0.5s ease, border-color 0.5s ease, background 0.5s ease;
-  }
-  .about-visual-pill:hover {
-    color: var(--brass); border-color: var(--border-lite);
-    background: rgba(201,162,75,0.06);
-  }
-
-  /* progress dots for about carousel — vertical right rail */
+  /* progress dots for about carousel */
   .about-progress {
     position: fixed; right: 2rem; top: 50%; transform: translateY(-50%);
-    display: flex; flex-direction: column; gap: 0.55rem; z-index: 10;
+    display: flex; flex-direction: column; gap: 0.5rem; z-index: 10;
     opacity: 0; transition: opacity 0.5s;
   }
   .about-progress.visible { opacity: 1; }
   .about-progress-dot {
     width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--muted-dim);
-    transition: all 0.35s; cursor: pointer;
+    transition: all 0.3s; cursor: pointer;
   }
   .about-progress-dot.active { background: var(--brass); border-color: var(--brass); transform: scale(1.4); }
 
-  @media (max-width: 820px) {
-    .about-visual-tile.is-design { width: 96px; }
-    .about-visuals { gap: 0.65rem; margin-top: 1.4rem; }
-    .about-progress { right: 0.9rem; gap: 0.45rem; }
-    .about-progress-dot { width: 5px; height: 5px; }
+  /* ─── Floating orbit visuals around each beat's sentence ───
+     Each item is positioned absolutely at a resting point near the
+     centred sentence, then a slow circular "revolve" transform makes
+     it drift in a small loop around that resting point. Every item
+     gets a unique duration/delay so motion looks organic, never synced.
+     Hover lifts and brightens the item, then the revolve resumes from
+     the lifted position. */
+  .about-orbit {
+    position: absolute; inset: 0;
+    pointer-events: none; z-index: 2;
+    opacity: 0;
+    transition: opacity 0.9s cubic-bezier(.16,1,.3,1) 0.5s;
+  }
+  .about-beat-display.active .about-orbit { opacity: 1; }
+
+  .orbit-item {
+    position: absolute; pointer-events: auto;
+    text-decoration: none; color: inherit;
+    will-change: transform;
+    animation: orbitDrift 9s ease-in-out infinite alternate;
+  }
+  /* Each item gets a slightly different drift via nth-child delays so the
+     motion looks organic rather than synchronised. */
+  .orbit-item:nth-child(1) { animation-delay: 0s;   animation-duration: 7s;  }
+  .orbit-item:nth-child(2) { animation-delay: 1.2s; animation-duration: 8.5s;}
+  .orbit-item:nth-child(3) { animation-delay: 2s;   animation-duration: 10s; }
+  .orbit-item:nth-child(4) { animation-delay: 0.6s; animation-duration: 9s;  }
+  .orbit-item:nth-child(5) { animation-delay: 2.6s; animation-duration: 11s; }
+  .orbit-item:nth-child(6) { animation-delay: 1.6s; animation-duration: 8s;  }
+  .orbit-item:nth-child(7) { animation-delay: 3s;   animation-duration: 9.5s;}
+  .orbit-item:nth-child(8) { animation-delay: 0.3s; animation-duration: 10.5s;}
+  @keyframes orbitDrift {
+    0%   { transform: translate(0, 0); }
+    50%  { transform: translate(6px, -10px); }
+    100% { transform: translate(-4px, 8px); }
   }
 
-  /* ═══════════════ EXPERIENCE HOVER REVEAL ═══════════════
-     Every hover-driven property on a role uses the same duration & easing,
-     so the reveal feels like a single coherent transition rather than
-     mismatched fades. */
+  /* ─── WRITING orbit titles — no box, just type ───
+     Title sits above the theme (mono category). On hover, the title
+     brightens, an underline rule sweeps in from the left, and the
+     whole label nudges slightly outward — the cool "lifts off" feel. */
+  .orbit-title {
+    max-width: 230px;
+    font-family: var(--display); font-weight: 400;
+    font-size: 1rem; line-height: 1.3;
+    color: var(--bone);
+    padding: 0.2rem 0;
+    background: none; border: none;
+    cursor: pointer;
+    transition: color 0.4s cubic-bezier(.22,1,.36,1),
+                transform 0.4s cubic-bezier(.22,1,.36,1),
+                letter-spacing 0.4s cubic-bezier(.22,1,.36,1);
+    /* Note: position is inherited from .orbit-item (absolute) — adding
+       position: relative here would break the corner positioning rules. */
+  }
+  .orbit-title .cat {
+    display: block;
+    font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.26em;
+    text-transform: uppercase; color: var(--brass);
+    margin-bottom: 0.5rem;
+    opacity: 0.85;
+    transition: letter-spacing 0.4s cubic-bezier(.22,1,.36,1), opacity 0.4s;
+  }
+  /* Brass underline rule, hidden until hover */
+  .orbit-title::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: -6px;
+    height: 1px;
+    background: linear-gradient(to right, var(--brass) 0%, var(--brass-lite) 50%, transparent 100%);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.55s cubic-bezier(.22,1,.36,1);
+  }
+  .orbit-title:hover {
+    color: var(--parchment);
+    transform: translateX(4px);
+  }
+  .orbit-title:hover .cat { letter-spacing: 0.34em; opacity: 1; }
+  .orbit-title:hover::after { transform: scaleX(1); }
+
+  /* Design cover thumbnails floating around the sentence */
+  .orbit-cover {
+    width: 110px; aspect-ratio: 4/5;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--charcoal);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.45);
+    transition: transform 0.5s cubic-bezier(.16,1,.3,1), border-color 0.4s, box-shadow 0.5s;
+  }
+  .orbit-cover img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(0.35) brightness(0.88);
+    transition: filter 0.5s, transform 0.6s;
+  }
+  .orbit-cover:hover {
+    transform: scale(1.1);
+    border-color: var(--brass);
+    box-shadow: 0 18px 50px rgba(201,162,75,0.18), 0 12px 36px rgba(0,0,0,0.55);
+  }
+  .orbit-cover:hover img { filter: grayscale(0) brightness(1); transform: scale(1.05); }
+
+  /* Experience role pills floating around the sentence */
+  .orbit-pill {
+    font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--muted);
+    border: 1px solid var(--border); border-radius: 100px;
+    padding: 0.5rem 1.05rem;
+    background: rgba(10,10,11,0.55); backdrop-filter: blur(4px);
+    white-space: nowrap;
+    transition: color 0.4s, border-color 0.4s, background 0.4s, transform 0.4s;
+  }
+  a.orbit-pill { text-decoration: none; }
+  .orbit-pill:hover {
+    color: var(--brass); border-color: var(--brass);
+    background: rgba(201,162,75,0.06);
+    transform: scale(1.06);
+  }
+
+  /* Positions — corners sit at a comfortable 6–8% off the edges so the
+     prose feels surrounded without being congested. The mid-row pills in
+     Beat 04 (which sit at the sentence's vertical level) are pushed to the
+     extreme edges (3% off) so they always clear the centred text. */
+
+  /* Beat 02 — Writing titles (4 corners) */
+  #aboutDisplay1 .orbit-item:nth-child(1) { top:  12%;  left:  6%; }
+  #aboutDisplay1 .orbit-item:nth-child(2) { top:  14%;  right: 6%; }
+  #aboutDisplay1 .orbit-item:nth-child(3) { bottom: 14%; left:  6%; }
+  #aboutDisplay1 .orbit-item:nth-child(4) { bottom: 12%; right: 6%; }
+
+  /* Beat 03 — Design covers (4 corners) */
+  #aboutDisplay2 .orbit-item:nth-child(1) { top:  12%;  left:  8%; }
+  #aboutDisplay2 .orbit-item:nth-child(2) { top:  10%;  right: 8%; }
+  #aboutDisplay2 .orbit-item:nth-child(3) { bottom: 14%; left:  9%; }
+  #aboutDisplay2 .orbit-item:nth-child(4) { bottom: 12%; right: 8%; }
+
+  /* Beat 04 — Experience pills (8, ring layout). Mid rows hug the very
+     edges so they don't clash with the centred sentence text. */
+  #aboutDisplay3 .orbit-item:nth-child(1) { top:  6%;  left:  7%; }
+  #aboutDisplay3 .orbit-item:nth-child(2) { top:  8%;  right: 7%; }
+  #aboutDisplay3 .orbit-item:nth-child(3) { top:  28%; left:  3%; }
+  #aboutDisplay3 .orbit-item:nth-child(4) { top:  26%; right: 3%; }
+  #aboutDisplay3 .orbit-item:nth-child(5) { bottom: 28%; left: 3%; }
+  #aboutDisplay3 .orbit-item:nth-child(6) { bottom: 26%; right:3%; }
+  #aboutDisplay3 .orbit-item:nth-child(7) { bottom: 6%;  left: 8%; }
+  #aboutDisplay3 .orbit-item:nth-child(8) { bottom: 8%;  right:8%; }
+
+  @media (max-width: 820px) {
+    .orbit-title { max-width: 140px; font-size: 0.82rem; }
+    .orbit-title .cat { font-size: 0.44rem; }
+    .orbit-cover { width: 78px; }
+    .orbit-pill { font-size: 0.5rem; padding: 0.4rem 0.85rem; }
+    /* Tighter positions on mobile — closer to centre line, smaller viewport */
+    #aboutDisplay1 .orbit-item:nth-child(1) { top:  8%;  left: 4%;  }
+    #aboutDisplay1 .orbit-item:nth-child(2) { top:  10%; right: 4%; }
+    #aboutDisplay1 .orbit-item:nth-child(3) { bottom: 12%; left: 4%; }
+    #aboutDisplay1 .orbit-item:nth-child(4) { bottom: 10%; right: 4%; }
+    #aboutDisplay2 .orbit-item:nth-child(1) { top: 8%;  left: 5%;  }
+    #aboutDisplay2 .orbit-item:nth-child(2) { top: 6%;  right: 5%; }
+    #aboutDisplay2 .orbit-item:nth-child(3) { bottom: 10%; left: 7%; }
+    #aboutDisplay2 .orbit-item:nth-child(4) { bottom: 10%; right: 7%; }
+    /* Show only 6 experience pills on mobile (hide last two) */
+    #aboutDisplay3 .orbit-item:nth-child(7),
+    #aboutDisplay3 .orbit-item:nth-child(8) { display: none; }
+    #aboutDisplay3 .orbit-item:nth-child(1) { top:  8%;  left: 4%; }
+    #aboutDisplay3 .orbit-item:nth-child(2) { top:  10%; right: 4%; }
+    #aboutDisplay3 .orbit-item:nth-child(3) { top:  28%; left: 3%; }
+    #aboutDisplay3 .orbit-item:nth-child(4) { top:  26%; right: 3%; }
+    #aboutDisplay3 .orbit-item:nth-child(5) { bottom: 16%; left: 4%; }
+    #aboutDisplay3 .orbit-item:nth-child(6) { bottom: 16%; right: 4%; }
+  }
+
+  /* ═══════════════ EXPERIENCE HOVER REVEAL ═══════════════ */
   .exp-role-col .exp-excerpt,
   .exp-role-col .exp-full,
   .exp-role-col .exp-toggle,
   .exp-role-col .school-pills {
-    max-height: 0; overflow: hidden; opacity: 0; margin-top: 0;
-    transition: max-height 0.55s cubic-bezier(.22,1,.36,1),
-                opacity 0.55s cubic-bezier(.22,1,.36,1),
-                margin 0.55s cubic-bezier(.22,1,.36,1);
+    max-height: 0; overflow: hidden; opacity: 0;
+    transition: max-height 0.55s cubic-bezier(.16,1,.3,1), opacity 0.45s ease, margin 0.4s ease;
+    margin-top: 0;
   }
   .exp-role-col:hover .exp-excerpt,
   .exp-role-col.touch-active .exp-excerpt {
     max-height: 200px; opacity: 1; margin-top: 0.55rem;
   }
-  .exp-role-col .exp-meta {
-    transition: transform 0.55s cubic-bezier(.22,1,.36,1);
-  }
+  .exp-role-col .exp-meta { transition: transform 0.4s ease; }
   .exp-role-col .exp-role-title {
-    transition: font-size 0.55s cubic-bezier(.22,1,.36,1),
-                color 0.55s cubic-bezier(.22,1,.36,1);
+    transition: font-size 0.4s cubic-bezier(.16,1,.3,1), color 0.3s;
   }
   .exp-role-col:hover .exp-role-title,
   .exp-role-col.touch-active .exp-role-title {
     font-size: 1.55rem; color: var(--brass);
   }
+  /* School pills special */
   .exp-role-col:hover .school-pills,
   .exp-role-col.touch-active .school-pills { max-height: 200px; opacity: 1; margin-top: 0.75rem; }
+  /* toggle button only if exp-full also open */
   .exp-role-col:hover .exp-toggle,
   .exp-role-col.touch-active .exp-toggle { max-height: 60px; opacity: 1; margin-top: 0.4rem; }
+  /* Mobile: middle entry enlarged */
   @media (max-width: 820px) {
-    .exp-role-col {
-      transition: transform 0.55s cubic-bezier(.22,1,.36,1);
-    }
-    /* On mobile: disable :hover so only one item (mobile-focus) ever reveals */
-    .exp-role-col:hover .exp-excerpt { max-height: 0; opacity: 0; margin-top: 0; }
-    .exp-role-col:hover .exp-role-title { font-size: 1.35rem; color: var(--parchment); }
-    .exp-role-col:hover .school-pills { max-height: 0; opacity: 0; margin-top: 0; }
-    .exp-role-col:hover .exp-toggle { max-height: 0; opacity: 0; margin-top: 0; }
-    /* Only the single mobile-focus item reveals */
+    .exp-role-col { transition: transform 0.4s ease; }
     .exp-role-col.mobile-focus .exp-excerpt { max-height: 200px; opacity: 1; margin-top: 0.55rem; }
     .exp-role-col.mobile-focus .exp-role-title { font-size: 1.5rem; color: var(--brass); }
     .exp-role-col.mobile-focus .school-pills { max-height: 200px; opacity: 1; margin-top: 0.75rem; }
     .exp-role-col.mobile-focus .exp-toggle { max-height: 60px; opacity: 1; margin-top: 0.4rem; }
   }
 
-  /* ═══════════════ QUOTES — SWIPE/CLICK CAROUSEL ═══════════════ */
-  .quotes-viewport { cursor: none; }
-  .quote-slide { cursor: none; }
-  /* Swipe left/right hint arrow */
-  .quote-swipe-hint {
-    display: flex; gap: 1.5rem; justify-content: center; margin-top: 1.5rem; opacity: 0.4;
-  }
-  .quote-swipe-btn {
-    background: none; border: 1px solid var(--border); color: var(--muted);
-    font-family: var(--mono); font-size: 0.72rem; padding: 0.55rem 1.1rem;
-    border-radius: 2px; cursor: none; transition: all 0.3s;
-  }
-  .quote-swipe-btn:hover { color: var(--brass); border-color: var(--brass); opacity: 1; }
+  /* ═══════════════ QUOTES — Cursor behaviour ═══════════════ */
+  .quotes-viewport { cursor: pointer; }
 
   /* ═══════════════ SECTION SKILL BUTTONS ═══════════════ */
   .skill-tag {
@@ -1014,6 +1037,19 @@
   }
   .skill-tag::before { content: '✦'; color: var(--brass); font-size: 0.5rem; }
   .skill-tag:hover { color: var(--brass); border-color: var(--border-lite); }
+
+  /* ═══════════════ ENHANCED SECTION TRANSITIONS ═══════════════ */
+  .fade-section {
+    transition: opacity 1.2s cubic-bezier(.16,1,.3,1), filter 1.2s cubic-bezier(.16,1,.3,1), transform 1.2s cubic-bezier(.16,1,.3,1);
+  }
+  .fade-section.dimmed { opacity: 0.18; filter: blur(2px); transform: scale(0.99); }
+  .fade-section.entering {
+    animation: sectionEnter 1s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  @keyframes sectionEnter {
+    from { opacity: 0; transform: translateY(50px); filter: blur(4px); }
+    to { opacity: 1; transform: translateY(0); filter: none; }
+  }
 
 </style>
 </head>
@@ -1094,27 +1130,88 @@
 
 </section>
 
-<!-- ═══════════════ ABOUT — typewriter click-through ═══════════════ -->
+<!-- ═══════════════ ABOUT — scroll-lock carousel ═══════════════ -->
 <section class="about-section fade-section" id="about">
-  <div class="about-sticky-stage" id="aboutStage" role="region" aria-label="About Shaurya">
+  <div class="about-sticky-stage" id="aboutStage">
+
+    <!-- Beat 01 — the opener. No orbit visuals; just the sentence and the lead. -->
     <div class="about-beat-display" id="aboutDisplay0">
-      <p class="about-lead">About</p>
-      <p class="about-beat-text" id="aboutText0"><span class="about-tw-cursor" id="aboutCursor0"></span></p>
-      <p class="about-click-hint" id="aboutHint0">Click anywhere to continue</p>
+      <div class="about-beat-content">
+        <p class="about-lead">About</p>
+        <p class="about-beat-num">01</p>
+        <p class="about-beat-text">A high schooler studying at the intersection of <strong>law</strong>, <strong>political thought</strong>, and the <em>written word.</em></p>
+      </div>
     </div>
+
+    <!-- Beat 02 — Writing. Article titles drift around the sentence; click → article. -->
     <div class="about-beat-display" id="aboutDisplay1">
-      <p class="about-beat-text" id="aboutText1"><span class="about-tw-cursor" id="aboutCursor1"></span></p>
-      <p class="about-click-hint" id="aboutHint1">Click anywhere to continue</p>
+      <div class="about-beat-content">
+        <p class="about-beat-num">02</p>
+        <p class="about-beat-text">I write — essays on the courts, the constitution, and the institutions that shape public life.</p>
+      </div>
+      <div class="about-orbit" aria-label="Recent essays">
+        <a class="orbit-item orbit-title" href="#writing" data-article="0">
+          <span class="cat">Analysis</span>
+          The Fall of Titans: Analysing the May 2026 Elections
+        </a>
+        <a class="orbit-item orbit-title" href="#writing" data-article="1">
+          <span class="cat">Constitutional Law</span>
+          The Three Musketeers of Federal Overreach
+        </a>
+        <a class="orbit-item orbit-title" href="#writing" data-article="2">
+          <span class="cat">Judicial Politics</span>
+          Mamata's Suit: West Bengal at the Apex Court
+        </a>
+        <a class="orbit-item orbit-title" href="#writing" data-article="3">
+          <span class="cat">Foreign Policy</span>
+          The 27th Amendment: Pakistan's Constitutional Fail
+        </a>
+      </div>
     </div>
+
+    <!-- Beat 03 — Design. Small cover thumbnails drift; click → designs.html. -->
     <div class="about-beat-display" id="aboutDisplay2">
-      <p class="about-beat-text" id="aboutText2"><span class="about-tw-cursor" id="aboutCursor2"></span></p>
-      <p class="about-click-hint" id="aboutHint2">Click anywhere to continue</p>
+      <div class="about-beat-content">
+        <p class="about-beat-num">03</p>
+        <p class="about-beat-text">I design — <strong>200+</strong> editorial covers, NGO campaigns, and conference identities.</p>
+      </div>
+      <div class="about-orbit" aria-label="Recent designs">
+        <a class="orbit-item orbit-cover" href="designs.html" aria-label="Denial">
+          <img src="cover5.png" alt="" loading="lazy">
+        </a>
+        <a class="orbit-item orbit-cover" href="designs.html" aria-label="Truthful Thursdays">
+          <img src="cover2.png" alt="" loading="lazy">
+        </a>
+        <a class="orbit-item orbit-cover" href="designs.html" aria-label="Credit Flow & Migration">
+          <img src="cover1.png" alt="" loading="lazy">
+        </a>
+        <a class="orbit-item orbit-cover" href="designs.html" aria-label="Wild Wednesdays">
+          <img src="cover3.png" alt="" loading="lazy">
+        </a>
+      </div>
     </div>
+
+    <!-- Beat 04 — Experience. Role pills drift around the sentence; click → experience. -->
     <div class="about-beat-display" id="aboutDisplay3">
-      <p class="about-beat-text" id="aboutText3"><span class="about-tw-cursor" id="aboutCursor3"></span></p>
-      <p class="about-click-hint" id="aboutHint3">↓ scroll to keep going</p>
+      <div class="about-beat-content">
+        <p class="about-beat-num">04</p>
+        <p class="about-beat-text">I show up — <strong>20+ NGOs</strong>, <strong>40+ Model UNs</strong>, and a few things I helped <em>build from scratch.</em></p>
+      </div>
+      <div class="about-orbit" aria-label="Roles I've held">
+        <a class="orbit-item orbit-pill" href="#experience">Editor-in-Chief</a>
+        <a class="orbit-item orbit-pill" href="#experience">Co-Founder</a>
+        <a class="orbit-item orbit-pill" href="#experience">Secretary General</a>
+        <a class="orbit-item orbit-pill" href="#experience">Chairperson</a>
+        <a class="orbit-item orbit-pill" href="#experience">Head of Marketing</a>
+        <a class="orbit-item orbit-pill" href="#experience">Best Delegate</a>
+        <a class="orbit-item orbit-pill" href="#experience">USG · IT Affairs</a>
+        <a class="orbit-item orbit-pill" href="#experience">Chef de Cabinet</a>
+      </div>
     </div>
+
   </div>
+  <!-- 4 beats × 100vh -->
+  <div style="height:400vh" id="aboutScrollSpace" aria-hidden="true"></div>
 </section>
 
 <!-- ═══════════════ STATS ═══════════════ -->
@@ -1130,37 +1227,38 @@
 
 <!-- ═══════════════ ROTATING QUOTES + PEOPLE I ADMIRE ═══════════════ -->
 <div class="quotes-block fade-section" id="quotesSection">
-  <div class="quotes-viewport" id="quotesViewport">
-    <div class="quote-slide active" data-index="0">
-      <blockquote>If we wish to maintain democracy not merely in form, but also in fact, we must hold fast to constitutional methods of achieving our social and economic objectives.</blockquote>
-      <cite>— Dr. B.R. Ambedkar</cite>
+  <div class="quotes-stage">
+    <button class="quote-arrow" id="quotePrev" aria-label="Previous quote">‹</button>
+    <div class="quotes-viewport" id="quotesViewport" role="link" tabindex="0" aria-label="See the people I admire">
+      <div class="quote-slide active" data-index="0">
+        <blockquote>If we wish to maintain democracy not merely in form, but also in fact, we must hold fast to constitutional methods of achieving our social and economic objectives.</blockquote>
+        <cite>— Dr. B.R. Ambedkar</cite>
+      </div>
+      <div class="quote-slide" data-index="1">
+        <blockquote>The first duty of an intellectual is to dissent — not because dissent is intrinsically right, but because conformity is intrinsically dangerous.</blockquote>
+        <cite>— Romila Thapar</cite>
+      </div>
+      <div class="quote-slide" data-index="2">
+        <blockquote>The greatness of a nation and its moral progress can be judged by the way its animals are treated.</blockquote>
+        <cite>— Mahatma Gandhi</cite>
+      </div>
+      <div class="quote-slide" data-index="3">
+        <blockquote>Injustice anywhere is a threat to justice everywhere. We are caught in an inescapable network of mutuality.</blockquote>
+        <cite>— Dr. Martin Luther King Jr.</cite>
+      </div>
+      <div class="quote-slide" data-index="4">
+        <blockquote>It is not power that corrupts but fear. Fear of losing power corrupts those who wield it.</blockquote>
+        <cite>— Aung San Suu Kyi</cite>
+      </div>
+      <div class="quote-slide" data-index="5">
+        <blockquote>Democracy is not merely a form of government. It is primarily a mode of associated living, of conjoint communicated experience.</blockquote>
+        <cite>— Dr. B.R. Ambedkar</cite>
+      </div>
     </div>
-    <div class="quote-slide" data-index="1">
-      <blockquote>The first duty of an intellectual is to dissent — not because dissent is intrinsically right, but because conformity is intrinsically dangerous.</blockquote>
-      <cite>— Romila Thapar</cite>
-    </div>
-    <div class="quote-slide" data-index="2">
-      <blockquote>The greatness of a nation and its moral progress can be judged by the way its animals are treated.</blockquote>
-      <cite>— Mahatma Gandhi</cite>
-    </div>
-    <div class="quote-slide" data-index="3">
-      <blockquote>Injustice anywhere is a threat to justice everywhere. We are caught in an inescapable network of mutuality.</blockquote>
-      <cite>— Dr. Martin Luther King Jr.</cite>
-    </div>
-    <div class="quote-slide" data-index="4">
-      <blockquote>It is not power that corrupts but fear. Fear of losing power corrupts those who wield it.</blockquote>
-      <cite>— Aung San Suu Kyi</cite>
-    </div>
-    <div class="quote-slide" data-index="5">
-      <blockquote>Democracy is not merely a form of government. It is primarily a mode of associated living, of conjoint communicated experience.</blockquote>
-      <cite>— Dr. B.R. Ambedkar</cite>
-    </div>
+    <button class="quote-arrow" id="quoteNext" aria-label="Next quote">›</button>
   </div>
   <div class="quote-dots" id="quoteDots"></div>
-  <div class="quote-swipe-hint">
-    <button class="quote-swipe-btn" id="quotePrev" aria-label="Previous quote">← prev</button>
-    <button class="quote-swipe-btn" id="quoteNext" aria-label="Next quote">next →</button>
-  </div>
+  <p class="quotes-hint">Click the quote to see the people I admire →</p>
 </div>
 
 <!-- ═══════════════ WRITING ═══════════════ -->
@@ -1468,21 +1566,6 @@
   </div>
   <div class="academics-grid">
     <div class="academic-card">
-      <p class="academic-card-label">Class X · CBSE</p>
-      <p class="academic-card-value">93.4%</p>
-      <p class="academic-card-desc">Ryan International School, Greater Noida</p>
-    </div>
-    <div class="academic-card">
-      <p class="academic-card-label">Class XI · Commerce</p>
-      <p class="academic-card-value">2nd Overall</p>
-      <p class="academic-card-desc">2nd Position Overall in Commerce stream</p>
-    </div>
-    <div class="academic-card">
-      <p class="academic-card-label">CLAT 2026 · Mock Attempt</p>
-      <p class="academic-card-value">AIR 3,201</p>
-      <p class="academic-card-desc">Mock attempt — Main attempt is CLAT 2027</p>
-    </div>
-    <div class="academic-card">
       <p class="academic-card-label">Cambridge English</p>
       <p class="academic-card-value">C1</p>
       <p class="academic-card-desc">C1 Advanced Proficiency Certificate</p>
@@ -1599,68 +1682,31 @@ const articles = window.ARTICLES || [];
   setTimeout(type, 1500);
 })();
 
-/* ═══ SCROLL CROSS-FADE ═══
-   Every .fade-section's opacity is computed continuously from how close
-   its centre is to the viewport centre. This produces a true cross-fade —
-   as one section drifts out, the next is already fading in. No abrupt snap.
-   Sections taller than the viewport (e.g. the about-section, 4 viewports
-   tall) are treated as "fully in" whenever any part of them overlaps the
-   viewport centre, so they don't dim out just because their geometric
-   centre is off-screen. */
-(function () {
+/* ═══ SCROLL SPOTLIGHT — dim sections not in focus ═══ */
+(function(){
   const sections = Array.from(document.querySelectorAll('.fade-section'));
   if (!sections.length) return;
-
-  // Disable the static CSS transition while JS drives opacity directly,
-  // so we don't get a second slow easing layered on top of scroll position.
-  sections.forEach(s => { s.style.transition = 'none'; });
-
   let ticking = false;
-
-  function update() {
+  function update(){
     ticking = false;
-    const vpH = window.innerHeight;
-    const vpMid = vpH * 0.5;
-    // Proximity is 1 at viewport centre, 0 by the time the relevant point
-    // is roughly a full viewport away.
-    const radius = vpH * 0.85;
-
+    const vpH = window.innerHeight, mid = vpH * 0.5;
+    let best = null, bestScore = -Infinity;
     sections.forEach(s => {
       const r = s.getBoundingClientRect();
-
-      // For sections taller than the viewport (sticky-scroll tracks like
-      // the about-section), use the nearest edge of the section to the
-      // viewport centre as the reference point. That way they're "fully in"
-      // whenever the viewport is somewhere inside them.
-      let refPoint;
-      if (r.height > vpH * 1.2) {
-        if (vpMid >= r.top && vpMid <= r.bottom) refPoint = vpMid;
-        else if (vpMid < r.top)                  refPoint = r.top;
-        else                                     refPoint = r.bottom;
-      } else {
-        refPoint = r.top + r.height * 0.5;
-      }
-
-      const dist = Math.abs(refPoint - vpMid);
-      const t = Math.max(0, 1 - dist / radius);
-      // Smoothstep for a gentler curve
-      const eased = t * t * (3 - 2 * t);
-
-      // Opacity from 0.18 (fully out) to 1.0 (fully in)
-      const op = 0.18 + 0.82 * eased;
-      const blur = (1 - eased) * 2.5;
-      const sign = refPoint < vpMid ? -1 : 1;
-      const dy = (1 - eased) * 18 * sign;
-
-      s.style.opacity = op.toFixed(3);
-      s.style.filter = `blur(${blur.toFixed(2)}px)`;
-      s.style.transform = `translateY(${dy.toFixed(1)}px)`;
+      const visTop = Math.max(0, r.top), visBot = Math.min(vpH, r.bottom);
+      const visible = Math.max(0, visBot - visTop);
+      const centre = r.top + r.height * 0.5;
+      const centrality = vpH - Math.abs(mid - centre);
+      const score = visible * 0.7 + centrality * 0.3;
+      if (score > bestScore) { bestScore = score; best = s; }
+    });
+    sections.forEach(s => {
+      const r = s.getBoundingClientRect();
+      const onScreen = r.bottom > 0 && r.top < vpH;
+      s.classList.toggle('dimmed', !(s === best && onScreen));
     });
   }
-
-  window.addEventListener('scroll', () => {
-    if (!ticking) { requestAnimationFrame(update); ticking = true; }
-  }, { passive: true });
+  window.addEventListener('scroll', () => { if (!ticking){ requestAnimationFrame(update); ticking = true; } }, { passive: true });
   window.addEventListener('resize', update, { passive: true });
   update();
 })();
@@ -1671,27 +1717,17 @@ const revealObs = new IntersectionObserver(entries => {
 }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
 document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-/* ═══ GROUP REVEAL (no per-child stagger) ═══
-   Reveal all children of a grid together when the grid enters the
-   viewport, instead of one-by-one. This removes the "items popping in
-   sequentially" feel that the user found glitchy. */
+/* ═══ STAGGER GRID CHILDREN ═══ */
 function applyStagger(parentSel, childSel){
   document.querySelectorAll(parentSel).forEach(parent => {
-    const children = parent.querySelectorAll(childSel);
-    children.forEach(child => {
+    parent.querySelectorAll(childSel).forEach((child, i) => {
       child.classList.add('reveal-child');
-      child.style.transitionDelay = '0s';  // no per-child delay
+      child.style.transitionDelay = (i * 80) + 'ms';
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(ent => { if (ent.isIntersecting){ ent.target.classList.add('visible'); obs.unobserve(ent.target); } });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      obs.observe(child);
     });
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(ent => {
-        if (ent.isIntersecting) {
-          // mark every child visible at once
-          children.forEach(c => c.classList.add('visible'));
-          obs.unobserve(ent.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    obs.observe(parent);
   });
 }
 
@@ -1704,168 +1740,71 @@ function applyStagger(parentSel, childSel){
   check();
 })();
 
-/* ═══ ABOUT TYPEWRITER ═══ */
+/* ═══ ABOUT SCROLL-LOCK CAROUSEL ═══ */
 (function(){
-  /* ── Sentences (plain text; bold/em injected via spans after typing) ──
-     We store two parallel arrays: the visible plain text and the rich HTML
-     version that replaces it once typing is complete. */
-  const BEATS = [
-    {
-      plain: 'A high schooler studying at the intersection of law, political thought, and the written word.',
-      rich:  'A high schooler studying at the intersection of <strong>law</strong>, <strong>political thought</strong>, and the <em>written word.</em>'
-    },
-    {
-      plain: 'I write — essays on the courts, the constitution, and the institutions that shape public life.',
-      rich:  'I write — essays on the courts, the constitution, and the institutions that shape public life.'
-    },
-    {
-      plain: 'I design — 200+ editorial covers, NGO campaigns, and conference identities.',
-      rich:  'I design — <strong>200+</strong> editorial covers, NGO campaigns, and conference identities.'
-    },
-    {
-      plain: 'I show up — 20+ NGOs, 40+ Model UNs, and a few things I helped build from scratch.',
-      rich:  'I show up — <strong>20+ NGOs</strong>, <strong>40+ Model UNs</strong>, and a few things I helped <em>build from scratch.</em>'
-    }
-  ];
-
-  const CHAR_SPEED  = 48;   // ms per character
-  const HINT_DELAY  = 900;  // ms after typing ends before hint appears
-  const PANEL_FADE  = 550;  // ms CSS transition (matches .about-beat-display)
-
-  const stage    = document.getElementById('aboutStage');
+  const stage = document.getElementById('aboutStage');
+  const section = document.getElementById('about');
+  const scrollSpace = document.getElementById('aboutScrollSpace');
   const progressEl = document.getElementById('aboutProgress');
-  if (!stage) return;
+  if (!stage || !section) return;
 
-  const panels  = BEATS.map((_, i) => document.getElementById('aboutDisplay' + i));
-  const textEls = BEATS.map((_, i) => document.getElementById('aboutText' + i));
-  const cursors = BEATS.map((_, i) => document.getElementById('aboutCursor' + i));
-  const hints   = BEATS.map((_, i) => document.getElementById('aboutHint' + i));
+  const BEATS = 4;
+  let currentBeat = -1;
 
-  // Progress dots
-  for (let i = 0; i < BEATS.length; i++) {
+  // Build progress dots
+  for (let i = 0; i < BEATS; i++) {
     const d = document.createElement('div');
     d.className = 'about-progress-dot';
-    d.addEventListener('click', () => { if (i > currentBeat) advanceTo(i); });
+    d.addEventListener('click', () => {
+      const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+      const beatScroll = sectionTop + (i * window.innerHeight);
+      window.scrollTo({ top: beatScroll, behavior: 'smooth' });
+    });
     progressEl.appendChild(d);
   }
   const dots = progressEl.querySelectorAll('.about-progress-dot');
 
-  let currentBeat = -1;
-  let typingTimer  = null;
-  let hintTimer    = null;
-  let charIndex    = 0;
-  let typingDone   = false;
-  let started      = false;   // true once section enters viewport
+  function update(){
+    const sectionTop = section.getBoundingClientRect().top;
+    const sectionH = window.innerHeight * BEATS;
+    // Start showing beat 0 as soon as section enters from the top (even before fully in view)
+    const progress = -sectionTop / sectionH;
+    // Show carousel when section is anywhere near viewport (start slightly before)
+    const isActive = progress >= -0.05 && progress <= 1;
 
-  /* ─── Show / hide a panel ─── */
-  function showPanel(i) {
-    panels[i].classList.add('about-beat-active');
-    dots[i].classList.add('active');
-  }
-  function hidePanel(i) {
-    panels[i].classList.remove('about-beat-active');
-    hints[i].classList.remove('hint-visible');
-    dots[i].classList.remove('active');
-  }
+    progressEl.classList.toggle('visible', isActive && progress >= 0);
 
-  /* ─── Typewriter for beat i ─── */
-  function startTyping(i) {
-    typingDone = false;
-    charIndex  = 0;
-    const el     = textEls[i];
-    const cursor = cursors[i];
-    const plain  = BEATS[i].plain;
-
-    clearTimeout(typingTimer);
-    clearTimeout(hintTimer);
-    hints[i].classList.remove('hint-visible');
-
-    function tick() {
-      charIndex++;
-      // Rebuild text node + cursor
-      el.textContent = plain.slice(0, charIndex);
-      el.appendChild(cursor);
-      if (charIndex < plain.length) {
-        typingTimer = setTimeout(tick, CHAR_SPEED);
-      } else {
-        // Typing finished — swap plain text for rich HTML, keep cursor
-        typingDone = true;
-        el.innerHTML = BEATS[i].rich;
-        el.appendChild(cursor);
-        // Show hint after reading delay
-        hintTimer = setTimeout(() => {
-          hints[i].classList.add('hint-visible');
-        }, HINT_DELAY);
+    if (!isActive) {
+      if (currentBeat !== -1) {
+        const cur = document.getElementById('aboutDisplay' + currentBeat);
+        if (cur) cur.classList.remove('active');
+        currentBeat = -1;
       }
-    }
-    tick();
-  }
-
-  /* ─── Advance to beat i ─── */
-  function advanceTo(i) {
-    if (i >= BEATS.length) return;
-
-    // Hide previous
-    if (currentBeat >= 0 && currentBeat !== i) {
-      hidePanel(currentBeat);
-    }
-
-    clearTimeout(typingTimer);
-    clearTimeout(hintTimer);
-    currentBeat = i;
-
-    showPanel(i);
-    startTyping(i);
-  }
-
-  /* ─── Click / tap anywhere on the stage to advance ─── */
-  stage.addEventListener('click', () => {
-    if (currentBeat < 0) return;           // not started yet
-    if (!typingDone) {
-      // Skip to end of current sentence immediately
-      clearTimeout(typingTimer);
-      const el     = textEls[currentBeat];
-      const cursor = cursors[currentBeat];
-      el.innerHTML = BEATS[currentBeat].rich;
-      el.appendChild(cursor);
-      typingDone = true;
-      clearTimeout(hintTimer);
-      hintTimer = setTimeout(() => {
-        hints[currentBeat].classList.add('hint-visible');
-      }, HINT_DELAY);
       return;
     }
-    // Typing already done — go to next beat
-    const next = currentBeat + 1;
-    if (next < BEATS.length) {
-      hints[currentBeat].classList.remove('hint-visible');
-      advanceTo(next);
-    }
-  });
 
-  /* ─── IntersectionObserver: start when section scrolls into view ─── */
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting && !started) {
-        started = true;
-        progressEl.classList.add('visible');
-        advanceTo(0);
-        obs.disconnect();
+    const beat = Math.min(Math.max(Math.floor(progress * BEATS), 0), BEATS - 1);
+    if (beat !== currentBeat) {
+      if (currentBeat >= 0) {
+        const old = document.getElementById('aboutDisplay' + currentBeat);
+        if (old) { old.classList.remove('active'); old.classList.add('exiting'); setTimeout(() => old.classList.remove('exiting'), 600); }
       }
-    });
-  }, { threshold: 0.25 });
+      const next = document.getElementById('aboutDisplay' + beat);
+      if (next) { next.classList.add('active'); }
+      currentBeat = beat;
+      dots.forEach((d, i) => d.classList.toggle('active', i === beat));
+    }
+  }
 
-  const section = document.getElementById('about');
-  if (section) obs.observe(section);
-  // Also show progress dots visibility on scroll (like the original)
-  window.addEventListener('scroll', () => {
-    if (!section) return;
-    const r = section.getBoundingClientRect();
-    progressEl.classList.toggle('visible', r.bottom > 0 && r.top < window.innerHeight * 0.8);
-  }, { passive: true });
+  window.addEventListener('scroll', update, { passive: true });
+  update();
 })();
 
-/* ═══ ROTATING QUOTES with swipe ═══ */
+/* ═══ ROTATING QUOTES with swipe + click-to-admired ═══
+   - Side arrows (‹ / ›) advance the carousel; clicks on them do NOT
+     navigate to admired.html.
+   - Touch-swipe inside the viewport advances and does NOT navigate.
+   - A plain click/tap on the quote area (no drag) opens admired.html. */
 (function(){
   const slides = document.querySelectorAll('.quote-slide');
   const dotsEl = document.getElementById('quoteDots');
@@ -1877,8 +1816,10 @@ function applyStagger(parentSel, childSel){
   let cur = 0, timer;
 
   slides.forEach((_, i) => {
-    const d = document.createElement('span');
+    const d = document.createElement('button');
+    d.type = 'button';
     d.className = 'quote-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Quote ' + (i + 1));
     d.addEventListener('click', () => goTo(i));
     dotsEl.appendChild(d);
   });
@@ -1893,16 +1834,43 @@ function applyStagger(parentSel, childSel){
   function reset(){ clearInterval(timer); timer = setInterval(() => goTo(cur + 1), 5500); }
   reset();
 
-  if (prevBtn) prevBtn.addEventListener('click', () => goTo(cur - 1));
-  if (nextBtn) nextBtn.addEventListener('click', () => goTo(cur + 1));
+  if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); goTo(cur - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); goTo(cur + 1); });
 
-  let touchStartX = 0;
+  // Touch swipe — track distance so we can suppress the click-to-admired
+  // when the user is really swiping rather than tapping.
+  let touchStartX = 0, touchStartY = 0, didSwipe = false;
   if (viewport) {
-    viewport.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    viewport.addEventListener('touchstart', e => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      didSwipe = false;
+    }, { passive: true });
+    viewport.addEventListener('touchmove', e => {
+      const dx = e.touches[0].clientX - touchStartX;
+      const dy = e.touches[0].clientY - touchStartY;
+      if (Math.abs(dx) > 12 || Math.abs(dy) > 12) didSwipe = true;
+    }, { passive: true });
     viewport.addEventListener('touchend', e => {
       const dx = e.changedTouches[0].clientX - touchStartX;
-      if (Math.abs(dx) > 50) goTo(dx < 0 ? cur + 1 : cur - 1);
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+        goTo(dx < 0 ? cur + 1 : cur - 1);
+        didSwipe = true;
+      }
     }, { passive: true });
+
+    // Clicking the quote area (not a swipe, not an arrow) → admired page
+    viewport.addEventListener('click', () => {
+      if (didSwipe) { didSwipe = false; return; }
+      window.location.href = 'admired.html';
+    });
+    viewport.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        window.location.href = 'admired.html';
+      }
+    });
   }
 
   document.addEventListener('keydown', e => {
@@ -1964,51 +1932,63 @@ function toggleMun(id, btn){
   btn.textContent = open ? 'Show less ↑' : 'Show ' + el.querySelectorAll('.mun-item').length + ' more →';
 }
 
-/* ═══ EXPERIENCE — mobile scroll focus (single-item highlight) ═══ */
+/* ═══ EXPERIENCE — mobile single-focus
+   Only ONE .exp-role-col is highlighted at a time on mobile:
+   either the one closest to the viewport vertical centre (auto, on scroll)
+   or the one the user explicitly taps (manual override, sticky).
+   No more "everything lights up" behaviour. */
 (function(){
   if (window.innerWidth > 820) return;
-  const cols = document.querySelectorAll('.exp-role-col');
+  const cols = Array.from(document.querySelectorAll('.exp-role-col'));
   if (!cols.length) return;
 
-  let activeFocusEl = null;
+  let manualPick = null;       // a .exp-role-col the user tapped — wins until they tap elsewhere
+  let ticking = false;
 
-  /* On scroll: find whichever col's centre is closest to viewport centre.
-     Only that one gets mobile-focus; all others are cleared. */
-  function updateFocus() {
-    const vpCentre = window.innerHeight / 2;
-    let bestEl = null;
-    let bestDist = Infinity;
-
-    cols.forEach(col => {
-      const r = col.getBoundingClientRect();
-      const colCentre = r.top + r.height / 2;
-      const dist = Math.abs(colCentre - vpCentre);
-      // Only consider cols that are actually visible in the viewport
-      if (r.bottom > 0 && r.top < window.innerHeight && dist < bestDist) {
-        bestDist = dist;
-        bestEl = col;
-      }
-    });
-
-    if (bestEl !== activeFocusEl) {
-      if (activeFocusEl) activeFocusEl.classList.remove('mobile-focus');
-      activeFocusEl = bestEl;
-      if (activeFocusEl) activeFocusEl.classList.add('mobile-focus');
-    }
+  function setFocus(target) {
+    cols.forEach(c => c.classList.toggle('mobile-focus', c === target));
   }
 
-  window.addEventListener('scroll', updateFocus, { passive: true });
-  window.addEventListener('resize', updateFocus, { passive: true });
-  updateFocus();
+  function pickCenter() {
+    const vpMid = window.innerHeight * 0.5;
+    let best = null, bestDist = Infinity;
+    cols.forEach(c => {
+      const r = c.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > window.innerHeight) return;
+      const mid = r.top + r.height * 0.5;
+      const d = Math.abs(mid - vpMid);
+      if (d < bestDist) { bestDist = d; best = c; }
+    });
+    return best;
+  }
 
-  /* Tap to focus a specific item (overrides scroll-based focus) */
-  cols.forEach(col => {
-    col.addEventListener('click', () => {
-      if (activeFocusEl) activeFocusEl.classList.remove('mobile-focus');
-      activeFocusEl = col;
-      col.classList.add('mobile-focus');
+  function update() {
+    ticking = false;
+    if (manualPick) {
+      // Keep the user's tap pinned, but release it once the tapped card has
+      // scrolled far away from the viewport (so we don't have an off-screen
+      // highlight when they move on).
+      const r = manualPick.getBoundingClientRect();
+      const off = r.bottom < -50 || r.top > window.innerHeight + 50;
+      if (off) manualPick = null;
+      else { setFocus(manualPick); return; }
+    }
+    setFocus(pickCenter());
+  }
+
+  // Tap to pin
+  cols.forEach(c => {
+    c.addEventListener('click', () => {
+      manualPick = (manualPick === c) ? null : c;
+      update();
     });
   });
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
 })();
 
 /* ═══ RENDER WRITING GRID ═══ */
@@ -2043,6 +2023,60 @@ function renderGrid(){
 renderGrid();
 applyStagger('.academics-grid', '.academic-card');
 applyStagger('.design-preview-grid', '.design-preview-item');
+
+/* ═══ ORBIT TITLES → article overlay ═══
+   Each .orbit-title carries data-article="N" with the index into the
+   articles[] array. Clicking opens the reader without navigating. */
+document.querySelectorAll('.orbit-title[data-article]').forEach(el => {
+  el.addEventListener('click', e => {
+    e.preventDefault();
+    const idx = parseInt(el.getAttribute('data-article'), 10);
+    if (!Number.isNaN(idx)) openArticle(idx);
+  });
+});
+
+/* ═══ SCROLL-RESPONSIVE GOLDEN AURA ═══
+   Two effects driven by scroll position:
+   1. The radial gradients on body::after shift slightly as you scroll —
+      we expose --gx / --gy CSS custom properties on <body> and the
+      background's calc()s read them. The shift is small (max ~32 px)
+      so it reads as "alive" rather than parallax-y or distracting.
+   2. When the About carousel is the active reading surface, the aura
+      dims — handled by toggling body.dim-ambient. We treat the about
+      section as "active" whenever it's covering more than half the
+      viewport (the sticky-stage period). */
+(function () {
+  const body = document.body;
+  const about = document.getElementById('about');
+  if (!body) return;
+
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const sy = window.scrollY;
+    // Drive the gradients with a gentle dampened curve so the layer
+    // never travels more than ~32px regardless of how far you scroll.
+    const gx = Math.sin(sy / 280) * 28;
+    const gy = Math.sin(sy / 200 + 0.6) * 24;
+    body.style.setProperty('--gx', gx.toFixed(1) + 'px');
+    body.style.setProperty('--gy', gy.toFixed(1) + 'px');
+
+    // Dim aura while reading the About carousel
+    if (about) {
+      const r = about.getBoundingClientRect();
+      const vpH = window.innerHeight;
+      // overlap = how much of the viewport is currently inside about
+      const overlap = Math.max(0, Math.min(r.bottom, vpH) - Math.max(r.top, 0));
+      const aboutCovers = overlap > vpH * 0.55;
+      body.classList.toggle('dim-ambient', aboutCovers);
+    }
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
+})();
 </script>
 </body>
 </html>
