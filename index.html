@@ -84,6 +84,32 @@
     50%  { transform: translate(3%,-2%) scale(1.05); opacity: 1;   }
     100% { transform: translate(-2%,3%) scale(1.02); opacity: .95; }
   }
+
+  /* Minimal scroll bar */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--brass) var(--black);
+  }
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  html::-webkit-scrollbar-track,
+  body::-webkit-scrollbar-track {
+    background: var(--black);
+  }
+  html::-webkit-scrollbar-thumb,
+  body::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--brass-lite), var(--brass));
+    border: 2px solid var(--black);
+    border-radius: 999px;
+  }
+  html::-webkit-scrollbar-thumb:hover,
+  body::-webkit-scrollbar-thumb:hover {
+    background: var(--brass-lite);
+  }
+
   body > * { position: relative; z-index: 2; }
   #goldenAura { z-index: 0 !important; }
 
@@ -1322,6 +1348,7 @@
   <div class="exp-track">
 
     <!-- ── NGOs ── -->
+
     <div class="exp-group">
       <div class="exp-category-label">NGOs &amp;<br>Organisations</div>
       <div class="exp-roles">
@@ -1331,8 +1358,17 @@
             <span class="exp-org">Jeevartan Foundation</span>
             <span class="exp-date">Apr 2026 – Present</span>
           </div>
-          <p class="exp-role-title">Editor-in-Chief</p>
-          <p class="exp-excerpt">Leading editorial direction and content strategy for the foundation's initiatives and outreach campaigns.</p>
+          <p class="exp-role-title">Chief Editor</p>
+          <p class="exp-excerpt">Leading the foundation’s editorial direction across campaigns, public communication, and identity work.</p>
+        </div>
+
+        <div class="exp-role-col">
+          <div class="exp-meta">
+            <span class="exp-org">Ryan Group</span>
+            <span class="exp-date">May 2024 – Present</span>
+          </div>
+          <p class="exp-role-title">BBN Journalist</p>
+          <p class="exp-excerpt">Covered school and community updates, turning scattered information into crisp stories that people would actually read.</p>
         </div>
 
         <div class="exp-role-col">
@@ -1340,8 +1376,8 @@
             <span class="exp-org">Amicus Curiae</span>
             <span class="exp-date">Dec 2025 – Feb 2026</span>
           </div>
-          <p class="exp-role-title">Editor-in-Chief</p>
-          <p class="exp-excerpt">Led editorial direction and content strategy for the publication's run.</p>
+          <p class="exp-role-title">Editor on National Polity &amp; Judicial Affairs</p>
+          <p class="exp-excerpt">Edited and shaped content for a legal publication focused on national polity and judicial affairs, keeping the tone tight and accessible.</p>
           <div class="exp-full" id="amicusFull">
             <p style="margin-bottom:0.75rem;font-size:0.88rem;color:var(--muted);">Articles published under the organisation:</p>
             <div style="display:flex;flex-direction:column;gap:0.45rem;">
@@ -1359,13 +1395,30 @@
 
         <div class="exp-role-col">
           <div class="exp-meta">
+            <span class="exp-org">Ryan International School</span>
+            <span class="exp-date">Apr 2025 – Feb 2026</span>
+          </div>
+          <p class="exp-role-title">School Editor-in-Chief</p>
+          <p class="exp-excerpt">Directed school publication work, edited material, and kept the editorial tone consistent across student-facing writing.</p>
+        </div>
+
+        <div class="exp-role-col">
+          <div class="exp-meta">
+            <span class="exp-org">RISGNMUN'25</span>
+            <span class="exp-date">Jan 2025 – Jul 2025</span>
+          </div>
+          <p class="exp-role-title">Conference Convenor</p>
+          <p class="exp-excerpt">Handled planning, scheduling, and delegate coordination for the conference from the first draft to the final day.</p>
+        </div>
+
+        <div class="exp-role-col">
+          <div class="exp-meta">
             <span class="exp-org">Project Aspasia</span>
             <span class="exp-date">Sep 2024 – Nov 2024</span>
           </div>
           <p class="exp-role-title">Head of Marketing</p>
           <p class="exp-excerpt">Oversaw marketing strategy and outreach for the duration of the project.</p>
         </div>
-
         <div class="exp-role-col">
           <div class="exp-meta">
             <span class="exp-org">Project Badlav</span>
@@ -1374,8 +1427,7 @@
           <p class="exp-role-title">Secretary of Logistics &amp; Operations</p>
           <p class="exp-excerpt">Managed end-to-end logistics and operational coordination for the project's lifecycle.</p>
         </div>
-
-        <div class="exp-role-col last-in-cat">
+        <div class="exp-role-col">
           <div class="exp-meta">
             <span class="exp-org">CommitTea.org</span>
             <span class="exp-date">Apr 2024 – Oct 2024</span>
@@ -1387,6 +1439,15 @@
             <p>In its operational tenure, CommitTea.org collaborated with over 20 Model UN platforms, built a following of a thousand on Instagram, and established itself as a recognised collaborator across the MUN circuit. The venture was ultimately transferred to a new team in November 2025.</p>
           </div>
           <button class="exp-toggle" onclick="toggleExp('committeaFull', this)">Read more →</button>
+        </div>
+
+        <div class="exp-role-col last-in-cat">
+          <div class="exp-meta">
+            <span class="exp-org">Eximius MUN</span>
+            <span class="exp-date">Feb 2024 – Apr 2024</span>
+          </div>
+          <p class="exp-role-title">Chief of Cabinet</p>
+          <p class="exp-excerpt">Worked on secretariat coordination, briefings, and issue-tracking so the executive team could move cleanly.</p>
         </div>
 
       </div>
