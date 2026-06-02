@@ -1087,11 +1087,281 @@
     to { opacity: 1; transform: translateY(0); filter: none; }
   }
 
+  /* ═══════════════ SLIM SCROLL-PROGRESS BAR ═══════════════ */
+  #scrollProgress {
+    position: fixed; top: 0; left: 0; height: 2px; width: 0;
+    background: linear-gradient(to right, var(--brass-deep), var(--brass) 55%, var(--brass-lite));
+    box-shadow: 0 0 12px rgba(201,162,75,0.5);
+    z-index: 250; pointer-events: none;
+    transition: width 0.12s linear;
+  }
+  @media (prefers-reduced-motion: reduce) { #scrollProgress { transition: none; } }
+
+  /* ═══════════════ ABOUT — DWELL-GATED HINT ═══════════════
+     Replaces the old single-line hint. A thin brass bar fills across the
+     dwell window so the reader understands the sentence is being held for
+     a beat; when it completes, the label brightens to "Click anywhere to
+     continue" and softly breathes. Bar tracks the hold; reveal delay is
+     shortened so the fill is visible for almost the whole dwell. */
+  .about-beat-display.active .about-click-hint {
+    opacity: 1; transition: opacity 0.6s ease 0.35s;
+  }
+  .about-click-hint {
+    flex-direction: column; gap: 0.85rem; align-items: center;
+  }
+  .about-click-hint::before, .about-click-hint::after { display: none; }
+  .about-hint-text {
+    display: inline-flex; align-items: center; gap: 0.15rem;
+    transition: color 0.5s ease, letter-spacing 0.5s ease;
+  }
+  .about-hint-text .hint-arrow {
+    opacity: 0; transform: translateY(-3px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .about-hint-track {
+    position: relative; width: 132px; height: 1px;
+    background: rgba(180,160,120,0.16); overflow: hidden;
+  }
+  .about-hint-fill {
+    position: absolute; inset: 0; transform-origin: left; transform: scaleX(0);
+    background: linear-gradient(to right, var(--brass-deep), var(--brass) 60%, var(--brass-lite));
+  }
+  .about-click-hint.ready .about-hint-text {
+    color: var(--brass-lite); letter-spacing: 0.30em;
+    animation: hintBreathe 2.6s ease-in-out infinite;
+  }
+  .about-click-hint.ready .about-hint-text .hint-arrow {
+    opacity: 1; transform: translateY(0); animation: hintNudge 1.9s ease-in-out infinite;
+  }
+  .about-click-hint.ready .about-hint-track { background: rgba(201,162,75,0.32); }
+  .about-click-hint.nudge .about-hint-text { animation: hintWait 0.5s ease; }
+  @keyframes hintBreathe { 0%,100% { opacity: 0.65; } 50% { opacity: 1; } }
+  @keyframes hintNudge  { 0%,100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+  @keyframes hintWait   { 0%,100% { transform: none; } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+
+  /* ── Portrait that drifts into Beat 01 ── */
+  .about-orbit-portrait { z-index: 2; }
+  #aboutDisplay0 .orbit-portrait-wrap { left: 7%; bottom: 12%; }
+  .orbit-portrait {
+    position: relative; width: 172px; margin: 0;
+    padding: 9px 9px 34px; background: var(--charcoal);
+    border: 1px solid var(--border-lite);
+    box-shadow: 0 22px 60px rgba(0,0,0,0.55);
+    transform: rotate(-3deg);
+    transition: transform 0.6s cubic-bezier(.16,1,.3,1), box-shadow 0.6s ease, border-color 0.4s ease;
+  }
+  .orbit-portrait::after {
+    content: ''; position: absolute; inset: 9px 9px 34px;
+    box-shadow: inset 0 0 0 1px rgba(201,162,75,0.18);
+    pointer-events: none;
+  }
+  .orbit-portrait img {
+    width: 100%; display: block; aspect-ratio: 4/5; object-fit: cover;
+    filter: grayscale(1) contrast(1.05) brightness(0.92) sepia(0.16);
+    transition: filter 0.7s ease;
+  }
+  .orbit-portrait .orbit-portrait-cap {
+    position: absolute; left: 0; right: 0; bottom: 11px; text-align: center;
+    font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .orbit-portrait:hover {
+    transform: rotate(-1deg) scale(1.04); border-color: var(--brass);
+    box-shadow: 0 26px 72px rgba(201,162,75,0.16), 0 22px 60px rgba(0,0,0,0.6);
+  }
+  .orbit-portrait:hover img { filter: grayscale(0) contrast(1) brightness(1) sepia(0); }
+  @media (max-width: 960px) { .about-orbit-portrait { display: none; } }
+
+  /* ═══════════════ AWARD-GALLERY ENHANCEMENTS ═══════════════ */
+
+  /* 1 — Lerped trailing cursor ring (sits behind the precise dot) */
+  #cursorRing {
+    position: fixed; top: 0; left: 0; width: 38px; height: 38px;
+    border: 1px solid rgba(201,162,75,0.55); border-radius: 50%;
+    transform: translate(-50%, -50%); pointer-events: none; z-index: 9998;
+    opacity: 0; mix-blend-mode: screen;
+    transition: width 0.32s cubic-bezier(.16,1,.3,1),
+                height 0.32s cubic-bezier(.16,1,.3,1),
+                border-color 0.32s ease, opacity 0.4s ease,
+                background 0.32s ease;
+  }
+  body.cursor-live #cursorRing { opacity: 1; }
+  /* ring reacts to interactive targets */
+  #cursorRing.is-hovering {
+    width: 64px; height: 64px;
+    border-color: rgba(232,205,132,0.85);
+    background: radial-gradient(circle, rgba(201,162,75,0.10), transparent 70%);
+  }
+  body.cursor-live #customCursor.over-link { transform: translate(-50%, -50%) scale(0.45); }
+  @media (hover: none) { #cursorRing { display: none; } }
+
+  /* 2 — Magnetic elements spring back when the pointer leaves */
+  [data-magnetic] { will-change: transform; transition: transform 0.5s cubic-bezier(.16,1,.3,1); }
+  [data-magnetic].is-pulling { transition: none; }
+
+  /* 3 — Kinetic variable-weight section titles (Fraunces axes) */
+  .section-title[data-kinetic] .kw {
+    display: inline-block; white-space: pre;
+    opacity: 0; transform: translateY(0.5em);
+    font-variation-settings: 'opsz' 9, 'wght' 320;
+    transition: opacity 0.7s cubic-bezier(.16,1,.3,1),
+                transform 0.7s cubic-bezier(.16,1,.3,1),
+                font-variation-settings 0.9s cubic-bezier(.16,1,.3,1);
+    transition-delay: var(--kd, 0ms);
+  }
+  .section-title[data-kinetic].lit .kw {
+    opacity: 1; transform: translateY(0);
+    font-variation-settings: 'opsz' 110, 'wght' 560;
+  }
+
+  /* 4 — Faux-3D pointer tilt on design preview cards */
+  .design-preview-grid { perspective: 1100px; }
+  .design-preview-item {
+    transform-style: preserve-3d; will-change: transform;
+    transition: transform 0.5s cubic-bezier(.16,1,.3,1), box-shadow 0.5s ease, border-color 0.4s ease;
+  }
+  .design-preview-item.is-tilting { transition: box-shadow 0.3s ease; }
+  .design-preview-item .tilt-sheen {
+    position: absolute; inset: 0; pointer-events: none; z-index: 2;
+    border-radius: inherit; opacity: 0; transition: opacity 0.4s ease;
+    background: radial-gradient(420px circle at var(--mx,50%) var(--my,50%),
+                rgba(232,205,132,0.16), transparent 55%);
+  }
+  .design-preview-item .design-preview-overlay { z-index: 4; }
+  .design-preview-item.is-tilting .tilt-sheen,
+  .design-preview-item:hover .tilt-sheen { opacity: 1; }
+
+  /* 5 — Hero marquee reacts to scroll velocity */
+  .hero-marquee-track {
+    transform: skewX(var(--mq-skew, 0deg));
+    transition: transform 0.45s cubic-bezier(.16,1,.3,1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #cursorRing { display: none; }
+    .section-title[data-kinetic] .kw { opacity: 1; transform: none;
+      font-variation-settings: 'opsz' 110, 'wght' 560; transition: none; }
+    [data-magnetic] { transition: none; }
+    .hero-marquee-track { transform: none; }
+  }
+  /* ═══════════════ DOSSIER — declassify-on-sweep ═══════════════ */
+  .dossier-section {
+    padding: 7rem 2rem; display: flex; justify-content: center;
+  }
+  .dossier-doc {
+    position: relative; overflow: hidden;
+    width: 100%; max-width: 720px;
+    padding: 2.6rem 2.6rem 2.2rem;
+    background: linear-gradient(180deg, rgba(20,19,17,0.92), rgba(12,12,11,0.92));
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+  }
+  /* dog-eared corner + faint file ruling */
+  .dossier-doc::before {
+    content: ''; position: absolute; top: 0; right: 0;
+    border-width: 0 22px 22px 0; border-style: solid;
+    border-color: transparent var(--black) transparent transparent;
+    filter: drop-shadow(-1px 1px 0 var(--border));
+  }
+  .dossier-spotlight {
+    position: absolute; top: 0; left: 0; width: 260px; height: 260px;
+    margin: -130px 0 0 -130px; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, rgba(201,162,75,0.16), transparent 65%);
+    mix-blend-mode: screen; opacity: 0; transition: opacity 0.4s ease;
+    will-change: transform;
+  }
+  .dossier-doc.lit-cursor .dossier-spotlight { opacity: 1; }
+  .dossier-eyebrow {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 1rem; flex-wrap: wrap;
+    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 1.4rem;
+  }
+  .dossier-class { color: var(--brass); }
+  .dossier-class::before { content: '● '; font-size: 0.5em; vertical-align: middle; }
+  .dossier-title {
+    font-family: var(--display); font-weight: 300; font-style: italic;
+    font-size: clamp(1.6rem, 3.4vw, 2.4rem); line-height: 1; color: var(--parchment);
+    margin-bottom: 1.5rem; letter-spacing: -0.01em;
+  }
+  .dossier-body {
+    font-family: var(--serif); font-weight: 300;
+    font-size: clamp(1.05rem, 1.9vw, 1.32rem); line-height: 1.85;
+    color: var(--muted); max-width: 60ch;
+  }
+  /* the redaction bars */
+  .redact {
+    position: relative; color: transparent; border-radius: 1px;
+    transition: color 0.45s ease 0.12s;
+    -webkit-user-select: none; user-select: none;
+  }
+  .redact::after {
+    content: ''; position: absolute; inset: -1px -4px;
+    background:
+      repeating-linear-gradient(90deg, #0a0a0a 0 6px, #141312 6px 12px),
+      #0a0a0a;
+    border-radius: 1px; transform-origin: left center;
+    box-shadow: inset 0 0 0 1px rgba(201,162,75,0.10);
+    transition: transform 0.5s cubic-bezier(.7,0,.3,1), opacity 0.4s ease 0.2s;
+  }
+  .redact.declassified {
+    color: var(--brass); user-select: text;
+  }
+  .redact.declassified::after { transform: scaleX(0); opacity: 0; }
+  /* brass underglow as a word is freed */
+  .redact.declassified::before {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--brass), transparent);
+    animation: redactScan 0.7s ease forwards;
+  }
+  @keyframes redactScan { 0% { opacity: 0; transform: scaleX(0); } 40% { opacity: 1; } 100% { opacity: 0; transform: scaleX(1); } }
+  .dossier-hint {
+    margin-top: 1.8rem; font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted);
+    transition: opacity 0.5s ease; opacity: 0.75;
+  }
+  .dossier-doc.started .dossier-hint { opacity: 0; }
+  .dossier-hint-arrow { color: var(--brass); animation: hintSweep 1.8s ease-in-out infinite; display: inline-block; }
+  @keyframes hintSweep { 0%,100% { transform: translateX(0); opacity: 0.4; } 50% { transform: translateX(5px); opacity: 1; } }
+  .dossier-stamp {
+    position: absolute; top: 1.4rem; right: 1.6rem; z-index: 5;
+    font-family: var(--display); font-weight: 600; font-style: italic;
+    font-size: clamp(1.3rem, 3vw, 2.1rem); letter-spacing: 0.02em;
+    color: transparent; -webkit-text-stroke: 1.5px rgba(201,162,75,0.85);
+    text-transform: uppercase; pointer-events: none;
+    padding: 0.1em 0.35em; border: 2px solid rgba(201,162,75,0.7); border-radius: 4px;
+    transform: rotate(-15deg) scale(1.6); opacity: 0;
+    transition: opacity 0.05s ease;
+  }
+  .dossier-stamp.show { animation: stampThud 0.5s cubic-bezier(.34,1.56,.64,1) forwards; }
+  @keyframes stampThud {
+    0% { opacity: 0; transform: rotate(-15deg) scale(1.7); }
+    60% { opacity: 0.95; transform: rotate(-15deg) scale(0.92); }
+    100% { opacity: 0.9; transform: rotate(-15deg) scale(1); }
+  }
+  @media (max-width: 600px) {
+    .dossier-section { padding: 4.5rem 1.2rem; }
+    .dossier-doc { padding: 2rem 1.5rem; }
+    .dossier-stamp { top: 0.8rem; right: 0.9rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dossier-spotlight { display: none; }
+    .redact { transition: none; }
+    .redact::after { transition: opacity 0.2s ease; }
+    .redact.declassified::before { animation: none; display: none; }
+    .dossier-hint-arrow { animation: none; }
+    .dossier-stamp.show { animation: none; opacity: 0.9; transform: rotate(-15deg) scale(1); }
+  }
 </style>
 </head>
 <body>
 
+<!-- Slim scroll-progress bar -->
+<div id="scrollProgress" aria-hidden="true"></div>
+
 <!-- Custom cursor -->
+<div id="cursorRing" aria-hidden="true"></div>
 <div id="customCursor"></div>
 <!-- Animated golden aura background -->
 <div id="goldenAura"><canvas id="goldenCanvas"></canvas></div>
@@ -1155,6 +1425,29 @@
 
 </section>
 
+<!-- ═══════════════ DOSSIER — declassify-on-sweep ═══════════════ -->
+<section class="dossier-section fade-section" id="dossier">
+  <div class="dossier-doc" id="dossierDoc">
+    <div class="dossier-spotlight" id="dossierSpot" aria-hidden="true"></div>
+    <div class="dossier-stamp" id="dossierStamp" aria-hidden="true">Declassified</div>
+    <div class="dossier-eyebrow">
+      <span>File No. SPS&ndash;2026</span>
+      <span class="dossier-class">Classification · Restricted</span>
+    </div>
+    <h2 class="dossier-title">Subject Brief</h2>
+    <p class="dossier-body">
+      The subject treats the law not as a <span class="redact">wall</span>
+      but as a <span class="redact">language</span> &mdash; and insists that
+      <span class="redact">power</span> must answer to the
+      <span class="redact">written&nbsp;word</span>. He writes, he designs,
+      and occasionally reports from <span class="redact">the&nbsp;field</span>
+      when the record runs thin. Caution: the loudest truths are usually the
+      ones someone once tried to <span class="redact">redact</span>.
+    </p>
+    <p class="dossier-hint" id="dossierHint"><span class="dossier-hint-arrow">▸</span>&nbsp; sweep to declassify</p>
+  </div>
+</section>
+
 <!-- ═══════════════ ABOUT — scroll-lock carousel ═══════════════ -->
 <section class="about-section fade-section" id="about">
   <div class="about-sticky-stage" id="aboutStage">
@@ -1166,7 +1459,19 @@
         <p class="about-beat-num">01</p>
         <p class="about-beat-text">A high schooler studying at the intersection of <strong>law</strong>, <strong>political thought</strong>, and the <em>written word.</em></p>
       </div>
-      <p class="about-click-hint">Click anywhere to continue</p>
+      <div class="about-orbit about-orbit-portrait">
+        <div class="orbit-item orbit-portrait-wrap">
+          <figure class="orbit-portrait">
+            <img src="shaurya-photo.jpg" alt="Shaurya Pratap Singh" loading="lazy"
+                 onerror="var w=this.closest('.about-orbit-portrait'); if(w) w.remove();">
+            <figcaption class="orbit-portrait-cap">Shaurya · 2026</figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="about-click-hint" aria-hidden="true">
+        <span class="about-hint-text" data-wait="Take it in" data-ready="Click anywhere to continue"><span class="hint-label">Take it in</span><span class="hint-arrow"> ↓</span></span>
+        <span class="about-hint-track"><span class="about-hint-fill"></span></span>
+      </div>
     </div>
 
     <!-- Beat 02 — Writing. Article titles drift around the sentence; click → article. -->
@@ -1193,7 +1498,10 @@
           The 27th Amendment: Pakistan's Constitutional Fail
         </a>
       </div>
-      <p class="about-click-hint">Click anywhere to continue</p>
+      <div class="about-click-hint" aria-hidden="true">
+        <span class="about-hint-text" data-wait="Take it in" data-ready="Click anywhere to continue"><span class="hint-label">Take it in</span><span class="hint-arrow"> ↓</span></span>
+        <span class="about-hint-track"><span class="about-hint-fill"></span></span>
+      </div>
     </div>
 
     <!-- Beat 03 — Design. Small cover thumbnails drift; click → designs.html. -->
@@ -1216,7 +1524,10 @@
           <img src="cover3.png" alt="" loading="lazy">
         </a>
       </div>
-      <p class="about-click-hint">Click anywhere to continue</p>
+      <div class="about-click-hint" aria-hidden="true">
+        <span class="about-hint-text" data-wait="Take it in" data-ready="Click anywhere to continue"><span class="hint-label">Take it in</span><span class="hint-arrow"> ↓</span></span>
+        <span class="about-hint-track"><span class="about-hint-fill"></span></span>
+      </div>
     </div>
 
     <!-- Beat 04 — Experience. Role pills drift around the sentence; click → experience. -->
@@ -1235,7 +1546,10 @@
         <a class="orbit-item orbit-pill" href="#experience">USG · IT Affairs</a>
         <a class="orbit-item orbit-pill" href="#experience">Chef de Cabinet</a>
       </div>
-      <p class="about-click-hint about-click-hint-scroll">Scroll down</p>
+      <div class="about-click-hint about-click-hint-scroll ready" aria-hidden="true">
+        <span class="about-hint-text" data-wait="Scroll on" data-ready="Scroll on"><span class="hint-label">Scroll on</span><span class="hint-arrow"> ↓</span></span>
+        <span class="about-hint-track"><span class="about-hint-fill" style="transform:scaleX(1)"></span></span>
+      </div>
     </div>
 
   </div>
@@ -1292,7 +1606,7 @@
 <!-- ═══════════════ WRITING ═══════════════ -->
 <section class="posts-section fade-section" id="writing">
   <div class="section-header">
-    <h2 class="section-title">Writing</h2>
+    <h2 class="section-title" data-kinetic>Writing</h2>
     <span class="section-meta" id="post-count"></span>
   </div>
   <p class="skill-tag">Constitutional Law &amp; Political Commentary</p>
@@ -1305,12 +1619,13 @@
 <!-- ═══════════════ DESIGN (above Experience) ═══════════════ -->
 <section class="portfolio-section fade-section" id="portfolio">
   <div class="section-header">
-    <h2 class="section-title">Design</h2>
+    <h2 class="section-title" data-kinetic>Design</h2>
     <span class="section-meta">A curated preview</span>
   </div>
   <p class="skill-tag">Editorial &amp; Visual Design</p>
   <div class="design-preview-grid">
     <a href="designs.html" class="design-preview-item">
+      <div class="tilt-sheen" aria-hidden="true"></div>
       <img src="cover1.png" alt="Credit Flow & Migration" loading="lazy">
       <div class="design-preview-overlay">
         <p class="design-preview-tag">Magazine Design</p>
@@ -1318,6 +1633,7 @@
       </div>
     </a>
     <a href="designs.html" class="design-preview-item">
+      <div class="tilt-sheen" aria-hidden="true"></div>
       <img src="cover2.png" alt="Truthful Thursdays — Jeevartan" loading="lazy">
       <div class="design-preview-overlay">
         <p class="design-preview-tag">NGO &amp; Social Work</p>
@@ -1325,6 +1641,7 @@
       </div>
     </a>
     <a href="designs.html" class="design-preview-item">
+      <div class="tilt-sheen" aria-hidden="true"></div>
       <img src="cover5.png" alt="Denial — You Can Debate Indices, Not Lungs" loading="lazy">
       <div class="design-preview-overlay">
         <p class="design-preview-tag">Editorial Design</p>
@@ -1340,7 +1657,7 @@
 <!-- EXPERIENCE -->
 <section class="exp-section fade-section" id="experience">
   <div class="section-header">
-    <h2 class="section-title">Experience</h2>
+    <h2 class="section-title" data-kinetic>Experience</h2>
     <span class="section-meta">NGOs · MUN · School</span>
   </div>
   <p class="skill-tag">Leadership &amp; Civic Engagement</p>
@@ -1622,7 +1939,7 @@
 <!-- ACADEMICS -->
 <section class="academics-section fade-section" id="academics">
   <div class="section-header">
-    <h2 class="section-title">Academic Record</h2>
+    <h2 class="section-title" data-kinetic>Academic Record</h2>
     <span class="section-meta">Credentials &amp; Certifications</span>
   </div>
   <div class="academics-grid">
@@ -1790,81 +2107,187 @@ function applyStagger(parentSel, childSel){
   });
 }
 
-/* ═══ ABOUT SCROLL-LOCK CAROUSEL ═══ */
+/* ═══ ABOUT SCROLL-LOCK CAROUSEL — dwell-gated, click-to-advance ═══
+   Each sentence is HELD for a minimum dwell (~3.2s) so a quick scroll
+   can't flash past — i.e. "leak" — the copy. While a sentence is held,
+   the page scroll is gently capped at that sentence; a thin brass bar
+   fills across the dwell so the hold reads as intentional. Once the
+   dwell completes, the next sentence unlocks (monotonically — a second
+   pass is never re-gated), the hint lights up, and a click ANYWHERE on
+   the stage (or a normal scroll) advances. Because advancing keys off
+   the *displayed* beat rather than an exact scroll frame, the click
+   works across the whole sentence, not just one precise position. */
 (function(){
   const stage = document.getElementById('aboutStage');
   const section = document.getElementById('about');
-  const scrollSpace = document.getElementById('aboutScrollSpace');
   const progressEl = document.getElementById('aboutProgress');
   if (!stage || !section) return;
 
   const BEATS = 4;
-  let currentBeat = -1;
+  const LAST  = BEATS - 1;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const DWELL = reduce ? 600 : 3200;   // ms a sentence is held before it can be skipped
 
-  // Build progress dots
+  const displays = [];
+  for (let i = 0; i < BEATS; i++) displays[i] = document.getElementById('aboutDisplay' + i);
+
+  let currentBeat = -1;
+  let beatShownAt = 0;
+  let maxBeat = 0;            // furthest beat the gate permits right now (monotonic)
+  let dwellTimer = null;
+
+  const ih = () => window.innerHeight;
+  const sectionTopAbs = () => section.getBoundingClientRect().top + window.scrollY;
+  const hintOf = (b) => displays[b] ? displays[b].querySelector('.about-click-hint') : null;
+
+  // Progress dots — let people jump, but never past what's been unlocked.
   for (let i = 0; i < BEATS; i++) {
     const d = document.createElement('div');
     d.className = 'about-progress-dot';
-    d.addEventListener('click', () => {
-      const sectionTop = section.getBoundingClientRect().top + window.scrollY;
-      const beatScroll = sectionTop + (i * window.innerHeight);
-      window.scrollTo({ top: beatScroll, behavior: 'smooth' });
-    });
+    d.addEventListener('click', () => goToBeat(Math.min(i, maxBeat)));
     progressEl.appendChild(d);
   }
   const dots = progressEl.querySelectorAll('.about-progress-dot');
 
-  function update(){
-    const sectionTop = section.getBoundingClientRect().top;
-    const sectionH = window.innerHeight * BEATS;
-    // Start showing beat 0 as soon as section enters from the top (even before fully in view)
-    const progress = -sectionTop / sectionH;
-    // Show carousel when section is anywhere near viewport (start slightly before)
-    const isActive = progress >= -0.05 && progress <= 1;
+  function startDwell(beat){
+    clearTimeout(dwellTimer);
+    const hint  = hintOf(beat);
+    const fill  = hint ? hint.querySelector('.about-hint-fill') : null;
+    const label = hint ? hint.querySelector('.hint-label') : null;
+    const txt   = hint ? hint.querySelector('.about-hint-text') : null;
 
+    // The last beat is the scroll-out transition: no hold, ready immediately.
+    if (beat === LAST){
+      maxBeat = Math.max(maxBeat, LAST);
+      if (hint) hint.classList.add('ready');
+      if (fill){ fill.style.transition = 'none'; fill.style.transform = 'scaleX(1)'; }
+      if (label && txt) label.textContent = txt.dataset.ready || label.textContent;
+      return;
+    }
+
+    if (hint) hint.classList.remove('ready');
+    if (label && txt) label.textContent = txt.dataset.wait || label.textContent;
+    if (fill){
+      fill.style.transition = 'none';
+      fill.style.transform = 'scaleX(0)';
+      void fill.offsetWidth;                       // reflow so the transition restarts
+      requestAnimationFrame(() => {
+        fill.style.transition = 'transform ' + DWELL + 'ms linear';
+        fill.style.transform = 'scaleX(1)';
+      });
+    }
+    dwellTimer = setTimeout(() => {
+      if (currentBeat !== beat) return;
+      maxBeat = Math.max(maxBeat, beat + 1);        // unlock the next sentence
+      if (hint) hint.classList.add('ready');
+      if (label && txt) label.textContent = txt.dataset.ready || label.textContent;
+      capScroll();
+    }, DWELL);
+  }
+
+  const dwellDone = () => performance.now() - beatShownAt >= DWELL - 80;
+
+  function setBeat(beat){
+    if (beat === currentBeat) return;
+    if (currentBeat >= 0 && displays[currentBeat]){
+      const old = displays[currentBeat];
+      old.classList.remove('active'); old.classList.add('exiting');
+      setTimeout(() => old.classList.remove('exiting'), 600);
+    }
+    if (displays[beat]) displays[beat].classList.add('active');
+    currentBeat = beat;
+    beatShownAt = performance.now();
+    dots.forEach((d, i) => d.classList.toggle('active', i === beat));
+    startDwell(beat);
+  }
+
+  function capScroll(){
+    if (maxBeat >= LAST) return;                    // fully unlocked → free scrolling
+    const capY = sectionTopAbs() + (maxBeat + 1) * ih() - 4;
+    // A large jump (anchor link, keyboard End, find-in-page) isn't a read-scroll —
+    // release the gate instead of yanking the reader backwards.
+    if (window.scrollY > capY + ih() * 1.5) { maxBeat = LAST; return; }
+    if (window.scrollY > capY) window.scrollTo(0, capY);
+  }
+
+  function goToBeat(beat){
+    beat = Math.max(0, Math.min(beat, LAST));
+    window.scrollTo({ top: sectionTopAbs() + beat * ih(), behavior: reduce ? 'auto' : 'smooth' });
+  }
+
+  let ticking = false;
+  function onScroll(){ if (!ticking){ requestAnimationFrame(update); ticking = true; } }
+
+  function update(){
+    ticking = false;
+    const top = section.getBoundingClientRect().top;
+    const progress = -top / (ih() * BEATS);
+    const isActive = progress >= -0.05 && progress <= 1;
     progressEl.classList.toggle('visible', isActive && progress >= 0);
 
-    if (!isActive) {
-      if (currentBeat !== -1) {
-        const cur = document.getElementById('aboutDisplay' + currentBeat);
-        if (cur) cur.classList.remove('active');
+    if (!isActive){
+      if (currentBeat !== -1){
+        if (displays[currentBeat]) displays[currentBeat].classList.remove('active');
         currentBeat = -1;
       }
       return;
     }
 
-    const beat = Math.min(Math.max(Math.floor(progress * BEATS), 0), BEATS - 1);
-    if (beat !== currentBeat) {
-      if (currentBeat >= 0) {
-        const old = document.getElementById('aboutDisplay' + currentBeat);
-        if (old) { old.classList.remove('active'); old.classList.add('exiting'); setTimeout(() => old.classList.remove('exiting'), 600); }
-      }
-      const next = document.getElementById('aboutDisplay' + beat);
-      if (next) { next.classList.add('active'); }
-      currentBeat = beat;
-      dots.forEach((d, i) => d.classList.toggle('active', i === beat));
-    }
+    capScroll();
+
+    const raw = Math.min(Math.max(Math.floor(progress * BEATS), 0), LAST);
+    const shown = Math.min(raw, maxBeat);
+    if (shown !== currentBeat) setBeat(shown);
   }
 
-  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
   update();
 
-  // Click anywhere on the sticky stage (while carousel is active) → advance to next beat.
-  // Clicks on orbit links (.orbit-item) are left to do their own thing.
-  stage.addEventListener('click', function(e) {
-    // Don't intercept clicks on orbit links / buttons
-    if (e.target.closest('.orbit-item') || e.target.closest('.about-progress-dot')) return;
-    const section = document.getElementById('about');
-    if (!section) return;
-    const sectionTop = section.getBoundingClientRect().top + window.scrollY;
-    const sectionH = window.innerHeight * BEATS;
-    const progress = (window.scrollY - sectionTop) / sectionH;
-    if (progress < 0 || progress > 1) return; // not in carousel
-    const nextBeat = Math.min(currentBeat + 1, BEATS - 1);
-    if (nextBeat === currentBeat) return; // already on last beat
-    const targetScroll = sectionTop + (nextBeat * window.innerHeight);
-    window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+  // If the visitor explicitly navigates to a section BELOW About (nav links,
+  // "Connect", etc.), release the gate so the jump isn't clamped back.
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+    const id = link.getAttribute('href').slice(1);
+    if (!id || id === 'about' || id === 'home') return;
+    const dest = document.getElementById(id);
+    if (dest && dest.getBoundingClientRect().top + window.scrollY > sectionTopAbs() + 20) {
+      maxBeat = LAST;
+    }
+  }, true);
+
+  // Click ANYWHERE on the active stage → next sentence, once the dwell is done.
+  stage.addEventListener('click', (e) => {
+    // Real navigation links (article titles, design covers, role pills) and the
+    // progress dots keep their own behaviour; everything else advances.
+    if (e.target.closest('a.orbit-item') || e.target.closest('.about-progress-dot')) return;
+    if (currentBeat < 0 || currentBeat >= LAST) return;     // not in carousel / on the exit beat
+    if (!dwellDone()){
+      const hint = hintOf(currentBeat);                     // gentle "almost" feedback
+      if (hint){ hint.classList.remove('nudge'); void hint.offsetWidth; hint.classList.add('nudge'); }
+      return;
+    }
+    maxBeat = Math.max(maxBeat, currentBeat + 1);           // guard against a timer race
+    goToBeat(currentBeat + 1);
   });
+})();
+
+/* ═══ SLIM SCROLL-PROGRESS BAR ═══ */
+(function(){
+  const bar = document.getElementById('scrollProgress');
+  if (!bar) return;
+  let ticking = false;
+  function upd(){
+    ticking = false;
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? (h.scrollTop || window.scrollY) / max : 0;
+    bar.style.width = (Math.max(0, Math.min(1, p)) * 100).toFixed(2) + '%';
+  }
+  window.addEventListener('scroll', () => { if (!ticking){ requestAnimationFrame(upd); ticking = true; } }, { passive: true });
+  window.addEventListener('resize', upd, { passive: true });
+  upd();
 })();
 
 /* ═══ ROTATING QUOTES with swipe + click-to-admired ═══
@@ -2143,6 +2566,176 @@ document.querySelectorAll('.orbit-title[data-article]').forEach(el => {
   }, { passive: true });
   window.addEventListener('resize', update, { passive: true });
   update();
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   AWARD-GALLERY ENHANCEMENTS
+   Vanilla, rAF-driven, fine-pointer + reduced-motion guarded.
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  const FINE   = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── 1 · Lerped trailing cursor ring + hover reactivity ── */
+  (function(){
+    const ring = document.getElementById('cursorRing');
+    const dot  = document.getElementById('customCursor');
+    if (!ring || !dot || !FINE) return;
+    let tx = innerWidth/2, ty = innerHeight/2, rx = tx, ry = ty, live = false;
+    document.addEventListener('mousemove', e => {
+      tx = e.clientX; ty = e.clientY;
+      if (!live){ live = true; document.body.classList.add('cursor-live'); rx = tx; ry = ty; }
+    }, { passive: true });
+    (function loop(){
+      rx += (tx - rx) * 0.18; ry += (ty - ry) * 0.18;
+      ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+      requestAnimationFrame(loop);
+    })();
+    const HOVER = 'a, button, [data-magnetic], .quote-dot, .design-preview-item, .post-row, .post-card, [role="button"], input, textarea, summary';
+    document.addEventListener('pointerover', e => {
+      if (e.target.closest && e.target.closest(HOVER)){ ring.classList.add('is-hovering'); dot.classList.add('over-link'); }
+    });
+    document.addEventListener('pointerout', e => {
+      if (e.target.closest && e.target.closest(HOVER) && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest(HOVER))){
+        ring.classList.remove('is-hovering'); dot.classList.remove('over-link');
+      }
+    });
+  })();
+
+  /* ── 2 · Magnetic interactive elements ── */
+  (function(){
+    if (!FINE || REDUCE) return;
+    const sels = ['.nav-cta', '.hero-btn', '.show-more-btn', '.design-view-more-btn',
+                  '.contact-email', '.footer-nav a', '.admire-teaser'];
+    document.querySelectorAll(sels.join(',')).forEach(el => {
+      el.setAttribute('data-magnetic', '');
+      const STR = 0.32, MAX = 11;
+      el.addEventListener('pointermove', e => {
+        const r = el.getBoundingClientRect();
+        let dx = (e.clientX - (r.left + r.width/2)) * STR;
+        let dy = (e.clientY - (r.top + r.height/2)) * STR;
+        dx = Math.max(-MAX, Math.min(MAX, dx)); dy = Math.max(-MAX, Math.min(MAX, dy));
+        el.classList.add('is-pulling');
+        el.style.transform = `translate(${dx}px, ${dy}px)`;
+      });
+      el.addEventListener('pointerleave', () => {
+        el.classList.remove('is-pulling');
+        el.style.transform = '';
+      });
+    });
+  })();
+
+  /* ── 3 · Kinetic variable-weight section titles ── */
+  (function(){
+    const titles = document.querySelectorAll('.section-title[data-kinetic]');
+    if (!titles.length) return;
+    titles.forEach(t => {
+      const words = (t.textContent || '').trim().split(/\s+/);
+      t.textContent = '';
+      words.forEach((w, i) => {
+        const span = document.createElement('span');
+        span.className = 'kw'; span.textContent = w;
+        span.style.setProperty('--kd', (i * 110) + 'ms');
+        t.appendChild(span);
+        if (i < words.length - 1) t.appendChild(document.createTextNode(' '));
+      });
+    });
+    const obs = new IntersectionObserver(es => {
+      es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('lit'); obs.unobserve(e.target); } });
+    }, { threshold: 0.5, rootMargin: '0px 0px -10% 0px' });
+    titles.forEach(t => obs.observe(t));
+  })();
+
+  /* ── 4 · Faux-3D pointer tilt on design cards ── */
+  (function(){
+    if (!FINE || REDUCE) return;
+    document.querySelectorAll('.design-preview-item').forEach(card => {
+      const MAX = 6;
+      card.addEventListener('pointermove', e => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+        const ry = (px - 0.5) * 2 * MAX;
+        const rx = (0.5 - py) * 2 * MAX;
+        card.classList.add('is-tilting');
+        card.style.transform = `perspective(1100px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(8px)`;
+        card.style.setProperty('--mx', (px*100)+'%');
+        card.style.setProperty('--my', (py*100)+'%');
+      });
+      card.addEventListener('pointerleave', () => {
+        card.classList.remove('is-tilting');
+        card.style.transform = '';
+      });
+    });
+  })();
+
+  /* ── 5 · Hero marquee reacts to scroll velocity ── */
+  (function(){
+    const track = document.querySelector('.hero-marquee-track');
+    if (!track || REDUCE) return;
+    let last = window.scrollY, skew = 0, target = 0;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      const v = y - last; last = y;
+      target = Math.max(-6, Math.min(6, v * 0.15));
+    }, { passive: true });
+    (function loop(){
+      target *= 0.9;
+      skew += (target - skew) * 0.12;
+      track.style.setProperty('--mq-skew', skew.toFixed(2) + 'deg');
+      requestAnimationFrame(loop);
+    })();
+  })();
+})();
+
+/* ═══ DOSSIER — declassify-on-sweep ═══ */
+(function(){
+  const doc   = document.getElementById('dossierDoc');
+  if (!doc) return;
+  const spot  = document.getElementById('dossierSpot');
+  const stamp = document.getElementById('dossierStamp');
+  const spans = Array.from(doc.querySelectorAll('.redact'));
+  const FINE   = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let revealed = 0; const total = spans.length;
+
+  function complete(){ if (stamp) stamp.classList.add('show'); }
+  function declassify(span){
+    if (span.classList.contains('declassified')) return;
+    span.classList.add('declassified');
+    if (++revealed >= total) complete();
+  }
+  // tap / click reveals everything (touch-friendly + accessible)
+  doc.addEventListener('click', () => { doc.classList.add('started'); spans.forEach(declassify); });
+
+  if (FINE && !REDUCE){
+    doc.addEventListener('pointerenter', () => doc.classList.add('lit-cursor'));
+    doc.addEventListener('pointerleave', () => doc.classList.remove('lit-cursor'));
+    doc.addEventListener('pointermove', e => {
+      const r = doc.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      if (spot) spot.style.transform = `translate(${x}px, ${y}px)`;
+      doc.classList.add('started');
+      const R = 60;
+      spans.forEach(s => {
+        if (s.classList.contains('declassified')) return;
+        const b = s.getBoundingClientRect();
+        const cx = b.left + b.width/2 - r.left, cy = b.top + b.height/2 - r.top;
+        if (Math.hypot(x - cx, y - cy) < R + b.width/2) declassify(s);
+      });
+    }, { passive: true });
+  } else {
+    // touch / reduced-motion: reveal in sequence when the file scrolls into view
+    const io = new IntersectionObserver((es) => {
+      es.forEach(en => {
+        if (!en.isIntersecting) return;
+        io.disconnect();
+        doc.classList.add('started');
+        spans.forEach((s, i) => setTimeout(() => declassify(s), 220 + i * 200));
+      });
+    }, { threshold: 0.55 });
+    io.observe(doc);
+  }
 })();
 </script>
 </body>
