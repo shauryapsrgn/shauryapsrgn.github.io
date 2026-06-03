@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shaurya Pratap Singh — Law · Politics · Words</title>
+<meta name="description" content="Shaurya Pratap Singh — a high schooler working at the intersection of law, political thought, and the written word. Writer, editor, designer, Model UN.">
+<link rel="icon" type="image/jpeg" href="favicon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,500&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* palette — warm cream paper + warm ink + clay accent */
+    --paper:    #000000;
+    --paper-2:  #0A0A0A;
+    --paper-3:  #141414;
+    --ink:      #F4F3F1;
+    --ink-2:    #9B9B9B;
+    --ink-3:    #6A6A6A;
+    --line:     rgba(255,255,255,0.13);
+    --line-2:   rgba(255,255,255,0.26);
+    --night:    #000000;
+    --night-2:  #0A0A0A;
+    --night-line: rgba(255,255,255,0.14);
+    --accent:   #FF5A1F;
+    --accent-2: #E84C12;
+    --accent-soft: rgba(255,90,31,0.12);
+
+    --display: 'Hanken Grotesk', 'Helvetica Neue', sans-serif;
+    --serif:   'Instrument Serif', Georgia, serif;
+    --mono:    'JetBrains Mono', ui-monospace, monospace;
+
+    --ease: cubic-bezier(.16,1,.3,1);
+    --maxw: 1320px;
+    --pad: clamp(1.2rem, 4vw, 4rem);
+  }
+
+  html { font-size: 16px; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--display);
+    font-weight: 400;
+    line-height: 1.5;
+    overflow-x: hidden;
+    position: relative;
+  }
+  /* subtle paper grain */
+  body::before {
+    content:''; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.5;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    mix-blend-mode: screen;
+  }
+  ::selection { background: var(--accent); color: var(--paper); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-left: var(--pad); padding-right: var(--pad); }
+
+  /* ---------- type helpers ---------- */
+  .eyebrow {
+    font-family: var(--mono); font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2);
+    display: inline-flex; align-items: center; gap: 0.6em;
+  }
+  .eyebrow::before { content:''; width: 1.6em; height: 1px; background: var(--accent); display: inline-block; }
+  .serif-i { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: 0; }
+
+  /* ---------- custom cursor ---------- */
+  #cur { position: fixed; top:0; left:0; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); z-index: 9999; pointer-events: none; transform: translate(-50%,-50%); transition: width .25s var(--ease), height .25s var(--ease), background .25s; mix-blend-mode: normal; }
+  #curRing { position: fixed; top:0; left:0; width: 40px; height: 40px; border: 1px solid var(--line-2); border-radius: 50%; z-index: 9998; pointer-events: none; transform: translate(-50%,-50%); opacity: 0; transition: width .3s var(--ease), height .3s var(--ease), opacity .3s, border-color .3s; }
+  body.cur-on #curRing { opacity: 1; }
+  #curRing.hot { width: 64px; height: 64px; border-color: var(--accent); }
+  @media (hover: none) { #cur, #curRing { display: none; } }
+  @media (hover: hover) and (pointer: fine) { body.cur-on, body.cur-on * { cursor: none !important; } }
+
+  /* ---------- nav ---------- */
+  #nav {
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 200;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem var(--pad);
+    transition: background .4s, backdrop-filter .4s, padding .4s, border-color .4s;
+    border-bottom: 1px solid transparent;
+  }
+  #nav.stuck { background: rgba(0,0,0,0.72); backdrop-filter: blur(14px); border-bottom-color: var(--line); padding-top: .8rem; padding-bottom: .8rem; }
+  .nav-logo { font-weight: 800; font-size: 1.05rem; letter-spacing: -0.02em; display: flex; align-items: center; gap: .55rem; }
+  .nav-logo .mark { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--paper); display: grid; place-items: center; font-size: .72rem; font-weight: 800; letter-spacing: 0; }
+  .nav-links { display: flex; align-items: center; gap: 2rem; }
+  .nav-links a.lk { font-size: .92rem; font-weight: 500; color: var(--ink-2); position: relative; transition: color .25s; }
+  .nav-links a.lk::after { content:''; position:absolute; left:0; bottom:-4px; width:0; height:1.5px; background: var(--accent); transition: width .3s var(--ease); }
+  .nav-links a.lk:hover { color: var(--ink); } .nav-links a.lk:hover::after { width: 100%; }
+  .nav-cta {
+    font-size: .9rem; font-weight: 600; color: var(--paper); background: var(--ink);
+    padding: .62rem 1.25rem; border-radius: 100px; transition: background .3s, transform .3s var(--ease), color .3s;
+  }
+  .nav-cta:hover { background: var(--accent); }
+  .nav-toggle { display: none; background:none; border:none; cursor:pointer; flex-direction: column; gap: 5px; }
+  .nav-toggle span { width: 24px; height: 2px; background: var(--ink); display:block; transition: .3s; }
+  @media (max-width: 860px) {
+    .nav-links { position: fixed; inset: 0 0 0 auto; width: min(78vw,340px); background: #050505; color: var(--ink); flex-direction: column; align-items: flex-start; justify-content: center; gap: 1.6rem; padding: 2rem var(--pad); transform: translateX(100%); transition: transform .5s var(--ease); }
+    .nav-links.open { transform: translateX(0); }
+    .nav-links a.lk { font-size: 1.4rem; color: rgba(243,243,243,.8); }
+    .nav-links .nav-cta { background: var(--accent); color: var(--paper); }
+    .nav-toggle { display: flex; z-index: 210; }
+  }
+  @media (max-width: 620px){
+    .hero-h1 .row { overflow: visible; }
+    .hero-h1 { font-size: clamp(2.7rem, 13vw, 6rem); }
+  }
+
+  /* ---------- hero ---------- */
+  .hero { position: relative; padding: clamp(8rem,16vh,12rem) 0 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+  .hero-top { display: flex; flex-direction: column; gap: 2.2rem; }
+  .hero-h1 {
+    font-weight: 800; letter-spacing: -0.035em; line-height: 0.92;
+    font-size: clamp(3.2rem, 11.5vw, 11rem);
+    text-transform: none;
+  }
+  .hero-h1 .row { display: block; overflow: hidden; }
+  .hero-h1 .row > span { display: inline-block; transform: translateY(110%); animation: riseIn 1s var(--ease) forwards; }
+  .hero-h1 .row:nth-child(1) > span { animation-delay: .15s; }
+  .hero-h1 .row:nth-child(2) > span { animation-delay: .28s; }
+  @keyframes riseIn { to { transform: translateY(0); } }
+  .rotor { display: inline-block; position: relative; color: var(--accent); }
+  .rotor .rw { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
+
+  .hero-meta { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 2rem; padding-bottom: 2rem; }
+  .hero-lede { max-width: 30ch; font-size: clamp(1.05rem,1.6vw,1.3rem); color: var(--ink-2); line-height: 1.5; font-weight: 500; opacity: 0; animation: fadeUp 1s var(--ease) .7s forwards; }
+  .hero-actions { display: flex; gap: .9rem; align-items: center; opacity: 0; animation: fadeUp 1s var(--ease) .85s forwards; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(18px);} to {opacity:1; transform:none;} }
+  .btn { display: inline-flex; align-items: center; gap: .6rem; font-weight: 600; font-size: .98rem; padding: .85rem 1.5rem; border-radius: 100px; transition: transform .35s var(--ease), background .3s, color .3s; }
+  .btn-fill { background: var(--ink); color: var(--paper); }
+  .btn-fill:hover { background: var(--accent); }
+  .btn-ghost { border: 1px solid var(--line-2); color: var(--ink); }
+  .btn-ghost:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn .arr { transition: transform .35s var(--ease); }
+  .btn:hover .arr { transform: translateX(4px); }
+
+  /* hero dateline strip */
+  .hero-strip { display:flex; align-items:center; justify-content:space-between; gap:1rem; border-top: 1px solid var(--line); padding: 1rem 0 1.4rem; font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); flex-wrap: wrap; }
+
+  /* ---------- marquee ---------- */
+  .marquee { overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 1.1rem 0; background: var(--paper-2); }
+  .marquee-track { display: inline-flex; white-space: nowrap; gap: 3rem; animation: scrollX 32s linear infinite; will-change: transform; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  .marquee-track span { font-family: var(--serif); font-style: italic; font-size: 1.6rem; color: var(--ink); display: inline-flex; align-items: center; gap: 3rem; }
+  .marquee-track span::after { content:'✦'; font-family: var(--display); font-style: normal; font-size: .7rem; color: var(--accent); }
+  @keyframes scrollX { to { transform: translateX(-50%); } }
+
+  /* ---------- section scaffolding ---------- */
+  section { position: relative; z-index: 2; }
+  .sec { padding: clamp(5rem, 12vh, 9rem) 0; }
+  .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; margin-bottom: clamp(2.5rem,5vw,4rem); flex-wrap: wrap; }
+  .sec-title { font-weight: 800; letter-spacing: -0.03em; line-height: .95; font-size: clamp(2.4rem, 6vw, 5rem); }
+  .sec-title em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--accent); }
+  .sec-sub { font-family: var(--mono); font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); max-width: 30ch; }
+
+  /* reveal */
+  .rv { opacity: 0; transform: translateY(34px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+  .rv.in { opacity: 1; transform: none; }
+  .rv[data-d="1"]{ transition-delay:.08s;} .rv[data-d="2"]{transition-delay:.16s;} .rv[data-d="3"]{transition-delay:.24s;} .rv[data-d="4"]{transition-delay:.32s;} .rv[data-d="5"]{transition-delay:.4s;}
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-h1 .row > span, .hero-lede, .hero-actions { animation: none !important; transform: none !important; opacity: 1 !important; }
+    .marquee-track { animation: none; }
+    .rv { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="curRing"></div>
+
+<!-- ============ NAV ============ -->
+<nav id="nav">
+  <a href="#home" class="nav-logo"><span class="mark">SPS</span> Shaurya Pratap Singh</a>
+  <div class="nav-links" id="navLinks">
+    <a class="lk" href="#about">About</a>
+    <a class="lk" href="#writing">Writing</a>
+    <a class="lk" href="#design">Design</a>
+    <a class="lk" href="#experience">Experience</a>
+    <a class="lk" href="#academics">Academic</a>
+    <a class="nav-cta" href="#contact">Let's Talk</a>
+  </div>
+  <button class="nav-toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ============ STICKY STACK WRAPPER ============ -->
+<div id="stack-container">
+
+<!-- ============ HERO ============ -->
+<div class="panel-wrap"><header class="hero panel" id="home">
+  <div class="wrap hero-top">
+    <span class="eyebrow rv in">Shaurya Pratap Singh — Est. 2025</span>
+    <h1 class="hero-h1">
+      <span class="row"><span>Law, politics,</span></span>
+      <span class="row"><span>&amp; the <span class="rotor"><span class="rw" id="rotor">written</span></span> word.</span></span>
+    </h1>
+  </div>
+  <div class="wrap hero-meta">
+    <p class="hero-lede">A high schooler working at the intersection of law, political thought, and the written word — writing, editing, designing, and showing up.</p>
+    <div class="hero-actions">
+      <a href="#writing" class="btn btn-fill" data-mag>Read the writing <span class="arr">→</span></a>
+      <a href="#about" class="btn btn-ghost" data-mag>About me</a>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="hero-strip">
+      <span>Based in Delhi, India · GMT+5:30</span>
+      <span>Writer · Editor · Designer · Delegate</span>
+      <span>Scroll to read ↓</span>
+    </div>
+  </div>
+</header></div>
+
+<!-- ============ MARQUEE ============ -->
+<div class="panel-wrap"><div class="marquee panel" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Constitutional Law</span><span>Political Theory</span><span>Journalism</span><span>Model UN</span><span>Editorial Design</span><span>Social Welfare</span>
+    <span>Constitutional Law</span><span>Political Theory</span><span>Journalism</span><span>Model UN</span><span>Editorial Design</span><span>Social Welfare</span>
+  </div>
+</div></div>
+
+<style>
+  /* ---------- awards strip ---------- */
+  .awards { color: var(--ink); padding: clamp(3rem,6vh,4.5rem) 0; }
+  .awards .wrap { display: grid; grid-template-columns: 0.8fr 1.2fr 1.2fr 1.2fr; gap: 2rem; align-items: center; }
+  .awards .lab { font-family: var(--mono); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(243,243,243,.55); }
+  .award { border-left: 1px solid var(--night-line); padding-left: 1.3rem; }
+  .award .n { font-size: clamp(1.3rem,2.2vw,1.9rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
+  .award .n em { font-family: var(--serif); font-style: italic; color: var(--accent); font-weight: 400; }
+  .award .d { font-family: var(--mono); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: rgba(243,243,243,.55); margin-top: .5rem; }
+  @media (max-width: 860px){ .awards .wrap { grid-template-columns: 1fr 1fr; } .awards .lab { grid-column: 1/-1; } }
+  @media (max-width: 520px){ .awards .wrap { grid-template-columns: 1fr; } .award { border-left: none; border-top: 1px solid var(--night-line); padding-left: 0; padding-top: 1rem; } }
+
+  /* ---------- about ---------- */
+  .about { }
+  .about-grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: clamp(2rem,5vw,5rem); align-items: start; }
+  .about-statement { font-weight: 700; letter-spacing: -0.025em; line-height: 1.06; font-size: clamp(1.9rem, 4vw, 3.4rem); }
+  .about-statement em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--accent); }
+  .about-body { margin-top: 2rem; max-width: 46ch; color: var(--ink-2); font-size: 1.05rem; line-height: 1.65; font-weight: 500; }
+  .about-body p + p { margin-top: 1rem; }
+  .about-body::first-letter { initial-letter: 2; -webkit-initial-letter: 2; font-family: var(--serif); font-weight: 400; color: var(--accent); margin-right: .12em; }
+  .about-photo { position: relative; }
+  .about-photo img { width: 100%; border-radius: 4px; filter: grayscale(1) contrast(1.05); transition: filter .6s; }
+  .about-photo:hover img { filter: grayscale(0) contrast(1); }
+  .about-photo .cap { font-family: var(--mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-top: .7rem; display: flex; justify-content: space-between; }
+  .props { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: clamp(3rem,6vw,4.5rem); border-top: 1px solid var(--line); padding-top: 2.5rem; }
+  .prop .pi { font-family: var(--mono); font-size: .72rem; color: var(--accent); letter-spacing: .1em; }
+  .prop h4 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; margin: .6rem 0 .5rem; }
+  .prop p { color: var(--ink-2); font-size: .98rem; line-height: 1.55; font-weight: 500; }
+  .prop p b { color: var(--ink); font-weight: 800; }
+  @media (max-width: 820px){ .about-grid { grid-template-columns: 1fr; } .about-photo { max-width: 360px; } .props { grid-template-columns: 1fr; gap: 1.8rem; } }
+
+  /* ---------- stats band ---------- */
+  .stats { color: var(--ink); }
+  .stats .wrap { display: grid; grid-template-columns: repeat(5,1fr); gap: 1.5rem; }
+  .stat { border-top: 2px solid var(--accent); padding-top: 1.1rem; }
+  .stat .num { font-size: clamp(2.4rem,5vw,4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+  .stat .lab { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(243,243,243,.6); margin-top: .7rem; }
+  @media (max-width: 820px){ .stats .wrap { grid-template-columns: repeat(2,1fr); gap: 2rem; } }
+  @media (max-width: 420px){ .stats .wrap { grid-template-columns: 1fr 1fr; } }
+</style>
+
+<!-- ============ AWARDS ============ -->
+<div class="panel-wrap"><section class="awards panel">
+  <div class="wrap">
+    <div class="lab rv">Honours &amp;<br>Recognition</div>
+    <div class="award rv" data-d="1"><div class="n"><em>Ryan Prince</em> — Best Student</div><div class="d">Highest honour · Ryan International Group</div></div>
+    <div class="award rv" data-d="2"><div class="n">Best Research Paper</div><div class="d">Michigan Colleges Alliance, USA</div></div>
+    <div class="award rv" data-d="3"><div class="n">Cambridge English · C1</div><div class="d">C1 Advanced Proficiency Certificate</div></div>
+  </div>
+</section></div>
+
+<!-- ============ ABOUT ============ -->
+<div class="panel-wrap"><section class="sec about panel" id="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="sec-title rv">About <em>him</em></h2>
+      <p class="sec-sub rv" data-d="1">// A high schooler at the intersection<br>of law, thought &amp; the written word</p>
+    </div>
+    <div class="about-grid">
+      <div>
+        <p class="about-statement rv">Studying the courts, the constitution, and the institutions that shape public life — and writing about <em>what holds them together.</em></p>
+        <div class="about-body rv" data-d="1">
+          <p>I write essays on the courts, the constitution, and the institutions that shape public life. I design — over 200 editorial covers, NGO campaigns, and conference identities. And I show up: across 20+ NGOs, 40+ Model UNs, and a few things I helped build from scratch.</p>
+          <p>Most of my work lives at the seam between law, politics, and words — whether that's an essay, an edited publication, a campaign, or a conference run end to end.</p>
+        </div>
+      </div>
+      <figure class="about-photo rv" data-d="2">
+        <img src="shaurya-photo.jpg" alt="Shaurya Pratap Singh" onerror="this.closest('figure').style.display='none'">
+        <figcaption class="cap"><span>Shaurya Pratap Singh</span><span>2026</span></figcaption>
+      </figure>
+    </div>
+    <div class="props">
+      <div class="prop rv" data-d="1"><div class="pi">01 / Write</div><h4>The written word</h4><p>Essays on the courts, the constitution, and the institutions that shape public life.</p></div>
+      <div class="prop rv" data-d="2"><div class="pi">02 / Design</div><h4>Editorial &amp; visual</h4><p><b>200+</b> editorial covers, NGO campaigns, and conference identities.</p></div>
+      <div class="prop rv" data-d="3"><div class="pi">03 / Show up</div><h4>Civic &amp; leadership</h4><p><b>20+ NGOs</b>, <b>40+ Model UNs</b>, and a few things built from scratch.</p></div>
+    </div>
+  </div>
+</section></div>
+
+<!-- ============ STATS ============ -->
+<div class="panel-wrap"><section class="stats sec panel" id="stats">
+  <div class="wrap">
+    <div class="stat rv"><div class="num" data-target="20" data-suffix="+">0</div><div class="lab">NGOs worked with</div></div>
+    <div class="stat rv" data-d="1"><div class="num" data-target="40" data-suffix="+">0</div><div class="lab">Model UNs</div></div>
+    <div class="stat rv" data-d="2"><div class="num" data-target="200" data-suffix="+">0</div><div class="lab">Design projects</div></div>
+    <div class="stat rv" data-d="3"><div class="num" data-target="3" data-suffix="+">0</div><div class="lab">Orgs founded</div></div>
+    <div class="stat rv" data-d="4"><div class="num" data-target="10" data-suffix="+">0</div><div class="lab">MUN secretariats</div></div>
+  </div>
+</section></div>
+
+<style>
+  /* ---------- writing ---------- */
+  .writing { }
+  .feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+  .feat {
+    position: relative; background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px;
+    padding: clamp(1.6rem,3vw,2.4rem); cursor: pointer; overflow: hidden;
+    transition: transform .5s var(--ease), background .4s, border-color .4s;
+    min-height: 260px; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .feat::after { content:''; position: absolute; left:0; bottom:0; width:100%; height:2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .5s var(--ease); }
+  .feat:hover { transform: translateY(-5px); background: var(--paper-3); border-color: var(--line-2); }
+  .feat:hover::after { transform: scaleX(1); }
+  .feat .tag { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  .feat .ttl { font-size: clamp(1.4rem,2.6vw,2.1rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; margin-top: 1.4rem; }
+  .feat .go { font-family: var(--mono); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); margin-top: 1.6rem; display: inline-flex; gap: .5rem; align-items: center; transition: color .3s, gap .3s; }
+  .feat:hover .go { color: var(--ink); gap: .9rem; }
+  .feat .idx { position: absolute; top: 1.4rem; right: 1.6rem; font-family: var(--serif); font-style: italic; font-size: 2.4rem; color: var(--line-2); }
+  @media (max-width: 720px){ .feat-grid { grid-template-columns: 1fr; } }
+
+  .amicus { margin-top: 3rem; border-top: 1px solid var(--line); }
+  .amicus-head { font-family: var(--mono); font-size: .76rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); padding: 1.4rem 0 .4rem; }
+  .arow { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1.5rem; padding: 1.25rem 0; border-bottom: 1px solid var(--line); transition: padding-left .4s var(--ease), color .3s; }
+  .arow:hover { padding-left: 1rem; }
+  .arow .ai { font-family: var(--mono); font-size: .8rem; color: var(--ink-3); }
+  .arow .at { font-size: clamp(1.05rem,1.8vw,1.35rem); font-weight: 600; letter-spacing: -0.015em; transition: color .3s; }
+  .arow:hover .at { color: var(--accent); }
+  .arow .ag { font-family: var(--mono); font-size: .78rem; color: var(--ink-3); transition: transform .35s var(--ease); }
+  .arow:hover .ag { transform: translateX(5px); color: var(--accent); }
+  @media (max-width: 640px){ .arow { grid-template-columns: auto 1fr; } .arow .ag { display:none; } }
+
+  /* ---------- design ---------- */
+  .design { color: var(--ink); }
+  .design .sec-title { color: var(--ink); }
+  .design .sec-sub { color: rgba(243,243,243,.55); }
+  .design .sec-title em { color: var(--accent); }
+  .dgrid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.4rem; }
+  .dcard { position: relative; border-radius: 6px; overflow: hidden; background: var(--night-2); cursor: pointer; }
+  .dcard.tall { grid-row: span 2; }
+  .dcard .ph { overflow: hidden; aspect-ratio: 4/3; }
+  .dcard.tall .ph { aspect-ratio: 3/4; }
+  .dcard img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05) brightness(.92); transition: transform .8s var(--ease), filter .6s; }
+  .dcard:hover img { transform: scale(1.05); filter: grayscale(0) contrast(1) brightness(1); }
+  .dmeta { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.2rem 1.3rem; }
+  .dmeta .dt { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; }
+  .dmeta .dc { font-family: var(--mono); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: rgba(243,243,243,.55); }
+  .dcard .num-badge { position: absolute; top: 1rem; left: 1rem; font-family: var(--mono); font-size: .72rem; color: var(--ink); background: rgba(0,0,0,.55); backdrop-filter: blur(6px); padding: .3rem .6rem; border-radius: 100px; }
+  @media (max-width: 720px){ .dgrid { grid-template-columns: 1fr; } .dcard.tall { grid-row: span 1; } .dcard.tall .ph { aspect-ratio: 4/3; } }
+</style>
+
+<!-- ============ WRITING ============ -->
+<div class="panel-wrap"><section class="sec writing panel" id="writing">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="sec-title rv">Selected <em>writing</em></h2>
+      <p class="sec-sub rv" data-d="1">// Constitutional law &amp;<br>political commentary</p>
+    </div>
+    <div class="feat-grid">
+      <article class="feat rv" data-article="0"><div><span class="tag">Analysis</span><h3 class="ttl">The Fall of Titans: Analysing the May 2026 Elections</h3></div><span class="go">Read essay <span>→</span></span><span class="idx">01</span></article>
+      <article class="feat rv" data-d="1" data-article="1"><div><span class="tag">Constitutional Law</span><h3 class="ttl">The Three Musketeers of Federal Overreach</h3></div><span class="go">Read essay <span>→</span></span><span class="idx">02</span></article>
+      <article class="feat rv" data-d="1" data-article="2"><div><span class="tag">Judicial Politics</span><h3 class="ttl">Mamata's Suit: West Bengal at the Apex Court</h3></div><span class="go">Read essay <span>→</span></span><span class="idx">03</span></article>
+      <article class="feat rv" data-d="2" data-article="3"><div><span class="tag">Foreign Policy</span><h3 class="ttl">The 27th Amendment: Pakistan's Constitutional Fail</h3></div><span class="go">Read essay <span>→</span></span><span class="idx">04</span></article>
+    </div>
+
+    <div class="amicus rv">
+      <div class="amicus-head">Published under Amicus Curiae · National Polity &amp; Judicial Affairs</div>
+      <a class="arow" target="_blank" rel="noopener" href="https://www.linkedin.com/posts/write-amicuscuriae_does-the-law-protect-only-those-we-are-willing-activity-7407245735416573952-S9HR"><span class="ai">/01</span><span class="at">Does the Law Protect Only Those We Are Willing to See?</span><span class="ag">Read on LinkedIn ↗</span></a>
+      <a class="arow" target="_blank" rel="noopener" href="https://www.linkedin.com/posts/write-amicuscuriae_faith-was-meant-to-heal-not-hunt-a-secular-activity-7412681548551909376-RP_a"><span class="ai">/02</span><span class="at">Faith Was Meant to Heal, Not Hunt — A Secular Reckoning</span><span class="ag">Read on LinkedIn ↗</span></a>
+      <a class="arow" target="_blank" rel="noopener" href="https://www.linkedin.com/posts/write-amicuscuriae_progress-isnt-fewer-headlines-about-pollution-activity-7415707445098127360-g9UV"><span class="ai">/03</span><span class="at">Progress Isn't Fewer Headlines About Pollution</span><span class="ag">Read on LinkedIn ↗</span></a>
+      <a class="arow" target="_blank" rel="noopener" href="https://www.linkedin.com/posts/write-amicuscuriae_rebranding-welfare-doesnt-automatically-activity-7416320532746600449-9_vu"><span class="ai">/04</span><span class="at">Rebranding Welfare Doesn't Automatically Make It Work</span><span class="ag">Read on LinkedIn ↗</span></a>
+      <a class="arow" target="_blank" rel="noopener" href="https://www.linkedin.com/posts/write-amicuscuriae_when-the-courtroom-becomes-a-battleground-activity-7417487101782519808-UOON"><span class="ai">/05</span><span class="at">When the Courtroom Becomes a Battleground</span><span class="ag">Read on LinkedIn ↗</span></a>
+      <a class="arow" target="_blank" rel="noopener" href="https://www.linkedin.com/posts/write-amicuscuriae_not-every-disagreement-belongs-in-court-activity-7418202445618663424-VDOW"><span class="ai">/06</span><span class="at">Not Every Disagreement Belongs in Court</span><span class="ag">Read on LinkedIn ↗</span></a>
+      <a class="arow" target="_blank" rel="noopener" href="https://www.linkedin.com/posts/write-amicuscuriae_the-greenland-dilemma-activity-7420661772853956608-ZSy-"><span class="ai">/07</span><span class="at">The Greenland Dilemma</span><span class="ag">Read on LinkedIn ↗</span></a>
+    </div>
+  </div>
+</section></div>
+
+<!-- ============ DESIGN ============ -->
+<div class="panel-wrap"><section class="sec design panel" id="design">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="sec-title rv">Selected <em>design</em></h2>
+      <p class="sec-sub rv" data-d="1">// Editorial &amp; visual design<br>200+ covers, campaigns &amp; identities</p>
+    </div>
+    <div class="dgrid">
+      <div class="dcard tall rv"><div class="ph"><img src="cover1.png" alt="Truthful Thursdays — Jeevartan" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">01</span><div class="dmeta"><span class="dt">Truthful Thursdays</span><span class="dc">Jeevartan · NGO</span></div></div>
+      <div class="dcard rv" data-d="1"><div class="ph"><img src="cover2.png" alt="Credit Flow & Migration" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">02</span><div class="dmeta"><span class="dt">Credit Flow &amp; Migration</span><span class="dc">Magazine Design</span></div></div>
+      <div class="dcard rv" data-d="2"><div class="ph"><img src="cover3.png" alt="Denial" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">03</span><div class="dmeta"><span class="dt">Denial</span><span class="dc">Editorial Design</span></div></div>
+      <div class="dcard rv" data-d="1"><div class="ph"><img src="cover5.png" alt="Editorial cover" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">04</span><div class="dmeta"><span class="dt">Cover Story</span><span class="dc">Editorial &amp; Visual</span></div></div>
+    </div>
+  </div>
+</section></div>
+
+<style>
+  /* ---------- experience ---------- */
+  .exp { }
+  .xrow { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; padding: 1.8rem 0; border-top: 1px solid var(--line); align-items: start; transition: background .4s; }
+  .xrow:last-child { border-bottom: 1px solid var(--line); }
+  .xrow .xorg { font-size: clamp(1.3rem,2.4vw,1.9rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; }
+  .xrow .xdate { font-family: var(--mono); font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); margin-top: .5rem; }
+  .xrow .xtitle { font-weight: 600; color: var(--accent); font-size: 1.02rem; margin-bottom: .5rem; }
+  .xrow .xdesc { color: var(--ink-2); font-size: .98rem; line-height: 1.6; font-weight: 500; }
+  .xrow .xdesc p + p { margin-top: .8rem; }
+  @media (max-width: 720px){ .xrow { grid-template-columns: 1fr; gap: .8rem; } }
+
+  .mun-wrap { margin-top: clamp(3rem,6vw,4.5rem); }
+  .mun-tabs { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  .mun-tab { font-family: var(--mono); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; padding: .55rem 1.1rem; border: 1px solid var(--line-2); border-radius: 100px; cursor: pointer; transition: all .3s; color: var(--ink-2); background: none; }
+  .mun-tab.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .mun-panel { display: none; }
+  .mun-panel.on { display: block; animation: fadeUp .5s var(--ease); }
+  .mgrid { display: grid; grid-template-columns: repeat(2,1fr); gap: 0 2.5rem; }
+  .mitem { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: baseline; padding: .95rem 0; border-bottom: 1px solid var(--line); }
+  .mitem .mc { font-weight: 600; font-size: 1.02rem; }
+  .mitem .mc small { display: block; font-family: var(--mono); font-weight: 400; font-size: .72rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; margin-top: .2rem; }
+  .mitem .mr { font-family: var(--serif); font-style: italic; font-size: 1.05rem; color: var(--accent); white-space: nowrap; }
+  @media (max-width: 680px){ .mgrid { grid-template-columns: 1fr; } }
+
+  .school-block { margin-top: clamp(3rem,6vw,4.5rem); border-top: 1px solid var(--line); padding-top: 2.5rem; display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; }
+  .school-block .sb-org { font-size: clamp(1.3rem,2.2vw,1.7rem); font-weight: 700; letter-spacing: -0.02em; }
+  .school-block .sb-sub { font-family: var(--mono); font-size: .74rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; margin-top: .5rem; }
+  .roles { display: flex; flex-wrap: wrap; gap: .6rem; }
+  .role-tag { border: 1px solid var(--line-2); border-radius: 100px; padding: .5rem 1rem; font-size: .92rem; font-weight: 500; transition: all .3s; }
+  .role-tag:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  @media (max-width: 720px){ .school-block { grid-template-columns: 1fr; } }
+
+
+</style>
+
+<!-- ============ EXPERIENCE ============ -->
+<div class="panel-wrap"><section class="sec exp panel" id="experience">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="sec-title rv">Experience <em>&amp; civic life</em></h2>
+      <p class="sec-sub rv" data-d="1">// NGOs · Model UN · School<br>leadership &amp; engagement</p>
+    </div>
+
+    <div class="xrow rv"><div><div class="xorg">Jeevartan Foundation</div><div class="xdate">Apr 2026 – Present</div></div><div><div class="xtitle">Chief Editor</div><div class="xdesc"><p>Leading the foundation's editorial direction across campaigns, public communication, and identity work.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">Ryan Group · BBN</div><div class="xdate">May 2024 – Present</div></div><div><div class="xtitle">Journalist</div><div class="xdesc"><p>Covered school and community updates, turning scattered information into crisp stories that people would actually read.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">Amicus Curiae</div><div class="xdate">Dec 2025 – Feb 2026</div></div><div><div class="xtitle">Editor · National Polity &amp; Judicial Affairs</div><div class="xdesc"><p>Edited and shaped content for a legal publication focused on national polity and judicial affairs, keeping the tone tight and accessible.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">Ryan International School</div><div class="xdate">Apr 2025 – Feb 2026</div></div><div><div class="xtitle">School Editor-in-Chief</div><div class="xdesc"><p>Directed school publication work, edited material, and kept the editorial tone consistent across student-facing writing.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">RISGNMUN '25</div><div class="xdate">Jan 2025 – Jul 2025</div></div><div><div class="xtitle">Conference Convenor</div><div class="xdesc"><p>Handled planning, scheduling, and delegate coordination for the conference from the first draft to the final day.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">CommitTea.org</div><div class="xdate">Apr 2024 – Oct 2024</div></div><div><div class="xtitle">Co-Founder &amp; Chief Operating Officer</div><div class="xdesc"><p>Co-founded a Model UN platform connecting student organisers with sponsors, designers, and delegate networks — addressing a longstanding gap in the MUN ecosystem.</p><p>Built as a middleman for MUN founders, the platform offered marketing, cold-calling, and freelance design to organisers without that infrastructure. It collaborated with 20+ MUN platforms, grew a following of a thousand, and was transferred to a new team in November 2025.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">Project Aspasia</div><div class="xdate">Sep 2024 – Nov 2024</div></div><div><div class="xtitle">Head of Marketing</div><div class="xdesc"><p>Oversaw marketing strategy and outreach for the duration of the project.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">Project Badlav</div><div class="xdate">Aug 2024 – Oct 2024</div></div><div><div class="xtitle">Secretary of Logistics &amp; Operations</div><div class="xdesc"><p>Managed end-to-end logistics and operational coordination for the project's lifecycle.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">Eximius MUN</div><div class="xdate">Feb 2024 – Apr 2024</div></div><div><div class="xtitle">Chief of Cabinet</div><div class="xdesc"><p>Worked on secretariat coordination, briefings, and issue-tracking so the executive team could move cleanly.</p></div></div></div>
+
+    <!-- MUN record -->
+    <div class="mun-wrap rv">
+      <div class="mun-tabs">
+        <button class="mun-tab on" data-mun="0">Delegate</button>
+        <button class="mun-tab" data-mun="1">Secretariat</button>
+        <button class="mun-tab" data-mun="2">Executive Board</button>
+      </div>
+      <div class="mun-panel on" data-mun="0">
+        <div class="mgrid">
+          <div class="mitem"><div class="mc">DIMUN 2025<small>UNEP</small></div><div class="mr">Best Delegate</div></div>
+          <div class="mitem"><div class="mc">INMUN 2025<small>WSF</small></div><div class="mr">High Commendation</div></div>
+          <div class="mitem"><div class="mc">RISMUN 2024<small>WHSR</small></div><div class="mr">Special Mention</div></div>
+          <div class="mitem"><div class="mc">RISMUN 2024<small>UNCSW</small></div><div class="mr">High Commendation</div></div>
+          <div class="mitem"><div class="mc">BIMUN 2024<small>DISEC</small></div><div class="mr">High Commendation</div></div>
+          <div class="mitem"><div class="mc">HorizonMUN 2024<small>SOCHUM</small></div><div class="mr">Verbal Mention</div></div>
+          <div class="mitem"><div class="mc">RISGMUN 2023<small>AIPPM</small></div><div class="mr">Special Mention</div></div>
+          <div class="mitem"><div class="mc">MeridianMUN 2023<small>ECOSOC</small></div><div class="mr">Special Mention</div></div>
+          <div class="mitem"><div class="mc">SVMUN 2023<small>UNSC</small></div><div class="mr">Special Mention</div></div>
+          <div class="mitem"><div class="mc">RISVKMUN 2023<small>UNHRC</small></div><div class="mr">Verbal Mention</div></div>
+          <div class="mitem"><div class="mc">ZesteMUN 2023<small>DISEC</small></div><div class="mr">Special Mention</div></div>
+          <div class="mitem"><div class="mc">MayoorMUN 2023<small>DISEC</small></div><div class="mr">Special Mention</div></div>
+        </div>
+      </div>
+      <div class="mun-panel" data-mun="1">
+        <div class="mgrid">
+          <div class="mitem"><div class="mc">RISGNMUN 2025</div><div class="mr">Conference Convenor</div></div>
+          <div class="mitem"><div class="mc">IMUN 2025</div><div class="mr">Online Ambassador</div></div>
+          <div class="mitem"><div class="mc">Eximius MUN 2024</div><div class="mr">Chef de Cabinet</div></div>
+          <div class="mitem"><div class="mc">DIMUN 2024</div><div class="mr">Online Ambassador</div></div>
+          <div class="mitem"><div class="mc">IIMUN 2024</div><div class="mr">Ambassador</div></div>
+          <div class="mitem"><div class="mc">RISGNMUN 2024</div><div class="mr">USG · IT Affairs</div></div>
+          <div class="mitem"><div class="mc">ALMAMUN 2024</div><div class="mr">USG · IT Affairs</div></div>
+          <div class="mitem"><div class="mc">HIMUN 2024</div><div class="mr">Human Resources</div></div>
+          <div class="mitem"><div class="mc">NDGYS 2024</div><div class="mr">Lead, Human Resources</div></div>
+          <div class="mitem"><div class="mc">RISMUN 2024</div><div class="mr">Technical Director</div></div>
+        </div>
+      </div>
+      <div class="mun-panel" data-mun="2">
+        <div class="mgrid">
+          <div class="mitem"><div class="mc">RISGNMUN 2025<small>HUNSC · Crisis</small></div><div class="mr">Asst. Vice President</div></div>
+          <div class="mitem"><div class="mc">LIMUN 2025<small>DISEC</small></div><div class="mr">Rapporteur</div></div>
+          <div class="mitem"><div class="mc">DMUN 2025<small>SOCHUM</small></div><div class="mr">Rapporteur</div></div>
+          <div class="mitem"><div class="mc">HCAMUN 2025<small>International Press</small></div><div class="mr">Editor-in-Chief</div></div>
+          <div class="mitem"><div class="mc">HCAMUN 2024<small>UNCSW</small></div><div class="mr">Chairperson</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- school -->
+    <div class="school-block rv">
+      <div><div class="sb-org">Ryan International School</div><div class="sb-sub">Greater Noida · School Leadership</div></div>
+      <div class="roles">
+        <span class="role-tag">Editor-in-Chief</span>
+        <span class="role-tag">Speaker, Student Parliament</span>
+        <span class="role-tag">President, Environmental Committee</span>
+        <span class="role-tag">Head, Journalism Branch</span>
+        <span class="role-tag">MUN Directorate</span>
+      </div>
+    </div>
+  </div>
+</section></div>
+
+
+<style>
+  /* ---------- academics + ryan prince ---------- */
+  .acad { }
+  .cred-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.4rem; }
+  .cred { border: 1px solid var(--line); border-radius: 6px; padding: 1.8rem; background: var(--paper-2); transition: transform .5s var(--ease), border-color .4s; }
+  .cred:hover { transform: translateY(-5px); border-color: var(--line-2); }
+  .cred .big { font-family: var(--serif); font-style: italic; font-size: 3rem; color: var(--accent); line-height: 1; }
+  .cred .ct { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; margin: 1.2rem 0 .4rem; }
+  .cred .cd { font-family: var(--mono); font-size: .74rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; }
+  @media (max-width: 720px){ .cred-grid { grid-template-columns: 1fr; } }
+
+  .rprince { margin-top: 1.4rem; display: grid; grid-template-columns: 1fr 1.3fr; gap: 0; border-radius: 6px; overflow: hidden; background: var(--night); color: var(--ink); }
+  .rprince .rp-img { overflow: hidden; min-height: 320px; }
+  .rprince .rp-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); transition: transform .8s var(--ease), filter .6s; }
+  .rprince:hover .rp-img img { transform: scale(1.04); filter: grayscale(0); }
+  .rprince .rp-body { padding: clamp(2rem,4vw,3.5rem); display: flex; flex-direction: column; justify-content: center; }
+  .rprince .rp-ey { font-family: var(--mono); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  .rprince .rp-h { font-size: clamp(2rem,4vw,3.2rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin: 1rem 0 1.3rem; }
+  .rprince .rp-h em { font-family: var(--serif); font-style: italic; font-weight: 400; }
+  .rprince .rp-p { color: rgba(243,243,243,.72); font-size: 1.02rem; line-height: 1.65; font-weight: 500; max-width: 46ch; }
+  .rprince .rp-meta { font-family: var(--mono); font-size: .74rem; color: rgba(243,243,243,.5); text-transform: uppercase; letter-spacing: .06em; margin-top: 1.6rem; }
+  @media (max-width: 720px){ .rprince { grid-template-columns: 1fr; } }
+
+  /* ---------- contact / footer ---------- */
+  .contact { color: var(--ink); padding-top: clamp(6rem,14vh,10rem); }
+  .contact-h { font-weight: 800; letter-spacing: -0.04em; line-height: .9; font-size: clamp(3.5rem,13vw,11rem); }
+  .contact-h em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--accent); }
+  .contact-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 2rem; margin-top: 2.5rem; }
+  .contact-lede { max-width: 36ch; color: rgba(243,243,243,.72); font-size: 1.1rem; line-height: 1.6; font-weight: 500; }
+  .mail-btn { display: inline-flex; align-items: center; gap: .8rem; font-size: clamp(1.1rem,2.4vw,1.7rem); font-weight: 600; padding: 1rem 1.8rem; border: 1px solid var(--night-line); border-radius: 100px; transition: background .3s, color .3s, transform .35s var(--ease); }
+  .mail-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+  footer { border-top: 1px solid var(--night-line); margin-top: clamp(5rem,12vh,8rem); padding: 3rem 0; }
+  .foot-grid { display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+  .foot-nav { display: flex; flex-wrap: wrap; gap: 1.2rem 1.8rem; }
+  .foot-nav a { font-size: .92rem; color: rgba(243,243,243,.62); transition: color .3s; }
+  .foot-nav a:hover { color: var(--accent); }
+  .foot-meta { font-family: var(--mono); font-size: .74rem; color: rgba(243,243,243,.42); letter-spacing: .05em; text-transform: uppercase; }
+  .foot-bottom { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+
+  /* ---------- article reader ---------- */
+  .reader { position: fixed; inset: 0; z-index: 1000; background: var(--paper); transform: translateY(100%); transition: transform .6s var(--ease); overflow-y: auto; visibility: hidden; }
+  .reader.open { transform: translateY(0); visibility: visible; }
+  .reader-bar { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; padding: 1.2rem var(--pad); background: rgba(0,0,0,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); z-index: 2; }
+  .reader-close { background: var(--ink); color: var(--paper); border: none; cursor: pointer; font-family: var(--mono); font-size: .8rem; padding: .6rem 1.2rem; border-radius: 100px; letter-spacing: .05em; }
+  .reader-inner { max-width: 720px; margin: 0 auto; padding: clamp(2.5rem,6vw,5rem) var(--pad) 7rem; }
+  .reader-cat { font-family: var(--mono); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .reader-title { font-size: clamp(2rem,5vw,3.4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin: 1rem 0 2rem; }
+  .reader-body { font-family: var(--serif); font-size: 1.3rem; line-height: 1.7; color: var(--ink); }
+  .reader-body p { margin-bottom: 1.3rem; }
+  .reader-body h2,.reader-body h3 { font-family: var(--display); font-weight: 700; margin: 2rem 0 1rem; letter-spacing: -0.02em; }
+</style>
+
+<!-- ============ ACADEMICS ============ -->
+<div class="panel-wrap"><section class="sec acad panel" id="academics">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="sec-title rv">Academic <em>record</em></h2>
+      <p class="sec-sub rv" data-d="1">// Credentials &amp;<br>certifications</p>
+    </div>
+    <div class="cred-grid">
+      <div class="cred rv"><div class="big">C1</div><div class="ct">Cambridge English · C1</div><div class="cd">C1 Advanced Proficiency Certificate</div></div>
+      <div class="cred rv" data-d="1"><div class="big">01</div><div class="ct">Best Student · Ryan Prince</div><div class="cd">Highest award · Ryan International Group</div></div>
+      <div class="cred rv" data-d="2"><div class="big">&#9733;</div><div class="ct">Best Research Paper</div><div class="cd">Michigan Colleges Alliance, USA</div></div>
+    </div>
+
+    <div class="rprince rv">
+      <div class="rp-img"><img src="ryan-prince.jpeg" alt="Ryan Prince" onerror="this.closest('.rprince').style.gridTemplateColumns='1fr';this.closest('.rp-img').style.display='none'"></div>
+      <div class="rp-body">
+        <div class="rp-ey">Highest Honour · Ryan International Group</div>
+        <div class="rp-h">The <em>Ryan Prince</em></div>
+        <p class="rp-p">Awarded in Grade XII, the Ryan Prince is the highest distinction conferred across all institutions under the Ryan International Group — recognising the student who best embodies academic excellence, leadership, and character.</p>
+        <div class="rp-meta">Ryan International School, Greater Noida · Grade XII · 2025–26</div>
+      </div>
+    </div>
+  </div>
+</section></div>
+
+<!-- ============ CONTACT ============ -->
+<div class="panel-wrap"><section class="contact panel" id="contact">
+  <div class="wrap">
+    <div class="contact-portrait rv"><img src="shaurya-photo.jpg" alt="Shaurya Pratap Singh" onerror="this.closest('.contact-portrait').style.display='none'"></div>
+    <h2 class="contact-h rv">Let's <em>talk.</em></h2>
+    <div class="contact-row">
+      <p class="contact-lede rv" data-d="1">If my work interests you — whether you want to discuss law, collaborate on a project, or explore ideas at the intersection of politics and writing — I'd be glad to hear from you.</p>
+      <a class="mail-btn rv" data-d="2" data-mag href="mailto:shauryaps.rgn@gmail.com">shauryaps.rgn@gmail.com →</a>
+    </div>
+    <footer>
+      <div class="foot-grid">
+        <nav class="foot-nav">
+          <a href="#home">Home</a><a href="#about">About</a><a href="#writing">Writing</a><a href="#design">Design</a><a href="#experience">Experience</a><a href="#academics">Academic</a>
+          <a href="https://www.linkedin.com/in/shaurya-pratap-singh-4a3632311/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        </nav>
+        <div class="foot-meta">Delhi, India · GMT+5:30</div>
+      </div>
+      <div class="foot-bottom">
+        <div class="foot-meta">© 2025 Shaurya Pratap Singh</div>
+        <div class="foot-meta serif-i" style="font-family:var(--serif);text-transform:none;letter-spacing:0;font-size:1rem;color:rgba(243,243,243,.6)">Written with intention.</div>
+      </div>
+    </footer>
+  </div>
+</section></div>
+
+</div><!-- /#stack-container -->
+
+<!-- ============ ARTICLE READER ============ -->
+<div class="reader" id="reader" aria-hidden="true">
+  <div class="reader-bar">
+    <span class="eyebrow" style="color:var(--ink-2)">Shaurya Pratap Singh — Writing</span>
+    <button class="reader-close" id="readerClose">Close ✕</button>
+  </div>
+  <div class="reader-inner">
+    <div class="reader-cat" id="readerCat"></div>
+    <h1 class="reader-title" id="readerTitle"></h1>
+    <div class="reader-body" id="readerBody"></div>
+  </div>
+</div>
+
+<style>
+  /* ===== sticky-stack scroll ===== */
+  /* Each .panel-wrap provides scroll room; .panel sticks inside it */
+  #stack-container {
+    position: relative;
+  }
+
+  .panel-wrap {
+    position: relative;
+    /* height set by JS: panel natural height + 100vh scroll room */
+  }
+
+  .panel {
+    position: sticky;
+    top: 0;
+    /* height is capped at 100vh so it never overflows the screen while pinned */
+    max-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #000;
+    border-radius: 0;
+    transform-origin: top center;
+    will-change: transform;
+    /* scrollbar hidden but functional */
+    scrollbar-width: none;
+  }
+  .panel::-webkit-scrollbar { display: none; }
+
+  /* assign increasing z-index so each panel covers the one before */
+  .panel-wrap:nth-child(1)  .panel { z-index: 1;  }
+  .panel-wrap:nth-child(2)  .panel { z-index: 2;  }
+  .panel-wrap:nth-child(3)  .panel { z-index: 3;  }
+  .panel-wrap:nth-child(4)  .panel { z-index: 4;  }
+  .panel-wrap:nth-child(5)  .panel { z-index: 5;  }
+  .panel-wrap:nth-child(6)  .panel { z-index: 6;  }
+  .panel-wrap:nth-child(7)  .panel { z-index: 7;  }
+  .panel-wrap:nth-child(8)  .panel { z-index: 8;  }
+  .panel-wrap:nth-child(9)  .panel { z-index: 9;  }
+  .panel-wrap:nth-child(10) .panel { z-index: 10; }
+  .panel-wrap:nth-child(11) .panel { z-index: 11; }
+  .panel-wrap:nth-child(12) .panel { z-index: 12; }
+
+  /* rounded top corners on every panel except the first */
+  .panel-wrap:not(:first-child) .panel {
+    border-radius: 20px 20px 0 0;
+  }
+
+  /* top shine line */
+  .panel::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 1px;
+    z-index: 6;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.18) 16%, rgba(255,255,255,.18) 84%, transparent);
+    opacity: .45;
+  }
+  .panel-wrap:first-child .panel::before { display: none; }
+
+  /* subtle scale-back on panels being covered */
+  .panel { transform-origin: top center; }
+
+  /* alternating backgrounds */
+  .panel-wrap:nth-child(odd)  .panel { background: #000000; }
+  .panel-wrap:nth-child(even) .panel { background: #141414; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panel { position: relative; max-height: none; overflow-y: visible; border-radius: 0; transform: none !important; }
+    .panel-wrap { height: auto !important; }
+  }
+
+  /* ===== contact portrait ===== */
+  .contact-portrait { width: clamp(120px,16vw,200px); aspect-ratio: 1; border-radius: 50%; overflow: hidden; border: 1px solid var(--line-2); margin-bottom: 2rem; }
+  .contact-portrait img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); transition: filter .6s var(--ease); }
+  .contact-portrait:hover img { filter: grayscale(0); }
+</style>
+<script src="articles-data.js"></script>
+<script>
+/* ===== sticky stack: set panel-wrap heights so each panel fully scrolls before next arrives ===== */
+(function(){
+  const wraps = [...document.querySelectorAll('.panel-wrap')];
+  if (!wraps.length) return;
+
+  function setHeights() {
+    wraps.forEach(wrap => {
+      const panel = wrap.querySelector('.panel');
+      if (!panel) return;
+      // Reset so we can measure natural height
+      wrap.style.height = '';
+      panel.style.maxHeight = '';
+      const naturalH = panel.scrollHeight;
+      const vh = window.innerHeight;
+      // Give the wrap: natural panel height + 1 viewport of scroll room
+      // The panel pins at top:0 for that extra vh, then the next wrap takes over
+      wrap.style.height = (naturalH + vh) + 'px';
+      // Cap the panel's visible height to vh so it doesn't overflow screen while pinned
+      panel.style.maxHeight = vh + 'px';
+    });
+  }
+
+  // Run after fonts/images might have loaded
+  setHeights();
+  window.addEventListener('resize', setHeights);
+  window.addEventListener('load', setHeights);
+
+  // Scale-back effect: panel shrinks slightly as it gets buried
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  function onScroll() {
+    wraps.forEach((wrap, i) => {
+      const panel = wrap.querySelector('.panel');
+      if (!panel || i === wraps.length - 1) return;
+      const wrapTop = wrap.getBoundingClientRect().top;
+      const panelH = panel.offsetHeight;
+      // progress: 0 = panel just pinned, 1 = panel fully scrolled past
+      const scrolledPast = Math.max(0, -wrapTop);
+      const progress = Math.min(scrolledPast / panelH, 1);
+      const scale = 1 - progress * 0.06;
+      panel.style.transform = progress > 0 ? `scale(${scale})` : '';
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+/* ===== nav ===== */
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('stuck', scrollY > 40), { passive: true });
+const navToggle = document.getElementById('navToggle'), navLinks = document.getElementById('navLinks');
+navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+/* ===== custom cursor ===== */
+(function(){
+  const dot = document.getElementById('cur'), ring = document.getElementById('curRing');
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  let tx=innerWidth/2,ty=innerHeight/2,rx=tx,ry=ty,on=false;
+  addEventListener('mousemove', e => { tx=e.clientX; ty=e.clientY; dot.style.transform=`translate(${tx}px,${ty}px) translate(-50%,-50%)`; if(!on){on=true;document.body.classList.add('cur-on');rx=tx;ry=ty;} }, {passive:true});
+  (function loop(){ rx+=(tx-rx)*.2; ry+=(ty-ry)*.2; ring.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`; requestAnimationFrame(loop); })();
+  const hot='a,button,.feat,.dcard,[data-mag],.mun-tab,.qdot,.role-tag,input';
+  addEventListener('pointerover', e=>{ if(e.target.closest&&e.target.closest(hot)) ring.classList.add('hot'); });
+  addEventListener('pointerout', e=>{ if(e.target.closest&&e.target.closest(hot)&&!(e.relatedTarget&&e.relatedTarget.closest&&e.relatedTarget.closest(hot))) ring.classList.remove('hot'); });
+})();
+
+/* ===== magnetic ===== */
+(function(){
+  if(!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  document.querySelectorAll('[data-mag]').forEach(el=>{
+    el.addEventListener('pointermove', e=>{ const r=el.getBoundingClientRect(); const dx=(e.clientX-(r.left+r.width/2))*.25, dy=(e.clientY-(r.top+r.height/2))*.35; el.style.transform=`translate(${Math.max(-12,Math.min(12,dx))}px,${Math.max(-10,Math.min(10,dy))}px)`; });
+    el.addEventListener('pointerleave', ()=>{ el.style.transform=''; el.style.transition='transform .5s var(--ease)'; setTimeout(()=>el.style.transition='',500); });
+  });
+})();
+
+/* ===== reveal ===== */
+const rio = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); rio.unobserve(e.target); } }), {threshold:.15, rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('.rv').forEach(el=>rio.observe(el));
+
+/* ===== counters ===== */
+const cio = new IntersectionObserver(es=>es.forEach(e=>{ if(!e.isIntersecting) return; cio.unobserve(e.target);
+  const t=+e.target.dataset.target, suf=e.target.dataset.suffix||'', dur=1400, st=performance.now();
+  (function tick(now){ const p=Math.min((now-st)/dur,1); const ease=1-Math.pow(1-p,3); e.target.textContent=Math.round(t*ease)+suf; if(p<1)requestAnimationFrame(tick); })(st);
+}), {threshold:.6});
+document.querySelectorAll('.num[data-target]').forEach(el=>cio.observe(el));
+
+/* ===== hero rotor ===== */
+(function(){
+  const el=document.getElementById('rotor'); if(!el) return;
+  const words=['written','spoken','printed','argued','drafted','designed'];
+  let i=0;
+  setInterval(()=>{ i=(i+1)%words.length; el.style.transition='opacity .3s, transform .3s'; el.style.opacity='0'; el.style.transform='translateY(-30%)';
+    setTimeout(()=>{ el.textContent=words[i]; el.style.transform='translateY(30%)'; requestAnimationFrame(()=>{ el.style.opacity='1'; el.style.transform='translateY(0)'; }); },300);
+  }, 2400);
+})();
+
+/* ===== MUN tabs ===== */
+document.querySelectorAll('.mun-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    const id=tab.dataset.mun;
+    document.querySelectorAll('.mun-tab').forEach(t=>t.classList.toggle('on', t===tab));
+    document.querySelectorAll('.mun-panel').forEach(p=>p.classList.toggle('on', p.dataset.mun===id));
+  });
+});
+
+
+/* ===== article reader ===== */
+(function(){
+  const A=window.ARTICLES||[];
+  const reader=document.getElementById('reader'), cat=document.getElementById('readerCat'), title=document.getElementById('readerTitle'), body=document.getElementById('readerBody');
+  function open(idx){
+    const a=A[idx];
+    if(!a){ cat.textContent='Writing'; title.textContent='Article unavailable'; body.innerHTML='<p>This piece isn\'t loaded yet. Please check back on the live site.</p>'; }
+    else { cat.textContent=a.category||a.cat||'Essay'; title.textContent=a.title||''; body.innerHTML=a.body||a.html||a.content||('<p>'+(a.excerpt||'')+'</p>'); }
+    reader.classList.add('open'); reader.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+  }
+  function close(){ reader.classList.remove('open'); reader.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+  document.querySelectorAll('.feat[data-article]').forEach(f=>f.addEventListener('click',()=>open(+f.dataset.article)));
+  document.getElementById('readerClose').addEventListener('click',close);
+  addEventListener('keydown',e=>{ if(e.key==='Escape')close(); });
+})();
+</script>
+</body>
+</html>
