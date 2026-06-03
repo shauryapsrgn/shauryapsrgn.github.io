@@ -938,10 +938,136 @@ document.querySelectorAll('.mun-tab').forEach(tab=>{
   rows.forEach((items,ri)=>{
     const row=document.createElement('div'); row.className='drow r'+ri;
     const track=document.createElement('div'); track.className='drow-track';
-    const make=()=>items.map(it=>`<figure class="dthumb"><img src="${thumb(it.s)}" alt="${esc(it.n)}" loading="lazy" decoding="async" style="opacity:0" onload="this.style.opacity=1" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='${encodeURI(it.s)}'}else{this.style.opacity=0}"><figcaption class="dcap"><span>${esc(it.t)}</span><b>${esc(it.n)}</b></figcaption></figure>`).join('');
+    const make=()=>items.map(it=>`<figure class="dthumb" data-src="${encodeURI(it.s)}" data-full="${it.s}" data-name="${esc(it.n)}" data-type="${esc(it.t)}"><img src="${thumb(it.s)}" alt="${esc(it.n)}" loading="lazy" decoding="async" style="opacity:0" onload="this.style.opacity=1" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='${encodeURI(it.s)}'}else{this.style.opacity=0}"><figcaption class="dcap"><span>${esc(it.t)}</span><b>${esc(it.n)}</b></figcaption></figure>`).join('');
     track.innerHTML = make()+make();
     row.appendChild(track); root.appendChild(row);
   });
+})();
+
+/* ===== design lightbox ===== */
+(function(){
+  const lb = document.getElementById('dlb');
+  const img = document.getElementById('dlbImg');
+  const cap = document.getElementById('dlbCap');
+  const closeBtn = document.getElementById('dlbClose');
+  if (!lb) return;
+
+  const HOST = 'shauryapsrgn.github.io';
+  const fullUrl = s => 'https://images.weserv.nl/?url=' + encodeURIComponent(HOST + '/' + s) + '&w=1800&q=90&output=webp';
+
+  function open(src, name, type) {
+    img.src = '';
+    img.alt = name;
+    cap.textContent = type + ' — ' + name;
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    // load full-res version
+    const hi = new Image();
+    hi.onload = () => { img.src = hi.src; };
+    hi.src = fullUrl(src);
+    // show thumb-res immediately while hi-res loads
+    img.src = src;
+  }
+  function close() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => { img.src = ''; }, 400);
+  }
+
+  // delegate clicks on dthumb figures
+  document.addEventListener('click', e => {
+    const thumb = e.target.closest('.dthumb');
+    if (thumb) { open(thumb.dataset.full, thumb.dataset.name, thumb.dataset.type); }
+  });
+
+  closeBtn.addEventListener('click', close);
+  lb.addEventListener('click', e => { if (e.target === lb) close(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
+
+/* ===== about slideshow: start fresh when About section enters view ===== */
+(function(){
+  const wrap = document.getElementById('aboutSlide');
+  if (!wrap) return;
+  const allImgs = [...wrap.querySelectorAll('.about-slide-img')];
+  const dotsEl = document.getElementById('aboutDots');
+  let slides = [], current = 0, timer = null, initialised = false;
+
+  function buildSlides() {
+    slides = allImgs.filter(img => img.naturalWidth > 0 || img.complete);
+    if (!slides.length) slides = allImgs; // fallback: use all
+  }
+
+  function go(n) {
+    if (!slides.length) return;
+    slides[current].classList.remove('active');
+    if (dotsEl.children[current]) dotsEl.children[current].classList.remove('on');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    if (dotsEl.children[current]) dotsEl.children[current].classList.add('on');
+  }
+
+  function startTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => go(current + 1), 4000);
+  }
+
+  function resetToFirst() {
+    if (!slides.length) return;
+    // snap back to slide 0 without animation
+    slides.forEach(img => img.classList.remove('active'));
+    [...dotsEl.children].forEach(d => d.classList.remove('on'));
+    current = 0;
+    slides[0].classList.add('active');
+    if (dotsEl.children[0]) dotsEl.children[0].classList.add('on');
+    startTimer();
+  }
+
+  function init() {
+    buildSlides();
+    if (!slides.length) return;
+
+    // build dots only once
+    if (!initialised) {
+      dotsEl.innerHTML = '';
+      slides.forEach((_, n) => {
+        const d = document.createElement('button');
+        d.className = 'about-slide-dot' + (n === 0 ? ' on' : '');
+        d.setAttribute('aria-label', 'Photo ' + (n + 1));
+        d.addEventListener('click', () => { go(n); startTimer(); });
+        dotsEl.appendChild(d);
+      });
+      initialised = true;
+    }
+
+    resetToFirst();
+  }
+
+  // Wait for images, then set up IntersectionObserver
+  let loaded = 0;
+  function onSettle() {
+    loaded++;
+    if (loaded >= allImgs.length) setupObserver();
+  }
+  allImgs.forEach(img => {
+    if (img.complete) onSettle();
+    else { img.addEventListener('load', onSettle); img.addEventListener('error', onSettle); }
+  });
+  setTimeout(setupObserver, 2000); // hard fallback
+
+  function setupObserver() {
+    if (!('IntersectionObserver' in window)) { init(); return; }
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          init(); // resets to slide 1 every time section comes into view
+        } else {
+          clearInterval(timer); // pause when off-screen
+        }
+      });
+    }, { threshold: 0.3 });
+    obs.observe(wrap.closest('section') || wrap);
+  }
 })();
 
 /* ===== intro ===== */
@@ -1034,61 +1160,6 @@ document.querySelectorAll('.mun-tab').forEach(tab=>{
   addEventListener('keydown',e=>{ if(e.key==='Escape')close(); });
 })();
 
-/* ===== about photo slideshow ===== */
-(function(){
-  const wrap = document.getElementById('aboutSlide');
-  if (!wrap) return;
-  const dotsEl = document.getElementById('aboutDots');
-  const allImgs = [...wrap.querySelectorAll('.about-slide-img')];
-  let slides = [], current = 0, timer;
-
-  function init() {
-    // only use images that actually loaded
-    slides = allImgs.filter(img => img.naturalWidth > 0);
-    if (slides.length === 0) return;
-
-    // reset active: first loaded image is active
-    allImgs.forEach(img => img.classList.remove('active'));
-    slides[0].classList.add('active');
-
-    // build dots
-    dotsEl.innerHTML = '';
-    slides.forEach((_, n) => {
-      const d = document.createElement('button');
-      d.className = 'about-slide-dot' + (n === 0 ? ' on' : '');
-      d.setAttribute('aria-label', 'Photo ' + (n + 1));
-      d.addEventListener('click', () => { go(n); resetTimer(); });
-      dotsEl.appendChild(d);
-    });
-
-    resetTimer();
-  }
-
-  function go(n) {
-    if (!slides.length) return;
-    slides[current].classList.remove('active');
-    dotsEl.children[current] && dotsEl.children[current].classList.remove('on');
-    current = (n + slides.length) % slides.length;
-    slides[current].classList.add('active');
-    dotsEl.children[current] && dotsEl.children[current].classList.add('on');
-  }
-
-  function resetTimer() {
-    clearInterval(timer);
-    timer = setInterval(() => go(current + 1), 4000);
-  }
-
-  // wait for all images to settle, then init
-  let loaded = 0;
-  allImgs.forEach(img => {
-    if (img.complete) { loaded++; if (loaded === allImgs.length) init(); }
-    else {
-      img.addEventListener('load', () => { loaded++; if (loaded === allImgs.length) init(); });
-      img.addEventListener('error', () => { img.classList.remove('active'); loaded++; if (loaded === allImgs.length) init(); });
-    }
-  });
-  // fallback: init after 1.5s regardless
-  setTimeout(() => { if (!slides.length) init(); }, 1500);
 })();
 </script>
 <style>
@@ -1096,9 +1167,43 @@ document.querySelectorAll('.mun-tab').forEach(tab=>{
   .mun-footer-img { width: 100%; display: block; margin: 0; padding: 0; line-height: 0; position: relative; z-index: 1; }
   .mun-footer-img img { width: 100%; height: auto; display: block; object-fit: cover; filter: grayscale(1) contrast(1.05) brightness(.85); transition: filter .6s; }
   .mun-footer-img:hover img { filter: grayscale(0) contrast(1) brightness(1); }
+
+  /* ===== jxqdq end banner ===== */
+  .end-banner { width: 100%; display: block; margin: 0; padding: 0; line-height: 0; }
+  .end-banner img { width: 100%; height: auto; display: block; }
+
+  /* ===== design lightbox ===== */
+  .dlb { position: fixed; inset: 0; z-index: 9000; display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0); backdrop-filter: blur(0px);
+    transition: background .35s, backdrop-filter .35s;
+    pointer-events: none; opacity: 0; }
+  .dlb.open { background: rgba(0,0,0,.88); backdrop-filter: blur(12px); pointer-events: all; opacity: 1; }
+  .dlb-img { max-width: 92vw; max-height: 90vh; object-fit: contain; border-radius: 6px;
+    transform: scale(.92); transition: transform .4s cubic-bezier(.16,1,.3,1), opacity .35s;
+    opacity: 0; box-shadow: 0 32px 80px rgba(0,0,0,.7); }
+  .dlb.open .dlb-img { transform: scale(1); opacity: 1; }
+  .dlb-close { position: absolute; top: 1.4rem; right: 1.6rem; background: none; border: none;
+    color: #fff; font-size: 2rem; line-height: 1; cursor: pointer; opacity: .65; transition: opacity .2s; padding: .3rem .6rem; }
+  .dlb-close:hover { opacity: 1; }
+  .dlb-caption { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono, monospace); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(255,255,255,.55); white-space: nowrap; }
+  /* make thumbs show a zoom cursor */
+  .dthumb { cursor: zoom-in; }
 </style>
+
+<!-- lightbox overlay -->
+<div class="dlb" id="dlb" role="dialog" aria-modal="true" aria-label="Design preview">
+  <button class="dlb-close" id="dlbClose" aria-label="Close">✕</button>
+  <img class="dlb-img" id="dlbImg" src="" alt="">
+  <div class="dlb-caption" id="dlbCap"></div>
+</div>
+
 <div class="mun-footer-img">
   <img src="munbanner.jpeg" alt="Model UN — Shaurya Pratap Singh" loading="lazy" onerror="this.closest('.mun-footer-img').style.display='none'">
+</div>
+<div class="end-banner">
+  <img src="jxqdq.png" alt="" loading="lazy" onerror="this.closest('.end-banner').style.display='none'">
 </div>
 </body>
 </html>
