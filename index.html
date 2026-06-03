@@ -38,6 +38,14 @@
     --pad: clamp(1.2rem, 4vw, 4rem);
   }
 
+  /* ---------- custom scrollbars ---------- */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0a0a0a; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--accent) 0%, #a33000 100%); border-radius: 100px; border: 2px solid #0a0a0a; }
+  ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #ff7a45 0%, var(--accent) 100%); }
+  ::-webkit-scrollbar-corner { background: #0a0a0a; }
+  * { scrollbar-width: thin; scrollbar-color: var(--accent) #0a0a0a; }
+
   html { font-size: 16px; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
   body {
     background: var(--paper);
@@ -45,14 +53,8 @@
     font-family: var(--display);
     font-weight: 400;
     line-height: 1.5;
-    overflow-x: hidden;
+    overflow-x: clip;
     position: relative;
-  }
-  /* subtle paper grain */
-  body::before {
-    content:''; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.5;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    mix-blend-mode: screen;
   }
   ::selection { background: var(--accent); color: var(--paper); }
   a { color: inherit; text-decoration: none; }
@@ -115,21 +117,27 @@
   .hero { position: relative; padding: clamp(8rem,16vh,12rem) 0 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
   .hero-top { display: flex; flex-direction: column; gap: 2.2rem; }
   .hero-h1 {
-    font-weight: 800; letter-spacing: -0.035em; line-height: 0.92;
+    font-weight: 800; letter-spacing: -0.035em; line-height: 1.02;
     font-size: clamp(3.2rem, 11.5vw, 11rem);
     text-transform: none;
   }
-  .hero-h1 .row { display: block; overflow: hidden; }
-  .hero-h1 .row > span { display: inline-block; transform: translateY(110%); animation: riseIn 1s var(--ease) forwards; }
-  .hero-h1 .row:nth-child(1) > span { animation-delay: .15s; }
-  .hero-h1 .row:nth-child(2) > span { animation-delay: .28s; }
+  .hero-h1 .row { display: block; overflow: hidden; padding-bottom: 0.18em; margin-bottom: -0.12em; }
+  .hero-h1 .row > span { display: inline-block; }
+  /* entrance plays after the intro lifts (js + ready); without JS the heading is just visible */
+  .js .hero-h1 .row > span { transform: translateY(118%); }
+  .js body.ready .hero-h1 .row > span { animation: riseIn 1s var(--ease) forwards; }
+  .js .hero-h1 .row:nth-child(1) > span { animation-delay: .05s; }
+  .js .hero-h1 .row:nth-child(2) > span { animation-delay: .18s; }
   @keyframes riseIn { to { transform: translateY(0); } }
   .rotor { display: inline-block; position: relative; color: var(--accent); }
   .rotor .rw { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
 
   .hero-meta { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 2rem; padding-bottom: 2rem; }
-  .hero-lede { max-width: 30ch; font-size: clamp(1.05rem,1.6vw,1.3rem); color: var(--ink-2); line-height: 1.5; font-weight: 500; opacity: 0; animation: fadeUp 1s var(--ease) .7s forwards; }
-  .hero-actions { display: flex; gap: .9rem; align-items: center; opacity: 0; animation: fadeUp 1s var(--ease) .85s forwards; }
+  .hero-lede { max-width: 30ch; font-size: clamp(1.05rem,1.6vw,1.3rem); color: var(--ink-2); line-height: 1.5; font-weight: 500; }
+  .hero-actions { display: flex; gap: .9rem; align-items: center; }
+  .js .hero-lede, .js .hero-actions { opacity: 0; }
+  .js body.ready .hero-lede { animation: fadeUp 1s var(--ease) .35s forwards; }
+  .js body.ready .hero-actions { animation: fadeUp 1s var(--ease) .5s forwards; }
   @keyframes fadeUp { from { opacity:0; transform: translateY(18px);} to {opacity:1; transform:none;} }
   .btn { display: inline-flex; align-items: center; gap: .6rem; font-weight: 600; font-size: .98rem; padding: .85rem 1.5rem; border-radius: 100px; transition: transform .35s var(--ease), background .3s, color .3s; }
   .btn-fill { background: var(--ink); color: var(--paper); }
@@ -150,7 +158,24 @@
   .marquee-track span::after { content:'✦'; font-family: var(--display); font-style: normal; font-size: .7rem; color: var(--accent); }
   @keyframes scrollX { to { transform: translateX(-50%); } }
 
-  /* ---------- section scaffolding ---------- */
+  /* ---------- progress bar ---------- */
+  .progress {
+    position: fixed; top: 0; left: 0; width: 0%; height: 3px; z-index: 9999;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent), #ff8c5a);
+    box-shadow: 0 0 10px rgba(255,90,31,0.7), 0 0 4px rgba(255,90,31,0.5);
+    transition: width 0.1s linear;
+    border-radius: 0 2px 2px 0;
+    pointer-events: none;
+  }
+  .progress::after {
+    content: '';
+    position: absolute;
+    right: 0; top: -2px;
+    width: 6px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px 2px rgba(255,90,31,0.8);
+  }
   section { position: relative; z-index: 2; }
   .sec { padding: clamp(5rem, 12vh, 9rem) 0; }
   .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; margin-bottom: clamp(2.5rem,5vw,4rem); flex-wrap: wrap; }
@@ -171,8 +196,39 @@
 </style>
 </head>
 <body>
+<script>document.documentElement.classList.add('js');document.body.classList.add('intro-lock');</script>
+<style>
+  body.intro-lock { overflow: hidden; height: 100vh; }
+  .intro { position: fixed; inset: 0; z-index: 9000; display: none; flex-direction: column; justify-content: center;
+    background-color: #000;
+    background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size: 66px 66px; background-position: center top;
+    transition: transform 1s var(--ease); }
+  .js .intro { display: flex; }
+  .intro.done { transform: translateY(-101%); }
+  .intro-inner { padding: 0 var(--pad); width: 100%; }
+  .intro-top { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: .76rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+  .intro-count { color: var(--accent); font-size: 1rem; }
+  .intro-word { font-weight: 800; letter-spacing: -.04em; line-height: .95; font-size: clamp(3rem,13vw,11rem); margin: .14em 0; min-height: 1em; }
+  .intro-word.small { font-size: clamp(1.8rem,7vw,5rem); color: var(--accent); }
+  .intro-foot { display: flex; justify-content: space-between; font-family: var(--mono); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+  .intro-bar { position: absolute; left: 0; bottom: 0; width: 100%; height: 2px; background: rgba(255,255,255,.12); }
+  .intro-bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s linear; }
+  @media (prefers-reduced-motion: reduce) { .intro { display: none !important; } body.intro-lock { overflow: visible; height: auto; } }
+</style>
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro-inner">
+    <div class="intro-top"><span>Portfolio — MMXXV</span><span class="intro-count" id="introCount">00</span></div>
+    <div class="intro-word" id="introWord">LAW</div>
+    <div class="intro-foot"><span>Shaurya Pratap Singh</span><span>Law · Politics · Words</span></div>
+  </div>
+  <div class="intro-bar"><span id="introBar"></span></div>
+</div>
 <div id="cur"></div>
 <div id="curRing"></div>
+<div class="spot" id="spot"></div>
+<div class="progress" id="progress"></div>
+
 
 <!-- ============ NAV ============ -->
 <nav id="nav">
@@ -188,11 +244,8 @@
   <button class="nav-toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- ============ STICKY STACK WRAPPER ============ -->
-<div id="stack-container">
-
 <!-- ============ HERO ============ -->
-<div class="panel-wrap"><header class="hero panel" id="home">
+<header class="hero panel" id="home">
   <div class="wrap hero-top">
     <span class="eyebrow rv in">Shaurya Pratap Singh — Est. 2025</span>
     <h1 class="hero-h1">
@@ -214,30 +267,20 @@
       <span>Scroll to read ↓</span>
     </div>
   </div>
-</header></div>
+</header>
 
 <!-- ============ MARQUEE ============ -->
-<div class="panel-wrap"><div class="marquee panel" aria-hidden="true">
+<div class="marquee panel" aria-hidden="true">
   <div class="marquee-track">
     <span>Constitutional Law</span><span>Political Theory</span><span>Journalism</span><span>Model UN</span><span>Editorial Design</span><span>Social Welfare</span>
     <span>Constitutional Law</span><span>Political Theory</span><span>Journalism</span><span>Model UN</span><span>Editorial Design</span><span>Social Welfare</span>
   </div>
-</div></div>
+</div>
 
 <style>
-  /* ---------- awards strip ---------- */
-  .awards { color: var(--ink); padding: clamp(3rem,6vh,4.5rem) 0; }
-  .awards .wrap { display: grid; grid-template-columns: 0.8fr 1.2fr 1.2fr 1.2fr; gap: 2rem; align-items: center; }
-  .awards .lab { font-family: var(--mono); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(243,243,243,.55); }
-  .award { border-left: 1px solid var(--night-line); padding-left: 1.3rem; }
-  .award .n { font-size: clamp(1.3rem,2.2vw,1.9rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
-  .award .n em { font-family: var(--serif); font-style: italic; color: var(--accent); font-weight: 400; }
-  .award .d { font-family: var(--mono); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: rgba(243,243,243,.55); margin-top: .5rem; }
-  @media (max-width: 860px){ .awards .wrap { grid-template-columns: 1fr 1fr; } .awards .lab { grid-column: 1/-1; } }
-  @media (max-width: 520px){ .awards .wrap { grid-template-columns: 1fr; } .award { border-left: none; border-top: 1px solid var(--night-line); padding-left: 0; padding-top: 1rem; } }
 
   /* ---------- about ---------- */
-  .about { }
+  .about { background: var(--paper); }
   .about-grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: clamp(2rem,5vw,5rem); align-items: start; }
   .about-statement { font-weight: 700; letter-spacing: -0.025em; line-height: 1.06; font-size: clamp(1.9rem, 4vw, 3.4rem); }
   .about-statement em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--accent); }
@@ -245,8 +288,13 @@
   .about-body p + p { margin-top: 1rem; }
   .about-body::first-letter { initial-letter: 2; -webkit-initial-letter: 2; font-family: var(--serif); font-weight: 400; color: var(--accent); margin-right: .12em; }
   .about-photo { position: relative; }
-  .about-photo img { width: 100%; border-radius: 4px; filter: grayscale(1) contrast(1.05); transition: filter .6s; }
-  .about-photo:hover img { filter: grayscale(0) contrast(1); }
+  .about-slide-wrap { position: relative; overflow: hidden; border-radius: 4px; }
+  .about-slide-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: center top; display: block; filter: grayscale(1) contrast(1.05); transition: filter .6s, opacity .6s var(--ease); opacity: 0; position: absolute; top: 0; left: 0; }
+  .about-slide-img.active { opacity: 1; position: relative; }
+  .about-slide-wrap:hover .about-slide-img.active { filter: grayscale(0) contrast(1); }
+  .about-slide-dots { display: flex; gap: .4rem; justify-content: center; margin-top: .7rem; }
+  .about-slide-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--line-2); cursor: pointer; transition: background .3s, transform .3s; border: none; padding: 0; }
+  .about-slide-dot.on { background: var(--accent); transform: scale(1.4); }
   .about-photo .cap { font-family: var(--mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-top: .7rem; display: flex; justify-content: space-between; }
   .props { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: clamp(3rem,6vw,4.5rem); border-top: 1px solid var(--line); padding-top: 2.5rem; }
   .prop .pi { font-family: var(--mono); font-size: .72rem; color: var(--accent); letter-spacing: .1em; }
@@ -255,28 +303,28 @@
   .prop p b { color: var(--ink); font-weight: 800; }
   @media (max-width: 820px){ .about-grid { grid-template-columns: 1fr; } .about-photo { max-width: 360px; } .props { grid-template-columns: 1fr; gap: 1.8rem; } }
 
-  /* ---------- stats band ---------- */
-  .stats { color: var(--ink); }
-  .stats .wrap { display: grid; grid-template-columns: repeat(5,1fr); gap: 1.5rem; }
+  /* ---------- awards + stats merged ---------- */
+  .awards-stats { background: var(--night); color: var(--ink); }
+  .awards-inner { padding: clamp(3rem,6vh,4.5rem) 0 clamp(2rem,4vh,3rem); border-bottom: 1px solid var(--night-line); }
+  .awards-row { display: grid; grid-template-columns: 0.8fr 1.2fr 1.2fr 1.2fr; gap: 2rem; align-items: center; }
+  .awards-stats .lab { font-family: var(--mono); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(243,243,243,.55); }
+  .award { border-left: 1px solid var(--night-line); padding-left: 1.3rem; }
+  .award .n { font-size: clamp(1.3rem,2.2vw,1.9rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
+  .award .n em { font-family: var(--serif); font-style: italic; color: var(--accent); font-weight: 400; }
+  .award .d { font-family: var(--mono); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: rgba(243,243,243,.55); margin-top: .5rem; }
+  @media (max-width: 860px){ .awards-row { grid-template-columns: 1fr 1fr; } .awards-stats .lab { grid-column: 1/-1; } }
+  @media (max-width: 520px){ .awards-row { grid-template-columns: 1fr; } .award { border-left: none; border-top: 1px solid var(--night-line); padding-left: 0; padding-top: 1rem; } }
+  .stats-inner { padding: clamp(3rem,6vh,4.5rem) 0; }
+  .stats-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 1.5rem; }
   .stat { border-top: 2px solid var(--accent); padding-top: 1.1rem; }
   .stat .num { font-size: clamp(2.4rem,5vw,4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
   .stat .lab { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(243,243,243,.6); margin-top: .7rem; }
-  @media (max-width: 820px){ .stats .wrap { grid-template-columns: repeat(2,1fr); gap: 2rem; } }
-  @media (max-width: 420px){ .stats .wrap { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 820px){ .stats-row { grid-template-columns: repeat(2,1fr); gap: 2rem; } }
+  @media (max-width: 420px){ .stats-row { grid-template-columns: 1fr 1fr; } }
 </style>
 
-<!-- ============ AWARDS ============ -->
-<div class="panel-wrap"><section class="awards panel">
-  <div class="wrap">
-    <div class="lab rv">Honours &amp;<br>Recognition</div>
-    <div class="award rv" data-d="1"><div class="n"><em>Ryan Prince</em> — Best Student</div><div class="d">Highest honour · Ryan International Group</div></div>
-    <div class="award rv" data-d="2"><div class="n">Best Research Paper</div><div class="d">Michigan Colleges Alliance, USA</div></div>
-    <div class="award rv" data-d="3"><div class="n">Cambridge English · C1</div><div class="d">C1 Advanced Proficiency Certificate</div></div>
-  </div>
-</section></div>
-
 <!-- ============ ABOUT ============ -->
-<div class="panel-wrap"><section class="sec about panel" id="about">
+<section class="sec about panel" id="about">
   <div class="wrap">
     <div class="sec-head">
       <h2 class="sec-title rv">About <em>him</em></h2>
@@ -290,8 +338,15 @@
           <p>Most of my work lives at the seam between law, politics, and words — whether that's an essay, an edited publication, a campaign, or a conference run end to end.</p>
         </div>
       </div>
-      <figure class="about-photo rv" data-d="2">
-        <img src="shaurya-photo.jpg" alt="Shaurya Pratap Singh" onerror="this.closest('figure').style.display='none'">
+      <figure class="about-photo rv" data-d="2" id="aboutSlide">
+        <div class="about-slide-wrap">
+          <img class="about-slide-img active" src="shauri.jpg" alt="Shaurya Pratap Singh" onerror="this.style.display='none'">
+          <img class="about-slide-img" src="shaurya-photo.jpg" alt="Shaurya Pratap Singh" onerror="this.style.display='none'">
+          <img class="about-slide-img" src="615690510_1323124336496049_5160130922379437533_n.jpg" alt="Shaurya Pratap Singh — Farewell" onerror="this.style.display='none'">
+          <img class="about-slide-img" src="WhatsApp_Image_2026-04-22_at_7_52_01_PM.jpeg" alt="Shaurya Pratap Singh — Classmates" onerror="this.style.display='none'">
+          <img class="about-slide-img" src="WhatsApp_Image_2026-05-05_at_4_00_07_PM.jpeg" alt="Shaurya Pratap Singh — Ryan Prince" onerror="this.style.display='none'">
+        </div>
+        <div class="about-slide-dots" id="aboutDots"></div>
         <figcaption class="cap"><span>Shaurya Pratap Singh</span><span>2026</span></figcaption>
       </figure>
     </div>
@@ -301,22 +356,32 @@
       <div class="prop rv" data-d="3"><div class="pi">03 / Show up</div><h4>Civic &amp; leadership</h4><p><b>20+ NGOs</b>, <b>40+ Model UNs</b>, and a few things built from scratch.</p></div>
     </div>
   </div>
-</section></div>
+</section>
 
-<!-- ============ STATS ============ -->
-<div class="panel-wrap"><section class="stats sec panel" id="stats">
-  <div class="wrap">
-    <div class="stat rv"><div class="num" data-target="20" data-suffix="+">0</div><div class="lab">NGOs worked with</div></div>
-    <div class="stat rv" data-d="1"><div class="num" data-target="40" data-suffix="+">0</div><div class="lab">Model UNs</div></div>
-    <div class="stat rv" data-d="2"><div class="num" data-target="200" data-suffix="+">0</div><div class="lab">Design projects</div></div>
-    <div class="stat rv" data-d="3"><div class="num" data-target="3" data-suffix="+">0</div><div class="lab">Orgs founded</div></div>
-    <div class="stat rv" data-d="4"><div class="num" data-target="10" data-suffix="+">0</div><div class="lab">MUN secretariats</div></div>
+<!-- ============ AWARDS + STATS (merged) ============ -->
+<section class="awards-stats panel" id="stats">
+  <div class="awards-inner">
+    <div class="wrap awards-row">
+      <div class="lab rv">Honours &amp;<br>Recognition</div>
+      <div class="award rv" data-d="1"><div class="n"><em>Ryan Prince</em> — Best Student</div><div class="d">Highest honour · Ryan International Group</div></div>
+      <div class="award rv" data-d="2"><div class="n">Best Research Paper</div><div class="d">Michigan Colleges Alliance, USA</div></div>
+      <div class="award rv" data-d="3"><div class="n">Cambridge English · C1</div><div class="d">C1 Advanced Proficiency Certificate</div></div>
+    </div>
   </div>
-</section></div>
+  <div class="stats-inner">
+    <div class="wrap stats-row">
+      <div class="stat rv"><div class="num" data-target="20" data-suffix="+">0</div><div class="lab">NGOs worked with</div></div>
+      <div class="stat rv" data-d="1"><div class="num" data-target="40" data-suffix="+">0</div><div class="lab">Model UNs</div></div>
+      <div class="stat rv" data-d="2"><div class="num" data-target="200" data-suffix="+">0</div><div class="lab">Design projects</div></div>
+      <div class="stat rv" data-d="3"><div class="num" data-target="3" data-suffix="+">0</div><div class="lab">Orgs founded</div></div>
+      <div class="stat rv" data-d="4"><div class="num" data-target="10" data-suffix="+">0</div><div class="lab">MUN secretariats</div></div>
+    </div>
+  </div>
+</section>
 
 <style>
   /* ---------- writing ---------- */
-  .writing { }
+  .writing { background: var(--paper); }
   .feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
   .feat {
     position: relative; background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px;
@@ -345,27 +410,42 @@
   .arow:hover .ag { transform: translateX(5px); color: var(--accent); }
   @media (max-width: 640px){ .arow { grid-template-columns: auto 1fr; } .arow .ag { display:none; } }
 
-  /* ---------- design ---------- */
-  .design { color: var(--ink); }
+  /* ---------- design showcase (5 scrolling rows) ---------- */
+  .design { background: var(--night); color: var(--ink); }
   .design .sec-title { color: var(--ink); }
   .design .sec-sub { color: rgba(243,243,243,.55); }
   .design .sec-title em { color: var(--accent); }
-  .dgrid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.4rem; }
-  .dcard { position: relative; border-radius: 6px; overflow: hidden; background: var(--night-2); cursor: pointer; }
-  .dcard.tall { grid-row: span 2; }
-  .dcard .ph { overflow: hidden; aspect-ratio: 4/3; }
-  .dcard.tall .ph { aspect-ratio: 3/4; }
-  .dcard img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05) brightness(.92); transition: transform .8s var(--ease), filter .6s; }
-  .dcard:hover img { transform: scale(1.05); filter: grayscale(0) contrast(1) brightness(1); }
-  .dmeta { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.2rem 1.3rem; }
-  .dmeta .dt { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; }
-  .dmeta .dc { font-family: var(--mono); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: rgba(243,243,243,.55); }
-  .dcard .num-badge { position: absolute; top: 1rem; left: 1rem; font-family: var(--mono); font-size: .72rem; color: var(--ink); background: rgba(0,0,0,.55); backdrop-filter: blur(6px); padding: .3rem .6rem; border-radius: 100px; }
-  @media (max-width: 720px){ .dgrid { grid-template-columns: 1fr; } .dcard.tall { grid-row: span 1; } .dcard.tall .ph { aspect-ratio: 4/3; } }
+  .dshow { margin-top: clamp(2rem,4vw,3.2rem); display: flex; flex-direction: column; gap: clamp(.7rem,1.4vw,1.1rem); position: relative; }
+  .dshow::before, .dshow::after { content:''; position:absolute; top:0; bottom:0; width: clamp(40px,8vw,140px); z-index:4; pointer-events:none; }
+  .dshow::before { left:0; background: linear-gradient(90deg, #000, transparent); }
+  .dshow::after { right:0; background: linear-gradient(270deg, #000, transparent); }
+  .drow { overflow: hidden; }
+  .drow-track { display: flex; gap: clamp(.7rem,1.4vw,1.1rem); width: max-content; will-change: transform; }
+  .drow.r0 .drow-track { animation: marqL 64s linear infinite; }
+  .drow.r1 .drow-track { animation: marqR 78s linear infinite; }
+  .drow.r2 .drow-track { animation: marqL 88s linear infinite; }
+  .drow.r3 .drow-track { animation: marqR 72s linear infinite; }
+  .drow.r4 .drow-track { animation: marqL 96s linear infinite; }
+  /* per-row hover pause — only the hovered row stops */
+  .drow:hover .drow-track { animation-play-state: paused; }
+  @keyframes marqL { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes marqR { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+  /* cover-fill thumbs: uniform height, images cover the full card */
+  .dthumb { position: relative; flex: 0 0 clamp(180px, 22vw, 300px); height: clamp(140px, 20vh, 240px); border-radius: 8px; overflow: hidden; background: var(--night-2); border: 1px solid rgba(255,255,255,.06); }
+  .dthumb img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; filter: grayscale(1) contrast(1.04) brightness(.9); transition: transform .6s var(--ease), filter .5s, opacity .6s var(--ease); }
+  .dthumb:hover img { filter: grayscale(0) contrast(1) brightness(1); transform: scale(1.05); }
+  .dthumb .dcap { position: absolute; left:0; right:0; bottom:0; padding: 1.4rem .7rem .55rem; display:flex; flex-direction:column; gap:.15rem;
+    background: linear-gradient(0deg, rgba(0,0,0,.82), transparent); opacity:0; transform: translateY(6px); transition: opacity .4s, transform .4s; }
+  .dthumb:hover .dcap { opacity:1; transform:none; }
+  .dthumb .dcap b { font-size: .82rem; font-weight: 600; letter-spacing:-.01em; line-height:1.15; }
+  .dthumb .dcap span { font-family: var(--mono); font-size: .6rem; letter-spacing:.08em; text-transform:uppercase; color: var(--accent); }
+  .dmore { display:inline-flex; align-items:center; gap:.6rem; margin-top: clamp(2rem,4vw,3rem); font-family: var(--mono); font-size:.82rem; letter-spacing:.06em; text-transform:uppercase; color: var(--ink-2); transition: color .3s, gap .3s; }
+  .dmore:hover { color: var(--accent); gap: 1rem; }
+  @media (prefers-reduced-motion: reduce){ .drow-track { animation: none !important; } .drow { overflow-x: auto; } }
 </style>
 
 <!-- ============ WRITING ============ -->
-<div class="panel-wrap"><section class="sec writing panel" id="writing">
+<section class="sec writing panel" id="writing">
   <div class="wrap">
     <div class="sec-head">
       <h2 class="sec-title rv">Selected <em>writing</em></h2>
@@ -389,35 +469,47 @@
       <a class="arow" target="_blank" rel="noopener" href="https://www.linkedin.com/posts/write-amicuscuriae_the-greenland-dilemma-activity-7420661772853956608-ZSy-"><span class="ai">/07</span><span class="at">The Greenland Dilemma</span><span class="ag">Read on LinkedIn ↗</span></a>
     </div>
   </div>
-</section></div>
+</section>
 
 <!-- ============ DESIGN ============ -->
-<div class="panel-wrap"><section class="sec design panel" id="design">
+<section class="sec design panel" id="design">
   <div class="wrap">
     <div class="sec-head">
       <h2 class="sec-title rv">Selected <em>design</em></h2>
-      <p class="sec-sub rv" data-d="1">// Editorial &amp; visual design<br>200+ covers, campaigns &amp; identities</p>
-    </div>
-    <div class="dgrid">
-      <div class="dcard tall rv"><div class="ph"><img src="cover1.png" alt="Truthful Thursdays — Jeevartan" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">01</span><div class="dmeta"><span class="dt">Truthful Thursdays</span><span class="dc">Jeevartan · NGO</span></div></div>
-      <div class="dcard rv" data-d="1"><div class="ph"><img src="cover2.png" alt="Credit Flow & Migration" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">02</span><div class="dmeta"><span class="dt">Credit Flow &amp; Migration</span><span class="dc">Magazine Design</span></div></div>
-      <div class="dcard rv" data-d="2"><div class="ph"><img src="cover3.png" alt="Denial" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">03</span><div class="dmeta"><span class="dt">Denial</span><span class="dc">Editorial Design</span></div></div>
-      <div class="dcard rv" data-d="1"><div class="ph"><img src="cover5.png" alt="Editorial cover" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">04</span><div class="dmeta"><span class="dt">Cover Story</span><span class="dc">Editorial &amp; Visual</span></div></div>
+      <p class="sec-sub rv" data-d="1">// Editorial, MUN &amp; NGO design<br>200+ covers, campaigns &amp; identities</p>
     </div>
   </div>
-</section></div>
+  <div class="dshow rv" id="dshow"></div>
+  <div class="wrap"><a class="dmore" href="designs.html">View all designs <span>→</span></a></div>
+</section>
 
 <style>
-  /* ---------- experience ---------- */
-  .exp { }
-  .xrow { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; padding: 1.8rem 0; border-top: 1px solid var(--line); align-items: start; transition: background .4s; }
-  .xrow:last-child { border-bottom: 1px solid var(--line); }
-  .xrow .xorg { font-size: clamp(1.3rem,2.4vw,1.9rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; }
-  .xrow .xdate { font-family: var(--mono); font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); margin-top: .5rem; }
-  .xrow .xtitle { font-weight: 600; color: var(--accent); font-size: 1.02rem; margin-bottom: .5rem; }
-  .xrow .xdesc { color: var(--ink-2); font-size: .98rem; line-height: 1.6; font-weight: 500; }
-  .xrow .xdesc p + p { margin-top: .8rem; }
-  @media (max-width: 720px){ .xrow { grid-template-columns: 1fr; gap: .8rem; } }
+  /* ---------- experience: horizontal timeline ---------- */
+  .exp { background: var(--paper); }
+  .tl { position: relative; margin-top: clamp(2rem,4vw,3rem); overflow-x: auto; overflow-y: hidden; padding: 0 0 1.2rem; scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
+  .tl::-webkit-scrollbar { height: 6px; }
+  .tl::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 100px; }
+  .tl-track { display: flex; min-width: max-content; position: relative; padding-top: 0; }
+  .tl-node { position: relative; flex: 0 0 auto; width: clamp(170px, 22vw, 220px); padding: 0 1.4rem 0 0; cursor: pointer; background: none; border: none; text-align: left; color: inherit; font-family: inherit; }
+  .tl-track::before { content:''; position:absolute; top: 2px; left: 8px; right: 8px; height: 1px; background: var(--line-2); }
+  .tl-date { font-family: var(--mono); font-size: .66rem; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
+  .tl-org { font-size: 1.02rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.12; margin-top: .35rem; transition: color .3s; }
+  .tl-node.on .tl-org { color: var(--accent); }
+  .tl-role { font-size: .8rem; color: var(--ink-2); margin-top: .25rem; line-height: 1.3; }
+  .tl-detail { margin-top: clamp(2rem,4vw,3rem); border-top: 1px solid var(--line); padding-top: clamp(1.6rem,3vw,2.4rem); min-height: 180px; }
+  .tl-d-in { opacity: 0; transform: translateY(10px); transition: opacity .4s var(--ease), transform .4s var(--ease); }
+  .tl-d-in.show { opacity: 1; transform: none; }
+  .tl-d-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: .6rem 1.4rem; }
+  .tl-d-title { font-size: clamp(1.6rem,3.6vw,2.7rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.02; }
+  .tl-d-role { font-family: var(--serif); font-style: italic; color: var(--accent); font-size: clamp(1.1rem,2vw,1.5rem); }
+  .tl-d-meta { font-family: var(--mono); font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); }
+  .tl-d-body { margin-top: 1.1rem; max-width: 64ch; color: var(--ink-2); font-size: 1.02rem; line-height: 1.65; font-weight: 500; }
+  .tl-d-body p + p { margin-top: .8rem; }
+  .tl-pics { display: none; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: .8rem; margin-top: 1.6rem; }
+  .tl-pics.show { display: grid; }
+  .tl-pics img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 7px; border: 1px solid var(--line); filter: grayscale(1) contrast(1.04); transition: filter .5s, transform .5s; }
+  .tl-pics img:hover { filter: none; transform: scale(1.02); }
+  .tl-hint { font-family: var(--mono); font-size: .68rem; letter-spacing:.06em; text-transform: uppercase; color: var(--ink-3); margin-top: 1rem; }
 
   .mun-wrap { margin-top: clamp(3rem,6vw,4.5rem); }
   .mun-tabs { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 2rem; }
@@ -440,26 +532,27 @@
   .role-tag:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
   @media (max-width: 720px){ .school-block { grid-template-columns: 1fr; } }
 
-
+  /* ---------- quotes ---------- */
+  .quotes { background: var(--night); color: var(--ink); text-align: center; }
+  .quotes .qmark { font-family: var(--serif); font-style: italic; font-size: 5rem; line-height: .5; color: var(--accent); }
+  .qbox { max-width: 800px; margin: 1.5rem auto 0; min-height: 6em; }
+  .qtext { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: clamp(1.5rem,3vw,2.6rem); line-height: 1.22; letter-spacing: -0.01em; max-width: 28ch; margin: 0 auto; transition: opacity .5s; }
+  .qauthor { font-family: var(--mono); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(243,243,243,.6); margin-top: 1.8rem; transition: opacity .5s; }
+  .qdots { display: flex; gap: .5rem; justify-content: center; margin-top: 2.2rem; }
+  .qdot { width: 7px; height: 7px; border-radius: 50%; background: rgba(243,243,243,.25); cursor: pointer; transition: background .3s, transform .3s; }
+  .qdot.on { background: var(--accent); transform: scale(1.3); }
 </style>
 
 <!-- ============ EXPERIENCE ============ -->
-<div class="panel-wrap"><section class="sec exp panel" id="experience">
+<section class="sec exp panel" id="experience">
   <div class="wrap">
     <div class="sec-head">
       <h2 class="sec-title rv">Experience <em>&amp; civic life</em></h2>
       <p class="sec-sub rv" data-d="1">// NGOs · Model UN · School<br>leadership &amp; engagement</p>
     </div>
 
-    <div class="xrow rv"><div><div class="xorg">Jeevartan Foundation</div><div class="xdate">Apr 2026 – Present</div></div><div><div class="xtitle">Chief Editor</div><div class="xdesc"><p>Leading the foundation's editorial direction across campaigns, public communication, and identity work.</p></div></div></div>
-    <div class="xrow rv"><div><div class="xorg">Ryan Group · BBN</div><div class="xdate">May 2024 – Present</div></div><div><div class="xtitle">Journalist</div><div class="xdesc"><p>Covered school and community updates, turning scattered information into crisp stories that people would actually read.</p></div></div></div>
-    <div class="xrow rv"><div><div class="xorg">Amicus Curiae</div><div class="xdate">Dec 2025 – Feb 2026</div></div><div><div class="xtitle">Editor · National Polity &amp; Judicial Affairs</div><div class="xdesc"><p>Edited and shaped content for a legal publication focused on national polity and judicial affairs, keeping the tone tight and accessible.</p></div></div></div>
-    <div class="xrow rv"><div><div class="xorg">Ryan International School</div><div class="xdate">Apr 2025 – Feb 2026</div></div><div><div class="xtitle">School Editor-in-Chief</div><div class="xdesc"><p>Directed school publication work, edited material, and kept the editorial tone consistent across student-facing writing.</p></div></div></div>
-    <div class="xrow rv"><div><div class="xorg">RISGNMUN '25</div><div class="xdate">Jan 2025 – Jul 2025</div></div><div><div class="xtitle">Conference Convenor</div><div class="xdesc"><p>Handled planning, scheduling, and delegate coordination for the conference from the first draft to the final day.</p></div></div></div>
-    <div class="xrow rv"><div><div class="xorg">CommitTea.org</div><div class="xdate">Apr 2024 – Oct 2024</div></div><div><div class="xtitle">Co-Founder &amp; Chief Operating Officer</div><div class="xdesc"><p>Co-founded a Model UN platform connecting student organisers with sponsors, designers, and delegate networks — addressing a longstanding gap in the MUN ecosystem.</p><p>Built as a middleman for MUN founders, the platform offered marketing, cold-calling, and freelance design to organisers without that infrastructure. It collaborated with 20+ MUN platforms, grew a following of a thousand, and was transferred to a new team in November 2025.</p></div></div></div>
-    <div class="xrow rv"><div><div class="xorg">Project Aspasia</div><div class="xdate">Sep 2024 – Nov 2024</div></div><div><div class="xtitle">Head of Marketing</div><div class="xdesc"><p>Oversaw marketing strategy and outreach for the duration of the project.</p></div></div></div>
-    <div class="xrow rv"><div><div class="xorg">Project Badlav</div><div class="xdate">Aug 2024 – Oct 2024</div></div><div><div class="xtitle">Secretary of Logistics &amp; Operations</div><div class="xdesc"><p>Managed end-to-end logistics and operational coordination for the project's lifecycle.</p></div></div></div>
-    <div class="xrow rv"><div><div class="xorg">Eximius MUN</div><div class="xdate">Feb 2024 – Apr 2024</div></div><div><div class="xtitle">Chief of Cabinet</div><div class="xdesc"><p>Worked on secretariat coordination, briefings, and issue-tracking so the executive team could move cleanly.</p></div></div></div>
+    <div class="tl rv"><div class="tl-track" id="tlTrack"></div></div>
+    <div class="tl-detail rv"><div class="tl-d-in" id="tlDetail"></div></div>
 
     <!-- MUN record -->
     <div class="mun-wrap rv">
@@ -521,12 +614,11 @@
       </div>
     </div>
   </div>
-</section></div>
-
+</section>
 
 <style>
   /* ---------- academics + ryan prince ---------- */
-  .acad { }
+  .acad { background: var(--paper); }
   .cred-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.4rem; }
   .cred { border: 1px solid var(--line); border-radius: 6px; padding: 1.8rem; background: var(--paper-2); transition: transform .5s var(--ease), border-color .4s; }
   .cred:hover { transform: translateY(-5px); border-color: var(--line-2); }
@@ -548,7 +640,7 @@
   @media (max-width: 720px){ .rprince { grid-template-columns: 1fr; } }
 
   /* ---------- contact / footer ---------- */
-  .contact { color: var(--ink); padding-top: clamp(6rem,14vh,10rem); }
+  .contact { background: var(--night); color: var(--ink); padding-top: clamp(6rem,14vh,10rem); }
   .contact-h { font-weight: 800; letter-spacing: -0.04em; line-height: .9; font-size: clamp(3.5rem,13vw,11rem); }
   .contact-h em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--accent); }
   .contact-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 2rem; margin-top: 2.5rem; }
@@ -577,7 +669,7 @@
 </style>
 
 <!-- ============ ACADEMICS ============ -->
-<div class="panel-wrap"><section class="sec acad panel" id="academics">
+<section class="sec acad panel" id="academics">
   <div class="wrap">
     <div class="sec-head">
       <h2 class="sec-title rv">Academic <em>record</em></h2>
@@ -599,10 +691,10 @@
       </div>
     </div>
   </div>
-</section></div>
+</section>
 
 <!-- ============ CONTACT ============ -->
-<div class="panel-wrap"><section class="contact panel" id="contact">
+<section class="contact panel" id="contact">
   <div class="wrap">
     <div class="contact-portrait rv"><img src="shaurya-photo.jpg" alt="Shaurya Pratap Singh" onerror="this.closest('.contact-portrait').style.display='none'"></div>
     <h2 class="contact-h rv">Let's <em>talk.</em></h2>
@@ -624,9 +716,7 @@
       </div>
     </footer>
   </div>
-</section></div>
-
-</div><!-- /#stack-container -->
+</section>
 
 <!-- ============ ARTICLE READER ============ -->
 <div class="reader" id="reader" aria-hidden="true">
@@ -642,76 +732,44 @@
 </div>
 
 <style>
-  /* ===== sticky-stack scroll ===== */
-  /* Each .panel-wrap provides scroll room; .panel sticks inside it */
-  #stack-container {
-    position: relative;
-  }
+  /* ===== stacking panels: pinned; the next rises over them. Alternating dark / dark-grey ===== */
+  .panel { position: sticky; top: 0; z-index: 2; background-color: #000;
+    border-radius: 26px 26px 0 0; box-shadow: 0 -34px 60px -36px rgba(0,0,0,0.96);
+    transition: box-shadow .5s var(--ease); }
+  .panel.pgrey { background-color: #121212; }
+  .panel:first-of-type { border-radius: 0; }
+  .panel > * { position: relative; z-index: 1; }   /* content sits above the grid */
+  /* grid only on dark panels, faded out of the center so it never sits behind body text */
+  .panel.has-grid::after { content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 64px 64px; background-position: center top;
+    -webkit-mask: radial-gradient(ellipse 80% 66% at 50% 42%, transparent 32%, #000 86%);
+            mask: radial-gradient(ellipse 80% 66% at 50% 42%, transparent 32%, #000 86%); }
+  /* leading edge that reveals the rising panel */
+  .panel::before { content:''; position:absolute; left:0; right:0; top:0; height:1px; z-index: 6; pointer-events:none;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.22) 13%, rgba(255,255,255,.22) 87%, transparent);
+    opacity:.5; transition: opacity .5s var(--ease), background .5s var(--ease), height .3s var(--ease); }
+  .panel.is-active { box-shadow: 0 -34px 90px -38px rgba(255,90,31,0.18), 0 -10px 30px -20px rgba(0,0,0,0.9); }
+  .panel.is-active::before { opacity:1; height:2px;
+    background: linear-gradient(90deg, transparent, var(--accent) 20%, var(--accent) 80%, transparent);
+    box-shadow: 0 0 22px rgba(255,90,31,.55); }
+  @media (prefers-reduced-motion: reduce){ .panel{ position: relative; border-radius:0; box-shadow:none; } }
 
-  .panel-wrap {
-    position: relative;
-    /* height set by JS: panel natural height + 100vh scroll room */
-  }
+  /* ===== ambient drifting glow in the hero (own pseudo so the grid can use ::after) ===== */
+  .hero > .wrap { position: relative; z-index: 1; }
+  .hero::before { content:''; position:absolute; z-index:0; top:-12%; right:-8%; width: 60vw; height: 60vw; pointer-events:none;
+    background: radial-gradient(circle at center, rgba(255,90,31,0.11), rgba(255,90,31,0.04) 38%, transparent 64%);
+    animation: drift 18s ease-in-out infinite alternate; }
+  @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(-7%,9%) scale(1.16); } }
 
-  .panel {
-    position: sticky;
-    top: 0;
-    /* height is capped at 100vh so it never overflows the screen while pinned */
-    max-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    background: #000;
-    border-radius: 0;
-    transform-origin: top center;
-    will-change: transform;
-    /* scrollbar hidden but functional */
-    scrollbar-width: none;
-  }
-  .panel::-webkit-scrollbar { display: none; }
-
-  /* assign increasing z-index so each panel covers the one before */
-  .panel-wrap:nth-child(1)  .panel { z-index: 1;  }
-  .panel-wrap:nth-child(2)  .panel { z-index: 2;  }
-  .panel-wrap:nth-child(3)  .panel { z-index: 3;  }
-  .panel-wrap:nth-child(4)  .panel { z-index: 4;  }
-  .panel-wrap:nth-child(5)  .panel { z-index: 5;  }
-  .panel-wrap:nth-child(6)  .panel { z-index: 6;  }
-  .panel-wrap:nth-child(7)  .panel { z-index: 7;  }
-  .panel-wrap:nth-child(8)  .panel { z-index: 8;  }
-  .panel-wrap:nth-child(9)  .panel { z-index: 9;  }
-  .panel-wrap:nth-child(10) .panel { z-index: 10; }
-  .panel-wrap:nth-child(11) .panel { z-index: 11; }
-  .panel-wrap:nth-child(12) .panel { z-index: 12; }
-
-  /* rounded top corners on every panel except the first */
-  .panel-wrap:not(:first-child) .panel {
-    border-radius: 20px 20px 0 0;
-  }
-
-  /* top shine line */
-  .panel::before {
-    content: '';
-    position: absolute;
-    left: 0; right: 0; top: 0;
-    height: 1px;
-    z-index: 6;
-    pointer-events: none;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.18) 16%, rgba(255,255,255,.18) 84%, transparent);
-    opacity: .45;
-  }
-  .panel-wrap:first-child .panel::before { display: none; }
-
-  /* subtle scale-back on panels being covered */
-  .panel { transform-origin: top center; }
-
-  /* alternating backgrounds */
-  .panel-wrap:nth-child(odd)  .panel { background: #000000; }
-  .panel-wrap:nth-child(even) .panel { background: #141414; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .panel { position: relative; max-height: none; overflow-y: visible; border-radius: 0; transform: none !important; }
-    .panel-wrap { height: auto !important; }
-  }
+  /* ===== cursor glow: a warm light that follows the pointer (cheap; only on dark/grid pages) ===== */
+  .spot { position: fixed; inset: 0; z-index: 60; pointer-events: none; opacity: 0; transition: opacity .4s var(--ease);
+    background: radial-gradient(circle 260px at var(--mx,-400px) var(--my,-400px), rgba(255,90,31,0.10), rgba(255,90,31,0.045) 40%, transparent 72%); }
+  body.cur-on .spot { opacity: 1; }
+  body.cur-on.nospot .spot { opacity: 0; }
+  @media (hover: none), (prefers-reduced-motion: reduce) { .spot { display: none; } .hero::before { animation: none; } }
 
   /* ===== contact portrait ===== */
   .contact-portrait { width: clamp(120px,16vw,200px); aspect-ratio: 1; border-radius: 50%; overflow: hidden; border: 1px solid var(--line-2); margin-bottom: 2rem; }
@@ -720,54 +778,55 @@
 </style>
 <script src="articles-data.js"></script>
 <script>
-/* ===== sticky stack: set panel-wrap heights so each panel fully scrolls before next arrives ===== */
-(function(){
-  const wraps = [...document.querySelectorAll('.panel-wrap')];
-  if (!wraps.length) return;
-
-  function setHeights() {
-    wraps.forEach(wrap => {
-      const panel = wrap.querySelector('.panel');
-      if (!panel) return;
-      // Reset so we can measure natural height
-      wrap.style.height = '';
-      panel.style.maxHeight = '';
-      const naturalH = panel.scrollHeight;
-      const vh = window.innerHeight;
-      // Give the wrap: natural panel height + 1 viewport of scroll room
-      // The panel pins at top:0 for that extra vh, then the next wrap takes over
-      wrap.style.height = (naturalH + vh) + 'px';
-      // Cap the panel's visible height to vh so it doesn't overflow screen while pinned
-      panel.style.maxHeight = vh + 'px';
-    });
-  }
-
-  // Run after fonts/images might have loaded
-  setHeights();
-  window.addEventListener('resize', setHeights);
-  window.addEventListener('load', setHeights);
-
-  // Scale-back effect: panel shrinks slightly as it gets buried
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  function onScroll() {
-    wraps.forEach((wrap, i) => {
-      const panel = wrap.querySelector('.panel');
-      if (!panel || i === wraps.length - 1) return;
-      const wrapTop = wrap.getBoundingClientRect().top;
-      const panelH = panel.offsetHeight;
-      // progress: 0 = panel just pinned, 1 = panel fully scrolled past
-      const scrolledPast = Math.max(0, -wrapTop);
-      const progress = Math.min(scrolledPast / panelH, 1);
-      const scale = 1 - progress * 0.06;
-      panel.style.transform = progress > 0 ? `scale(${scale})` : '';
-    });
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-})();
 /* ===== nav ===== */
 const nav = document.getElementById('nav');
 addEventListener('scroll', () => nav.classList.toggle('stuck', scrollY > 40), { passive: true });
+
+/* ===== reading progress bar ===== */
+(function(){
+  const bar = document.getElementById('progress');
+  if (!bar) return;
+  function updateProgress() {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+    bar.style.width = pct + '%';
+  }
+  addEventListener('scroll', updateProgress, { passive: true });
+  addEventListener('resize', updateProgress, { passive: true });
+  updateProgress();
+})();
+
+/* ===== stacking panels: tall panels scroll fully (pin at bottom) before the next rises ===== */
+(function(){
+  const panels=[...document.querySelectorAll('.panel')];
+  if(!panels.length) return;
+  // alternate dark / dark-grey; grid only on the dark ones
+  panels.forEach((p,i)=>{ p.classList.add(i%2 ? 'pgrey' : 'pdark'); if(i%2===0) p.classList.add('has-grid'); });
+  let ticking=false;
+  function layout(){
+    const vh=innerHeight;
+    panels.forEach(p=>{
+      const t=Math.min(0, vh - p.offsetHeight);   // short panels pin at 0; tall panels pin at bottom
+      p.style.top = t + 'px';
+    });
+    setActive();
+  }
+  function setActive(){
+    ticking=false;
+    const focal=innerHeight*0.5; let best=panels[0];
+    for(const p of panels){
+      if(p.getBoundingClientRect().top - 1 <= focal) best=p; // last panel risen past the midline = the one covering the view
+    }
+    for(const p of panels) p.classList.toggle('is-active', p===best);
+    document.body.classList.toggle('nospot', !best.classList.contains('has-grid'));
+  }
+  addEventListener('scroll',()=>{ if(!ticking){ticking=true; requestAnimationFrame(setActive);} },{passive:true});
+  addEventListener('resize', layout);
+  addEventListener('load', layout);
+  // recompute as fonts/images settle
+  layout(); setTimeout(layout,300); setTimeout(layout,1200);
+})();
 const navToggle = document.getElementById('navToggle'), navLinks = document.getElementById('navLinks');
 navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
 navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
@@ -777,7 +836,7 @@ navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => na
   const dot = document.getElementById('cur'), ring = document.getElementById('curRing');
   if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
   let tx=innerWidth/2,ty=innerHeight/2,rx=tx,ry=ty,on=false;
-  addEventListener('mousemove', e => { tx=e.clientX; ty=e.clientY; dot.style.transform=`translate(${tx}px,${ty}px) translate(-50%,-50%)`; if(!on){on=true;document.body.classList.add('cur-on');rx=tx;ry=ty;} }, {passive:true});
+  addEventListener('mousemove', e => { tx=e.clientX; ty=e.clientY; dot.style.transform=`translate(${tx}px,${ty}px) translate(-50%,-50%)`; document.documentElement.style.setProperty('--mx', tx+'px'); document.documentElement.style.setProperty('--my', ty+'px'); if(!on){on=true;document.body.classList.add('cur-on');rx=tx;ry=ty;} }, {passive:true});
   (function loop(){ rx+=(tx-rx)*.2; ry+=(ty-ry)*.2; ring.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`; requestAnimationFrame(loop); })();
   const hot='a,button,.feat,.dcard,[data-mag],.mun-tab,.qdot,.role-tag,input';
   addEventListener('pointerover', e=>{ if(e.target.closest&&e.target.closest(hot)) ring.classList.add('hot'); });
@@ -823,6 +882,125 @@ document.querySelectorAll('.mun-tab').forEach(tab=>{
   });
 });
 
+/* ===== design showcase: build 5 scrolling rows ===== */
+(function(){
+  const root=document.getElementById('dshow'); if(!root) return;
+  const rows=[
+    [ {s:'1.png',t:'Political Analysis',n:'The Three Musketeers of Federal Overreach'},
+      {s:'2.png',t:'Legal Affairs',n:"Mamata's Suit"},
+      {s:'3.png',t:'Constitutional Law',n:'27th Amendment'},
+      {s:'4.png',t:'Economics',n:'Credit Flow & Migration'},
+      {s:'5.png',t:'Budget',n:'Union Budget 2026'},
+      {s:'6.png',t:'Political Analysis',n:'The Fall of Titans'} ],
+    [ {s:'7.png',t:'Economics',n:'Dead Economy?'},
+      {s:'25.png',t:'MUN Design',n:"RISGNMUN'26 — UNGA Executive Board"},
+      {s:'18.png',t:'MUN Design',n:"RISGNMUN'26 — UNGA Committee"},
+      {s:'17.png',t:'MUN Design',n:"RISGNMUN'26 — UNSC Committee"},
+      {s:'20.png',t:'MUN Design',n:"RISGNMUN'26 — UNHRC Committee"} ],
+    [ {s:'19.png',t:'MUN Design',n:"RISGNMUN'26 — ICJ Committee"},
+      {s:'15.png',t:'MUN Design',n:"RISGNMUN'26 — AIPPM Committee"},
+      {s:'16.png',t:'MUN Design',n:"RISGNMUN'26 — COP30 Committee"},
+      {s:'10.png',t:'Event Design',n:"RIS-Cogniverse'25 — Revised Dates"},
+      {s:'11.png',t:'Event Design',n:"RIS-Cogniverse'25 — Event Postponed"} ],
+    [ {s:'RISGNMUN_25_PLACARDS_2025.png',t:'MUN Design',n:"RISGNMUN'25 — Placards"},
+      {s:'RISGNMUN_24_Certificates_of_Appreciation_and_Achievement.png',t:'MUN Design',n:"RISGNMUN'24 — Certificate Design"},
+      {s:'RISGNMUN_25_-_vedansh_arora.png',t:'MUN Design',n:"RISGNMUN'25 — Chairperson Feature"},
+      {s:'RISGNMUN_25_-_unga_vedansh.png',t:'MUN Design',n:"RISGNMUN'25 — UNGA Feature"},
+      {s:'Add_a_heading.png',t:'MUN Design',n:"RISGNMUN'25 — Announcement"} ],
+    [ {s:'cover3.png',t:'NGO Design',n:'Jeevartan — Wild Wednesdays'},
+      {s:'Jeevartan1.png',t:'NGO Design',n:'Jeevartan — Meet the Architects'},
+      {s:'Jeevartan2.png',t:'NGO Design',n:'Jeevartan — Social Media Team I'},
+      {s:'Jeevartan3.png',t:'NGO Design',n:'Jeevartan — Social Media Team II'},
+      {s:'Jeevartan4.png',t:'NGO Design',n:'Jeevartan — Editor Feature'},
+      {s:'Jeevartan5.png',t:'NGO Design',n:'Jeevartan — Awareness Poster'},
+      {s:'Jeevartan6.png',t:'NGO Design',n:'Jeevartan × RSSA — Rabies Drive'} ]
+  ];
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  // serve small compressed webp thumbnails so the section loads fast; fall back to the original file
+  const HOST='shauryapsrgn.github.io';   // <-- your GitHub Pages domain (change if different)
+  const thumb=s=>'https://images.weserv.nl/?url='+encodeURIComponent(HOST+'/'+s)+'&w=440&q=68&output=webp';
+  rows.forEach((items,ri)=>{
+    const row=document.createElement('div'); row.className='drow r'+ri;
+    const track=document.createElement('div'); track.className='drow-track';
+    const make=()=>items.map(it=>`<figure class="dthumb"><img src="${thumb(it.s)}" alt="${esc(it.n)}" loading="lazy" decoding="async" style="opacity:0" onload="this.style.opacity=1" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='${encodeURI(it.s)}'}else{this.style.opacity=0}"><figcaption class="dcap"><span>${esc(it.t)}</span><b>${esc(it.n)}</b></figcaption></figure>`).join('');
+    track.innerHTML = make()+make();
+    row.appendChild(track); root.appendChild(row);
+  });
+})();
+
+/* ===== intro ===== */
+(function(){
+  const intro=document.getElementById('intro');
+  function ready(){ document.body.classList.add('ready'); document.body.classList.remove('intro-lock'); }
+  if(!intro || matchMedia('(prefers-reduced-motion: reduce)').matches){ ready(); if(intro) intro.style.display='none'; return; }
+  const word=document.getElementById('introWord'), cnt=document.getElementById('introCount'), bar=document.getElementById('introBar');
+  const words=['LAW','POLITICS','JOURNALISM','DESIGN','MODEL UN','DISSENT'];
+  let wi=0; const wInt=setInterval(()=>{ wi=(wi+1)%words.length; word.textContent=words[wi]; },190);
+  let n=0; const nInt=setInterval(()=>{ n=Math.min(100,n+Math.ceil(Math.random()*6+2)); cnt.textContent=String(n).padStart(2,'0'); bar.style.width=n+'%'; if(n>=100) clearInterval(nInt); },85);
+  let done=false;
+  function finish(){ if(done) return; done=true; clearInterval(wInt); clearInterval(nInt);
+    cnt.textContent='100'; bar.style.width='100%';
+    word.textContent='SHAURYA';
+    setTimeout(()=>{ intro.classList.add('done'); ready(); }, 440);
+    setTimeout(()=>{ intro.remove(); }, 1500);
+  }
+  setTimeout(finish, 2000);
+  ['click','keydown','wheel','touchstart'].forEach(ev=>addEventListener(ev,function sk(){ removeEventListener(ev,sk); finish(); },{passive:true,once:true}));
+  setTimeout(()=>{ if(!document.body.classList.contains('ready')) ready(); }, 4000);
+})();
+
+/* ===== experience: horizontal timeline + click-to-expand detail ===== */
+(function(){
+  const track=document.getElementById('tlTrack'), detail=document.getElementById('tlDetail');
+  if(!track||!detail) return;
+  const XP=[
+    {org:'Jeevartan Foundation', date:'Apr 2026 – Present', role:'Chief Editor', slug:'jeevartan', pics:3,
+      body:["Leading the foundation's editorial direction across campaigns, public communication, and identity work."]},
+    {org:'Ryan Group · BBN', date:'May 2024 – Present', role:'Journalist', slug:'ryanbbn', pics:3,
+      body:["Covered school and community updates, turning scattered information into crisp stories that people would actually read."]},
+    {org:'Amicus Curiae', date:'Dec 2025 – Feb 2026', role:'Editor · National Polity & Judicial Affairs', slug:'amicus', pics:3,
+      body:["Edited and shaped content for a legal publication focused on national polity and judicial affairs, keeping the tone tight and accessible."]},
+    {org:'Ryan International School', date:'Apr 2025 – Feb 2026', role:'School Editor-in-Chief', slug:'ryaneic', pics:3,
+      body:["Directed school publication work, edited material, and kept the editorial tone consistent across student-facing writing."]},
+    {org:"RISGNMUN '25", date:'Jan 2025 – Jul 2025', role:'Conference Convenor', slug:'risgnmun25', pics:3,
+      body:["Handled planning, scheduling, and delegate coordination for the conference from the first draft to the final day."]},
+    {org:'CommitTea.org', date:'Apr 2024 – Oct 2024', role:'Co-Founder & COO', slug:'committea', pics:3,
+      body:["Co-founded a Model UN platform connecting student organisers with sponsors, designers, and delegate networks — addressing a longstanding gap in the MUN ecosystem.",
+            "Built as a middleman for MUN founders, it offered marketing, cold-calling, and freelance design to organisers without that infrastructure. It collaborated with 20+ MUN platforms, grew a following of a thousand, and was transferred to a new team in November 2025."]},
+    {org:'Project Aspasia', date:'Sep 2024 – Nov 2024', role:'Head of Marketing', slug:'aspasia', pics:3,
+      body:["Oversaw marketing strategy and outreach for the duration of the project."]},
+    {org:'Project Badlav', date:'Aug 2024 – Oct 2024', role:'Secretary of Logistics & Operations', slug:'badlav', pics:3,
+      body:["Managed end-to-end logistics and operational coordination for the project's lifecycle."]},
+    {org:'Eximius MUN', date:'Feb 2024 – Apr 2024', role:'Chief of Cabinet', slug:'eximius', pics:3,
+      body:["Worked on secretariat coordination, briefings, and issue-tracking so the executive team could move cleanly."]}
+  ];
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  XP.forEach((x,i)=>{
+    const b=document.createElement('button'); b.type='button'; b.className='tl-node'+(i===0?' on':'');
+    b.innerHTML=`<div class="tl-date">${esc(x.date)}</div><div class="tl-org">${esc(x.org)}</div><div class="tl-role">${esc(x.role)}</div>`;
+    b.addEventListener('click',()=>select(i,true));
+    track.appendChild(b);
+  });
+  function select(i, scrollIntoView){
+    const x=XP[i];
+    [...track.children].forEach((n,k)=>n.classList.toggle('on',k===i));
+    if(scrollIntoView) track.children[i].scrollIntoView({block:'nearest', inline:'center', behavior:'smooth'});
+    let pics='';
+    if(x.pics){
+      let imgs='';
+      for(let k=1;k<=x.pics;k++){
+        imgs+=`<img src="exp-${x.slug}-${k}.jpg" data-ext="jpg" alt="${esc(x.org)} — ${k}" loading="lazy" onload="this.parentElement.classList.add('show')" onerror="if(this.dataset.ext==='jpg'){this.dataset.ext='png';this.src='exp-${x.slug}-${k}.png';}else{this.remove();}">`;
+      }
+      pics=`<div class="tl-pics">${imgs}</div>`;
+    }
+    const html=`<div class="tl-d-top"><div class="tl-d-title">${esc(x.org)}</div><div class="tl-d-role">${esc(x.role)}</div></div>`+
+               `<div class="tl-d-meta">${esc(x.date)}</div>`+
+               `<div class="tl-d-body">${x.body.map(p=>'<p>'+esc(p)+'</p>').join('')}</div>`+pics;
+    detail.classList.remove('show');
+    setTimeout(()=>{ detail.innerHTML=html; requestAnimationFrame(()=>detail.classList.add('show')); }, 180);
+  }
+  select(0,false);
+})();
 
 /* ===== article reader ===== */
 (function(){
@@ -839,6 +1017,45 @@ document.querySelectorAll('.mun-tab').forEach(tab=>{
   document.getElementById('readerClose').addEventListener('click',close);
   addEventListener('keydown',e=>{ if(e.key==='Escape')close(); });
 })();
+
+/* ===== about photo slideshow ===== */
+(function(){
+  const wrap = document.getElementById('aboutSlide');
+  if (!wrap) return;
+  const imgs = [...wrap.querySelectorAll('.about-slide-img')];
+  const dotsEl = document.getElementById('aboutDots');
+  // filter out hidden images
+  let slides = imgs.filter(img => img.style.display !== 'none');
+  let current = 0, timer;
+
+  // build dots
+  slides.forEach((_, n) => {
+    const d = document.createElement('button');
+    d.className = 'about-slide-dot' + (n === 0 ? ' on' : '');
+    d.setAttribute('aria-label', 'Photo ' + (n + 1));
+    d.addEventListener('click', () => { go(n); resetTimer(); });
+    dotsEl.appendChild(d);
+  });
+
+  function go(n) {
+    slides[current].classList.remove('active');
+    dotsEl.children[current].classList.remove('on');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dotsEl.children[current].classList.add('on');
+  }
+  function resetTimer() { clearInterval(timer); timer = setInterval(() => go(current + 1), 4000); }
+  resetTimer();
+})();
 </script>
+<style>
+  /* ===== mun footer image ===== */
+  .mun-footer-img { width: 100%; display: block; margin: 0; padding: 0; line-height: 0; position: relative; z-index: 1; }
+  .mun-footer-img img { width: 100%; height: auto; display: block; object-fit: cover; filter: grayscale(1) contrast(1.05) brightness(.85); transition: filter .6s; }
+  .mun-footer-img:hover img { filter: grayscale(0) contrast(1) brightness(1); }
+</style>
+<div class="mun-footer-img">
+  <img src="mun-page.jpg" alt="Model UN — Shaurya Pratap Singh" loading="lazy" onerror="this.closest('.mun-footer-img').style.display='none'">
+</div>
 </body>
 </html>
