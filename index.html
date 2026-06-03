@@ -112,8 +112,8 @@
   }
 
   /* ---------- hero ---------- */
-  .hero { position: relative; padding: clamp(8rem,16vh,12rem) 0 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; gap: 0; }
-  .hero-top { display: flex; flex-direction: column; gap: 2.2rem; position: absolute; top: clamp(8rem,16vh,12rem); left: 0; right: 0; }
+  .hero { position: relative; padding: clamp(8rem,16vh,12rem) 0 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+  .hero-top { display: flex; flex-direction: column; gap: 2.2rem; }
   .hero-h1 {
     font-weight: 800; letter-spacing: -0.035em; line-height: 0.92;
     font-size: clamp(3.2rem, 11.5vw, 11rem);
@@ -127,7 +127,7 @@
   .rotor { display: inline-block; position: relative; color: var(--accent); }
   .rotor .rw { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
 
-  .hero-meta { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 2rem; padding-bottom: 0; }
+  .hero-meta { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 2rem; padding-bottom: 2rem; }
   .hero-lede { max-width: 30ch; font-size: clamp(1.05rem,1.6vw,1.3rem); color: var(--ink-2); line-height: 1.5; font-weight: 500; opacity: 0; animation: fadeUp 1s var(--ease) .7s forwards; }
   .hero-actions { display: flex; gap: .9rem; align-items: center; opacity: 0; animation: fadeUp 1s var(--ease) .85s forwards; }
   @keyframes fadeUp { from { opacity:0; transform: translateY(18px);} to {opacity:1; transform:none;} }
@@ -216,29 +216,18 @@
   </div>
 </header></div>
 
-<!-- ============ MARQUEE + AWARDS (one panel) ============ -->
-<div class="panel-wrap"><div class="marquee-awards-panel panel">
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee-track">
-      <span>Constitutional Law</span><span>Political Theory</span><span>Journalism</span><span>Model UN</span><span>Editorial Design</span><span>Social Welfare</span>
-      <span>Constitutional Law</span><span>Political Theory</span><span>Journalism</span><span>Model UN</span><span>Editorial Design</span><span>Social Welfare</span>
-    </div>
+<!-- ============ MARQUEE ============ -->
+<div class="panel-wrap"><div class="marquee panel" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Constitutional Law</span><span>Political Theory</span><span>Journalism</span><span>Model UN</span><span>Editorial Design</span><span>Social Welfare</span>
+    <span>Constitutional Law</span><span>Political Theory</span><span>Journalism</span><span>Model UN</span><span>Editorial Design</span><span>Social Welfare</span>
   </div>
-  <section class="awards">
-    <div class="wrap">
-      <div class="lab rv">Honours &amp;<br>Recognition</div>
-      <div class="award rv" data-d="1"><div class="n"><em>Ryan Prince</em> — Best Student</div><div class="d">Highest honour · Ryan International Group</div></div>
-      <div class="award rv" data-d="2"><div class="n">Best Research Paper</div><div class="d">Michigan Colleges Alliance, USA</div></div>
-      <div class="award rv" data-d="3"><div class="n">Cambridge English · C1</div><div class="d">C1 Advanced Proficiency Certificate</div></div>
-    </div>
-  </section>
 </div></div>
 
 <style>
-  .marquee-awards-panel { display: flex; flex-direction: column; }
   /* ---------- awards strip ---------- */
-  .awards { color: var(--ink); padding: clamp(3rem,6vh,4.5rem) 0; flex: 1; display: flex; align-items: center; }
-  .awards .wrap { display: grid; grid-template-columns: 0.8fr 1.2fr 1.2fr 1.2fr; gap: 2rem; align-items: center; width: 100%; }
+  .awards { color: var(--ink); padding: clamp(3rem,6vh,4.5rem) 0; }
+  .awards .wrap { display: grid; grid-template-columns: 0.8fr 1.2fr 1.2fr 1.2fr; gap: 2rem; align-items: center; }
   .awards .lab { font-family: var(--mono); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(243,243,243,.55); }
   .award { border-left: 1px solid var(--night-line); padding-left: 1.3rem; }
   .award .n { font-size: clamp(1.3rem,2.2vw,1.9rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
@@ -266,15 +255,27 @@
   .prop p b { color: var(--ink); font-weight: 800; }
   @media (max-width: 820px){ .about-grid { grid-template-columns: 1fr; } .about-photo { max-width: 360px; } .props { grid-template-columns: 1fr; gap: 1.8rem; } }
 
-  /* ---------- stats inline in about ---------- */
-  .about-stats { display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 2rem; padding-top: 1.6rem; border-top: 1px solid var(--line); }
-  .astat { }
-  .astat .num { font-size: clamp(1.8rem,3.5vw,2.6rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: var(--accent); }
-  .astat .lab { font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(243,243,243,.55); margin-top: .3rem; }
-  @media (max-width: 820px){ .about-stats { gap: 1.2rem; } }
+  /* ---------- stats band ---------- */
+  .stats { color: var(--ink); }
+  .stats .wrap { display: grid; grid-template-columns: repeat(5,1fr); gap: 1.5rem; }
+  .stat { border-top: 2px solid var(--accent); padding-top: 1.1rem; }
+  .stat .num { font-size: clamp(2.4rem,5vw,4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+  .stat .lab { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(243,243,243,.6); margin-top: .7rem; }
+  @media (max-width: 820px){ .stats .wrap { grid-template-columns: repeat(2,1fr); gap: 2rem; } }
+  @media (max-width: 420px){ .stats .wrap { grid-template-columns: 1fr 1fr; } }
 </style>
 
-<!-- ============ ABOUT + STATS (one panel) ============ -->
+<!-- ============ AWARDS ============ -->
+<div class="panel-wrap"><section class="awards panel">
+  <div class="wrap">
+    <div class="lab rv">Honours &amp;<br>Recognition</div>
+    <div class="award rv" data-d="1"><div class="n"><em>Ryan Prince</em> — Best Student</div><div class="d">Highest honour · Ryan International Group</div></div>
+    <div class="award rv" data-d="2"><div class="n">Best Research Paper</div><div class="d">Michigan Colleges Alliance, USA</div></div>
+    <div class="award rv" data-d="3"><div class="n">Cambridge English · C1</div><div class="d">C1 Advanced Proficiency Certificate</div></div>
+  </div>
+</section></div>
+
+<!-- ============ ABOUT ============ -->
 <div class="panel-wrap"><section class="sec about panel" id="about">
   <div class="wrap">
     <div class="sec-head">
@@ -288,17 +289,9 @@
           <p>I write essays on the courts, the constitution, and the institutions that shape public life. I design — over 200 editorial covers, NGO campaigns, and conference identities. And I show up: across 20+ NGOs, 40+ Model UNs, and a few things I helped build from scratch.</p>
           <p>Most of my work lives at the seam between law, politics, and words — whether that's an essay, an edited publication, a campaign, or a conference run end to end.</p>
         </div>
-        <!-- Stats inline inside About -->
-        <div class="about-stats rv" data-d="2">
-          <div class="astat"><div class="num" data-target="20" data-suffix="+">0</div><div class="lab">NGOs</div></div>
-          <div class="astat"><div class="num" data-target="40" data-suffix="+">0</div><div class="lab">Model UNs</div></div>
-          <div class="astat"><div class="num" data-target="200" data-suffix="+">0</div><div class="lab">Design pieces</div></div>
-          <div class="astat"><div class="num" data-target="3" data-suffix="+">0</div><div class="lab">Orgs founded</div></div>
-          <div class="astat"><div class="num" data-target="10" data-suffix="+">0</div><div class="lab">MUN secretariats</div></div>
-        </div>
       </div>
       <figure class="about-photo rv" data-d="2">
-        <img src="shauri.jpg" alt="Shaurya Pratap Singh" onerror="this.closest('figure').style.display='none'">
+        <img src="shaurya-photo.jpg" alt="Shaurya Pratap Singh" onerror="this.closest('figure').style.display='none'">
         <figcaption class="cap"><span>Shaurya Pratap Singh</span><span>2026</span></figcaption>
       </figure>
     </div>
@@ -307,6 +300,17 @@
       <div class="prop rv" data-d="2"><div class="pi">02 / Design</div><h4>Editorial &amp; visual</h4><p><b>200+</b> editorial covers, NGO campaigns, and conference identities.</p></div>
       <div class="prop rv" data-d="3"><div class="pi">03 / Show up</div><h4>Civic &amp; leadership</h4><p><b>20+ NGOs</b>, <b>40+ Model UNs</b>, and a few things built from scratch.</p></div>
     </div>
+  </div>
+</section></div>
+
+<!-- ============ STATS ============ -->
+<div class="panel-wrap"><section class="stats sec panel" id="stats">
+  <div class="wrap">
+    <div class="stat rv"><div class="num" data-target="20" data-suffix="+">0</div><div class="lab">NGOs worked with</div></div>
+    <div class="stat rv" data-d="1"><div class="num" data-target="40" data-suffix="+">0</div><div class="lab">Model UNs</div></div>
+    <div class="stat rv" data-d="2"><div class="num" data-target="200" data-suffix="+">0</div><div class="lab">Design projects</div></div>
+    <div class="stat rv" data-d="3"><div class="num" data-target="3" data-suffix="+">0</div><div class="lab">Orgs founded</div></div>
+    <div class="stat rv" data-d="4"><div class="num" data-target="10" data-suffix="+">0</div><div class="lab">MUN secretariats</div></div>
   </div>
 </section></div>
 
@@ -341,55 +345,23 @@
   .arow:hover .ag { transform: translateX(5px); color: var(--accent); }
   @media (max-width: 640px){ .arow { grid-template-columns: auto 1fr; } .arow .ag { display:none; } }
 
-  /* ---------- design carousel (Fudali-style) ---------- */
-  .design { color: var(--ink); overflow: hidden; }
+  /* ---------- design ---------- */
+  .design { color: var(--ink); }
   .design .sec-title { color: var(--ink); }
   .design .sec-sub { color: rgba(243,243,243,.55); }
   .design .sec-title em { color: var(--accent); }
-
-  /* The sticky carousel wrapper — tall enough to create scroll distance */
-  .design-carousel-outer {
-    position: relative;
-    height: 320vh; /* scroll distance for parallax effect */
-    margin-top: 3rem;
-  }
-  .design-carousel-inner {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow: hidden;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.4rem;
-    align-items: start;
-  }
-
-  .dcol {
-    display: flex;
-    flex-direction: column;
-    gap: 1.4rem;
-    will-change: transform;
-  }
-  /* Left column starts offset up, scrolls DOWN as user scrolls */
-  .dcol-left { transform: translateY(-20%); }
-  /* Right column starts lower, scrolls UP as user scrolls */
-  .dcol-right { transform: translateY(10%); }
-
-  .dcard { position: relative; border-radius: 6px; overflow: hidden; background: var(--night-2); cursor: pointer; flex-shrink: 0; }
-  .dcard .ph { overflow: hidden; }
-  .dcard .ph img { width: 100%; aspect-ratio: 3/4; object-fit: cover; filter: grayscale(1) contrast(1.05) brightness(.92); transition: transform .8s var(--ease), filter .6s; display: block; }
-  .dcard:hover .ph img { transform: scale(1.05); filter: grayscale(0) contrast(1) brightness(1); }
+  .dgrid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.4rem; }
+  .dcard { position: relative; border-radius: 6px; overflow: hidden; background: var(--night-2); cursor: pointer; }
+  .dcard.tall { grid-row: span 2; }
+  .dcard .ph { overflow: hidden; aspect-ratio: 4/3; }
+  .dcard.tall .ph { aspect-ratio: 3/4; }
+  .dcard img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05) brightness(.92); transition: transform .8s var(--ease), filter .6s; }
+  .dcard:hover img { transform: scale(1.05); filter: grayscale(0) contrast(1) brightness(1); }
   .dmeta { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.2rem 1.3rem; }
-  .dmeta .dt { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.02em; }
+  .dmeta .dt { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; }
   .dmeta .dc { font-family: var(--mono); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: rgba(243,243,243,.55); }
   .dcard .num-badge { position: absolute; top: 1rem; left: 1rem; font-family: var(--mono); font-size: .72rem; color: var(--ink); background: rgba(0,0,0,.55); backdrop-filter: blur(6px); padding: .3rem .6rem; border-radius: 100px; }
-
-  @media (max-width: 720px){
-    .design-carousel-outer { height: auto; }
-    .design-carousel-inner { position: relative; height: auto; grid-template-columns: 1fr; overflow: visible; }
-    .dcol { transform: none !important; }
-    .dcard .ph img { aspect-ratio: 4/3; }
-  }
+  @media (max-width: 720px){ .dgrid { grid-template-columns: 1fr; } .dcard.tall { grid-row: span 1; } .dcard.tall .ph { aspect-ratio: 4/3; } }
 </style>
 
 <!-- ============ WRITING ============ -->
@@ -426,146 +398,26 @@
       <h2 class="sec-title rv">Selected <em>design</em></h2>
       <p class="sec-sub rv" data-d="1">// Editorial &amp; visual design<br>200+ covers, campaigns &amp; identities</p>
     </div>
-  </div>
-
-  <!-- Fudali-style dual column scroll carousel -->
-  <div class="design-carousel-outer" id="designCarousel">
-    <div class="design-carousel-inner">
-      <!-- Left column: scrolls DOWN (images appear to go up) -->
-      <div class="dcol dcol-left" id="dcolLeft">
-        <div class="dcard"><div class="ph"><img src="cover1.png" alt="Truthful Thursdays — Jeevartan" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">01</span><div class="dmeta"><span class="dt">Truthful Thursdays</span><span class="dc">Jeevartan · NGO</span></div></div>
-        <div class="dcard"><div class="ph"><img src="cover3.png" alt="Denial" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">03</span><div class="dmeta"><span class="dt">Denial</span><span class="dc">Editorial Design</span></div></div>
-        <div class="dcard"><div class="ph"><img src="cover1.png" alt="Truthful Thursdays" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">05</span><div class="dmeta"><span class="dt">Law &amp; Order</span><span class="dc">Amicus Curiae</span></div></div>
-      </div>
-      <!-- Right column: scrolls UP (images appear to come down) -->
-      <div class="dcol dcol-right" id="dcolRight">
-        <div class="dcard"><div class="ph"><img src="cover2.png" alt="Credit Flow & Migration" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">02</span><div class="dmeta"><span class="dt">Credit Flow &amp; Migration</span><span class="dc">Magazine Design</span></div></div>
-        <div class="dcard"><div class="ph"><img src="cover5.png" alt="Editorial cover" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">04</span><div class="dmeta"><span class="dt">Cover Story</span><span class="dc">Editorial &amp; Visual</span></div></div>
-        <div class="dcard"><div class="ph"><img src="cover2.png" alt="Campaign" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">06</span><div class="dmeta"><span class="dt">Campaign Identity</span><span class="dc">NGO Branding</span></div></div>
-      </div>
+    <div class="dgrid">
+      <div class="dcard tall rv"><div class="ph"><img src="cover1.png" alt="Truthful Thursdays — Jeevartan" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">01</span><div class="dmeta"><span class="dt">Truthful Thursdays</span><span class="dc">Jeevartan · NGO</span></div></div>
+      <div class="dcard rv" data-d="1"><div class="ph"><img src="cover2.png" alt="Credit Flow & Migration" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">02</span><div class="dmeta"><span class="dt">Credit Flow &amp; Migration</span><span class="dc">Magazine Design</span></div></div>
+      <div class="dcard rv" data-d="2"><div class="ph"><img src="cover3.png" alt="Denial" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">03</span><div class="dmeta"><span class="dt">Denial</span><span class="dc">Editorial Design</span></div></div>
+      <div class="dcard rv" data-d="1"><div class="ph"><img src="cover5.png" alt="Editorial cover" onerror="this.closest('.dcard').style.display='none'"></div><span class="num-badge">04</span><div class="dmeta"><span class="dt">Cover Story</span><span class="dc">Editorial &amp; Visual</span></div></div>
     </div>
   </div>
 </section></div>
 
 <style>
-  /* ---------- experience (click-to-select sidebar) ---------- */
-  .exp-layout {
-    display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: 0;
-    min-height: 60vh;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: clamp(2rem,4vw,3rem);
-  }
-
-  /* Left: list of org names */
-  .exp-list {
-    border-right: 1px solid var(--line);
-    overflow-y: auto;
-    scrollbar-width: none;
-  }
-  .exp-list::-webkit-scrollbar { display: none; }
-
-  .xrow {
-    display: flex;
-    flex-direction: column;
-    padding: 1.4rem 1.8rem;
-    border-bottom: 1px solid var(--line);
-    cursor: pointer;
-    transition: background .25s, border-left-color .25s;
-    border-left: 3px solid transparent;
-    user-select: none;
-  }
-  .xrow:last-child { border-bottom: none; }
-  .xrow.active {
-    background: rgba(255,90,31,0.07);
-    border-left-color: var(--accent);
-  }
-  .xrow .xorg {
-    font-size: clamp(1rem,1.8vw,1.3rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    transition: color .25s;
-  }
-  .xrow.active .xorg { color: var(--accent); }
-  .xrow .xdate {
-    font-family: var(--mono);
-    font-size: .7rem;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    margin-top: .35rem;
-  }
-
-  /* Right: sticky detail panel */
-  .exp-detail {
-    position: sticky;
-    top: 0;
-    height: 100%;
-    max-height: 60vh;
-    overflow-y: auto;
-    scrollbar-width: none;
-    padding: 2.5rem 2.2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-  .exp-detail::-webkit-scrollbar { display: none; }
-
-  /* Individual detail panes */
-  .xpane { display: none; animation: fadeUp .35s var(--ease); }
-  .xpane.active { display: block; }
-  .xpane .xtitle {
-    font-weight: 700;
-    color: var(--accent);
-    font-size: clamp(1rem,1.6vw,1.2rem);
-    letter-spacing: -0.01em;
-    margin-bottom: .3rem;
-    font-family: var(--mono);
-    text-transform: uppercase;
-    font-size: .8rem;
-    letter-spacing: .08em;
-  }
-  .xpane .xorg-big {
-    font-size: clamp(1.6rem,3.2vw,2.4rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.05;
-    margin-bottom: .5rem;
-  }
-  .xpane .xdate-big {
-    font-family: var(--mono);
-    font-size: .74rem;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    margin-bottom: 1.6rem;
-    padding-bottom: 1.2rem;
-    border-bottom: 1px solid var(--line);
-  }
-  .xpane .xdesc { color: var(--ink-2); font-size: 1rem; line-height: 1.7; font-weight: 500; }
-  .xpane .xdesc p + p { margin-top: .9rem; }
-
-  /* Empty state */
-  .exp-empty {
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
-    opacity: .4;
-    margin-top: 2rem;
-  }
-  .exp-empty .ee-arrow { font-size: 2rem; color: var(--accent); }
-  .exp-empty .ee-text { font-family: var(--mono); font-size: .76rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
-
-  @media (max-width: 720px){
-    .exp-layout { grid-template-columns: 1fr; }
-    .exp-detail { position: relative; max-height: none; border-top: 1px solid var(--line); }
-    .xpane { display: block; }
-    .xrow.active { background: rgba(255,90,31,0.07); }
-  }
+  /* ---------- experience ---------- */
+  .exp { }
+  .xrow { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; padding: 1.8rem 0; border-top: 1px solid var(--line); align-items: start; transition: background .4s; }
+  .xrow:last-child { border-bottom: 1px solid var(--line); }
+  .xrow .xorg { font-size: clamp(1.3rem,2.4vw,1.9rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; }
+  .xrow .xdate { font-family: var(--mono); font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); margin-top: .5rem; }
+  .xrow .xtitle { font-weight: 600; color: var(--accent); font-size: 1.02rem; margin-bottom: .5rem; }
+  .xrow .xdesc { color: var(--ink-2); font-size: .98rem; line-height: 1.6; font-weight: 500; }
+  .xrow .xdesc p + p { margin-top: .8rem; }
+  @media (max-width: 720px){ .xrow { grid-template-columns: 1fr; gap: .8rem; } }
 
   .mun-wrap { margin-top: clamp(3rem,6vw,4.5rem); }
   .mun-tabs { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 2rem; }
@@ -599,79 +451,15 @@
       <p class="sec-sub rv" data-d="1">// NGOs · Model UN · School<br>leadership &amp; engagement</p>
     </div>
 
-    <!-- Two-panel: left = list, right = detail -->
-    <div class="exp-layout rv">
-      <!-- LEFT: clickable org list -->
-      <div class="exp-list" id="expList">
-        <div class="xrow active" data-exp="0"><div class="xorg">Jeevartan Foundation</div><div class="xdate">Apr 2026 – Present</div></div>
-        <div class="xrow" data-exp="1"><div class="xorg">Ryan Group · BBN</div><div class="xdate">May 2024 – Present</div></div>
-        <div class="xrow" data-exp="2"><div class="xorg">Amicus Curiae</div><div class="xdate">Dec 2025 – Feb 2026</div></div>
-        <div class="xrow" data-exp="3"><div class="xorg">Ryan International School</div><div class="xdate">Apr 2025 – Feb 2026</div></div>
-        <div class="xrow" data-exp="4"><div class="xorg">RISGNMUN '25</div><div class="xdate">Jan 2025 – Jul 2025</div></div>
-        <div class="xrow" data-exp="5"><div class="xorg">CommitTea.org</div><div class="xdate">Apr 2024 – Oct 2024</div></div>
-        <div class="xrow" data-exp="6"><div class="xorg">Project Aspasia</div><div class="xdate">Sep 2024 – Nov 2024</div></div>
-        <div class="xrow" data-exp="7"><div class="xorg">Project Badlav</div><div class="xdate">Aug 2024 – Oct 2024</div></div>
-        <div class="xrow" data-exp="8"><div class="xorg">Eximius MUN</div><div class="xdate">Feb 2024 – Apr 2024</div></div>
-      </div>
-
-      <!-- RIGHT: detail panes -->
-      <div class="exp-detail" id="expDetail">
-        <div class="xpane active" data-exp="0">
-          <div class="xtitle">Chief Editor</div>
-          <div class="xorg-big">Jeevartan Foundation</div>
-          <div class="xdate-big">Apr 2026 – Present</div>
-          <div class="xdesc"><p>Leading the foundation's editorial direction across campaigns, public communication, and identity work. Responsible for shaping how the organisation presents itself to the world — in language, in design, and in the ideas it chooses to amplify.</p></div>
-        </div>
-        <div class="xpane" data-exp="1">
-          <div class="xtitle">Journalist</div>
-          <div class="xorg-big">Ryan Group · BBN</div>
-          <div class="xdate-big">May 2024 – Present</div>
-          <div class="xdesc"><p>Covered school and community updates, turning scattered information into crisp stories that people would actually read. Developed a beat around institutional decisions and student life.</p></div>
-        </div>
-        <div class="xpane" data-exp="2">
-          <div class="xtitle">Editor · National Polity &amp; Judicial Affairs</div>
-          <div class="xorg-big">Amicus Curiae</div>
-          <div class="xdate-big">Dec 2025 – Feb 2026</div>
-          <div class="xdesc"><p>Edited and shaped content for a legal publication focused on national polity and judicial affairs. Kept the tone tight and accessible — translating complex legal developments into writing that holds up for a general reader without losing rigour.</p></div>
-        </div>
-        <div class="xpane" data-exp="3">
-          <div class="xtitle">School Editor-in-Chief</div>
-          <div class="xorg-big">Ryan International School</div>
-          <div class="xdate-big">Apr 2025 – Feb 2026</div>
-          <div class="xdesc"><p>Directed school publication work, edited material, and kept the editorial tone consistent across student-facing writing. Led a team of student writers and managed the full publication cycle end to end.</p></div>
-        </div>
-        <div class="xpane" data-exp="4">
-          <div class="xtitle">Conference Convenor</div>
-          <div class="xorg-big">RISGNMUN '25</div>
-          <div class="xdate-big">Jan 2025 – Jul 2025</div>
-          <div class="xdesc"><p>Handled planning, scheduling, and delegate coordination for the conference from the first draft to the final day. Oversaw logistics, secretariat communication, and the full execution of a multi-committee MUN conference.</p></div>
-        </div>
-        <div class="xpane" data-exp="5">
-          <div class="xtitle">Co-Founder &amp; Chief Operating Officer</div>
-          <div class="xorg-big">CommitTea.org</div>
-          <div class="xdate-big">Apr 2024 – Oct 2024</div>
-          <div class="xdesc"><p>Co-founded a Model UN platform connecting student organisers with sponsors, designers, and delegate networks — addressing a longstanding gap in the MUN ecosystem.</p><p>Built as a middleman for MUN founders, the platform offered marketing, cold-calling, and freelance design to organisers without that infrastructure. It collaborated with 20+ MUN platforms, grew a following of a thousand, and was transferred to a new team in November 2025.</p></div>
-        </div>
-        <div class="xpane" data-exp="6">
-          <div class="xtitle">Head of Marketing</div>
-          <div class="xorg-big">Project Aspasia</div>
-          <div class="xdate-big">Sep 2024 – Nov 2024</div>
-          <div class="xdesc"><p>Oversaw marketing strategy and outreach for the duration of the project. Developed communications, managed social presence, and coordinated with the broader team on campaign direction.</p></div>
-        </div>
-        <div class="xpane" data-exp="7">
-          <div class="xtitle">Secretary of Logistics &amp; Operations</div>
-          <div class="xorg-big">Project Badlav</div>
-          <div class="xdate-big">Aug 2024 – Oct 2024</div>
-          <div class="xdesc"><p>Managed end-to-end logistics and operational coordination for the project's lifecycle. Ensured that deadlines were met, resources were allocated, and the team had what it needed to execute.</p></div>
-        </div>
-        <div class="xpane" data-exp="8">
-          <div class="xtitle">Chief of Cabinet</div>
-          <div class="xorg-big">Eximius MUN</div>
-          <div class="xdate-big">Feb 2024 – Apr 2024</div>
-          <div class="xdesc"><p>Worked on secretariat coordination, briefings, and issue-tracking so the executive team could move cleanly. Served as the connective tissue between the chair and the broader secretariat.</p></div>
-        </div>
-      </div>
-    </div>
+    <div class="xrow rv"><div><div class="xorg">Jeevartan Foundation</div><div class="xdate">Apr 2026 – Present</div></div><div><div class="xtitle">Chief Editor</div><div class="xdesc"><p>Leading the foundation's editorial direction across campaigns, public communication, and identity work.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">Ryan Group · BBN</div><div class="xdate">May 2024 – Present</div></div><div><div class="xtitle">Journalist</div><div class="xdesc"><p>Covered school and community updates, turning scattered information into crisp stories that people would actually read.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">Amicus Curiae</div><div class="xdate">Dec 2025 – Feb 2026</div></div><div><div class="xtitle">Editor · National Polity &amp; Judicial Affairs</div><div class="xdesc"><p>Edited and shaped content for a legal publication focused on national polity and judicial affairs, keeping the tone tight and accessible.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">Ryan International School</div><div class="xdate">Apr 2025 – Feb 2026</div></div><div><div class="xtitle">School Editor-in-Chief</div><div class="xdesc"><p>Directed school publication work, edited material, and kept the editorial tone consistent across student-facing writing.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">RISGNMUN '25</div><div class="xdate">Jan 2025 – Jul 2025</div></div><div><div class="xtitle">Conference Convenor</div><div class="xdesc"><p>Handled planning, scheduling, and delegate coordination for the conference from the first draft to the final day.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">CommitTea.org</div><div class="xdate">Apr 2024 – Oct 2024</div></div><div><div class="xtitle">Co-Founder &amp; Chief Operating Officer</div><div class="xdesc"><p>Co-founded a Model UN platform connecting student organisers with sponsors, designers, and delegate networks — addressing a longstanding gap in the MUN ecosystem.</p><p>Built as a middleman for MUN founders, the platform offered marketing, cold-calling, and freelance design to organisers without that infrastructure. It collaborated with 20+ MUN platforms, grew a following of a thousand, and was transferred to a new team in November 2025.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">Project Aspasia</div><div class="xdate">Sep 2024 – Nov 2024</div></div><div><div class="xtitle">Head of Marketing</div><div class="xdesc"><p>Oversaw marketing strategy and outreach for the duration of the project.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">Project Badlav</div><div class="xdate">Aug 2024 – Oct 2024</div></div><div><div class="xtitle">Secretary of Logistics &amp; Operations</div><div class="xdesc"><p>Managed end-to-end logistics and operational coordination for the project's lifecycle.</p></div></div></div>
+    <div class="xrow rv"><div><div class="xorg">Eximius MUN</div><div class="xdate">Feb 2024 – Apr 2024</div></div><div><div class="xtitle">Chief of Cabinet</div><div class="xdesc"><p>Worked on secretariat coordination, briefings, and issue-tracking so the executive team could move cleanly.</p></div></div></div>
 
     <!-- MUN record -->
     <div class="mun-wrap rv">
@@ -767,11 +555,7 @@
   .contact-lede { max-width: 36ch; color: rgba(243,243,243,.72); font-size: 1.1rem; line-height: 1.6; font-weight: 500; }
   .mail-btn { display: inline-flex; align-items: center; gap: .8rem; font-size: clamp(1.1rem,2.4vw,1.7rem); font-weight: 600; padding: 1rem 1.8rem; border: 1px solid var(--night-line); border-radius: 100px; transition: background .3s, color .3s, transform .35s var(--ease); }
   .mail-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
-  /* group photo banner */
-  .group-photo-wrap { margin-top: clamp(4rem,8vh,6rem); width: 100%; border-radius: 8px; overflow: hidden; max-height: 280px; }
-  .group-photo-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: grayscale(1) contrast(1.05); transition: filter .6s var(--ease); display: block; }
-  .group-photo-wrap:hover img { filter: grayscale(0); }
-  footer { border-top: 1px solid var(--night-line); margin-top: clamp(3rem,6vh,5rem); padding: 3rem 0; }
+  footer { border-top: 1px solid var(--night-line); margin-top: clamp(5rem,12vh,8rem); padding: 3rem 0; }
   .foot-grid { display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
   .foot-nav { display: flex; flex-wrap: wrap; gap: 1.2rem 1.8rem; }
   .foot-nav a { font-size: .92rem; color: rgba(243,243,243,.62); transition: color .3s; }
@@ -826,10 +610,6 @@
       <p class="contact-lede rv" data-d="1">If my work interests you — whether you want to discuss law, collaborate on a project, or explore ideas at the intersection of politics and writing — I'd be glad to hear from you.</p>
       <a class="mail-btn rv" data-d="2" data-mag href="mailto:shauryaps.rgn@gmail.com">shauryaps.rgn@gmail.com →</a>
     </div>
-    <!-- Group photo banner -->
-    <div class="group-photo-wrap rv" data-d="1">
-      <img src="group-photo.jpg" alt="Group photo" onerror="this.closest('.group-photo-wrap').style.display='none'">
-    </div>
     <footer>
       <div class="foot-grid">
         <nav class="foot-nav">
@@ -862,7 +642,7 @@
 </div>
 
 <style>
-  /* ===== sticky-scroll fix: each panel covers full viewport, no bleed ===== */
+  /* ===== sticky-stack scroll ===== */
   /* Each .panel-wrap provides scroll room; .panel sticks inside it */
   #stack-container {
     position: relative;
@@ -876,8 +656,7 @@
   .panel {
     position: sticky;
     top: 0;
-    /* Panels always fill exactly one viewport — the next panel slides in over it */
-    height: 100vh;
+    /* height is capped at 100vh so it never overflows the screen while pinned */
     max-height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
@@ -887,12 +666,6 @@
     will-change: transform;
     /* scrollbar hidden but functional */
     scrollbar-width: none;
-  }
-  /* Design panel needs natural height so carousel works */
-  .design.panel {
-    height: auto;
-    max-height: none;
-    overflow: visible;
   }
   .panel::-webkit-scrollbar { display: none; }
 
@@ -959,29 +732,12 @@
       // Reset so we can measure natural height
       wrap.style.height = '';
       panel.style.maxHeight = '';
-      panel.style.height = '';
-
-      const vh = window.innerHeight;
-
-      // Design panel: uses a carousel with its own height — don't cap it
-      if (panel.classList.contains('design')) {
-        // Give extra scroll room equal to the carousel's intended scroll distance
-        const carousel = panel.querySelector('.design-carousel-outer');
-        if (carousel) {
-          const carouselH = carousel.offsetHeight || vh * 3.2;
-          wrap.style.height = (carouselH + vh) + 'px';
-        } else {
-          wrap.style.height = (panel.scrollHeight + vh) + 'px';
-        }
-        return; // don't set maxHeight on design
-      }
-
       const naturalH = panel.scrollHeight;
+      const vh = window.innerHeight;
       // Give the wrap: natural panel height + 1 viewport of scroll room
       // The panel pins at top:0 for that extra vh, then the next wrap takes over
       wrap.style.height = (naturalH + vh) + 'px';
       // Cap the panel's visible height to vh so it doesn't overflow screen while pinned
-      panel.style.height = vh + 'px';
       panel.style.maxHeight = vh + 'px';
     });
   }
@@ -1067,51 +823,6 @@ document.querySelectorAll('.mun-tab').forEach(tab=>{
   });
 });
 
-/* ===== experience click-to-select ===== */
-(function(){
-  const rows   = document.querySelectorAll('#expList .xrow');
-  const panes  = document.querySelectorAll('#expDetail .xpane');
-  if (!rows.length) return;
-  rows.forEach(row => {
-    row.addEventListener('click', () => {
-      const id = row.dataset.exp;
-      rows.forEach(r  => r.classList.toggle('active',  r.dataset.exp  === id));
-      panes.forEach(p => p.classList.toggle('active', p.dataset.exp === id));
-      // On mobile: scroll detail into view
-      const detail = document.getElementById('expDetail');
-      if (detail && window.innerWidth < 720) detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    });
-  });
-})();
-
-
-/* ===== design carousel parallax ===== */
-(function(){
-  const carousel = document.getElementById('designCarousel');
-  const colLeft  = document.getElementById('dcolLeft');
-  const colRight = document.getElementById('dcolRight');
-  if (!carousel || !colLeft || !colRight) return;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  function onScroll(){
-    const rect = carousel.getBoundingClientRect();
-    const totalH = carousel.offsetHeight;
-    // How far into the carousel we've scrolled (0 = top, 1 = bottom)
-    const rawProgress = (-rect.top) / totalH;
-    const progress = Math.max(0, Math.min(1, rawProgress));
-
-    // Left column: start at -20% (up), travel DOWN to +10%
-    const leftY = -20 + progress * 30; // -20% → +10%
-    // Right column: start at +10% (down), travel UP to -20%
-    const rightY = 10 - progress * 30; // +10% → -20%
-
-    colLeft.style.transform  = `translateY(${leftY}%)`;
-    colRight.style.transform = `translateY(${rightY}%)`;
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-})();
 
 /* ===== article reader ===== */
 (function(){
