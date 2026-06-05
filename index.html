@@ -122,11 +122,18 @@
     z-index: 0;
     opacity: 1;
   }
-
-  /* ---------- hero eyebrow row + badge ---------- */
-  .hero-eyebrow-row {
-    display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap;
+  /* oversized echo word - deepest parallax layer, mirrors the rotor */
+  .hero-echo {
+    position: absolute; z-index: 0; right: -2%; top: 30%;
+    pointer-events: none; user-select: none; white-space: nowrap;
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: clamp(8rem, 25vw, 30rem); line-height: .8; letter-spacing: -.04em;
+    color: transparent; -webkit-text-stroke: 1px rgba(255,90,31,.07); will-change: transform;
   }
+  .hero-h1 .row { will-change: transform; }
+  @media (max-width: 720px){ .hero-echo { display: none; } }
+
+  /* ---------- hero badge dot (reused in corner frame) ---------- */
   .hero-badge {
     display: inline-flex; align-items: center; gap: .5rem;
     font-family: var(--mono); font-size: .7rem; letter-spacing: .1em;
@@ -150,21 +157,25 @@
     50%      { box-shadow: 0 0 10px 4px rgba(34,197,94,0.85); }
   }
 
-  /* ---------- hero ---------- */
-  .hero { position: relative; padding: clamp(6rem,12vh,9rem) 0 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; overflow: hidden; }
-  .hero-bottom { margin-top: auto; }
+  /* ---------- hero (revamped: editorial corner frame + oversized centered type, locked to viewport) ---------- */
+  .hero { position: relative; height: 100svh; min-height: 620px; overflow: hidden; }
   .hero::after {
     content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-    height: 140px; pointer-events: none; z-index: 1;
+    height: 160px; pointer-events: none; z-index: 1;
     background: linear-gradient(to bottom, transparent, var(--paper));
   }
-  .hero-top { display: flex; flex-direction: column; gap: 1.6rem; }
+  /* vertically-centered content */
+  .hero-center { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; }
+  .hero-inner { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad); }
+  .hero-kicker { font-family: var(--mono); font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; }
+  .js .hero-kicker { opacity: 0; }
+  .js body.ready .hero-kicker { animation: fadeUp .9s var(--ease) .12s forwards; }
   .hero-h1 {
-    font-weight: 800; letter-spacing: -0.035em; line-height: 1.02;
-    font-size: clamp(2.6rem, 8vw, 7.4rem);
+    font-weight: 800; letter-spacing: -0.035em; line-height: 1.0;
+    font-size: clamp(2.8rem, 9.2vw, 9.5rem);
     text-transform: none;
   }
-  .hero-h1 .row { display: block; overflow: hidden; padding-bottom: 0.18em; margin-bottom: -0.12em; }
+  .hero-h1 .row { display: block; overflow: hidden; padding-bottom: 0.16em; margin-bottom: -0.12em; }
   .hero-h1 .row > span { display: inline-block; }
   .js .hero-h1 .row > span { transform: translateY(118%); }
   .js body.ready .hero-h1 .row > span { animation: riseIn 1s var(--ease) forwards; }
@@ -173,31 +184,40 @@
   @keyframes riseIn { to { transform: translateY(0); } }
   .rotor { display: inline-block; position: relative; color: var(--accent); }
   .rotor .rw { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
-
-  /* lede sits right below heading */
-  .hero-lede { max-width: 52ch; font-size: clamp(.95rem,1.3vw,1.15rem); color: var(--ink-2); line-height: 1.55; font-weight: 500; }
+  .hero-lede { max-width: 50ch; margin-top: 1.7rem; font-size: clamp(1rem,1.4vw,1.22rem); color: var(--ink-2); line-height: 1.55; font-weight: 500; }
   .js .hero-lede { opacity: 0; }
-  .js body.ready .hero-lede { animation: fadeUp 1s var(--ease) .35s forwards; }
+  .js body.ready .hero-lede { animation: fadeUp 1s var(--ease) .4s forwards; }
   @keyframes fadeUp { from { opacity:0; transform: translateY(18px);} to {opacity:1; transform:none;} }
+  .hero-actions { display: flex; gap: .8rem; align-items: center; margin-top: 2.1rem; flex-wrap: wrap; }
+  .js .hero-actions { opacity: 0; }
+  .js body.ready .hero-actions { animation: fadeUp 1s var(--ease) .55s forwards; }
 
-  /* marquee band inside hero */
+  /* editorial corner frame markers */
+  .hero-corner { position: absolute; z-index: 4; font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); display: inline-flex; align-items: center; gap: .5rem; text-decoration: none; }
+  .hero-corner.tl { top: clamp(5.4rem, 12vh, 7.5rem); left: var(--pad); }
+  .hero-corner.tr { top: clamp(5.4rem, 12vh, 7.5rem); right: var(--pad); color: var(--ink-2); }
+  .hero-corner.bl { bottom: 4.4rem; left: var(--pad); }
+  .hero-corner.br { bottom: 4.4rem; right: var(--pad); color: var(--ink-2); transition: color .3s, gap .3s; }
+  .hero-corner.br:hover { color: var(--accent); gap: .9rem; }
+  .js .hero-corner { opacity: 0; }
+  .js body.ready .hero-corner { animation: fadeIn 1.1s var(--ease) .7s forwards; }
+  @keyframes fadeIn { to { opacity: 1; } }
+  @media (max-width: 780px){ .hero-corner.tl, .hero-corner.tr, .hero-corner.bl { display: none; } .hero-corner.br { bottom: 4rem; } }
+
+  /* marquee band pinned to the very bottom */
   .hero-marquee-wrap {
     overflow: hidden;
     border-top: 1px solid var(--line);
     padding: .8rem 0;
     transition: filter .6s var(--ease), opacity .6s var(--ease);
-    position: relative; z-index: 2;
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
   }
   .hero-marquee-wrap.blurred { filter: blur(5px); opacity: 0.25; }
   .marquee-track { display: inline-flex; white-space: nowrap; gap: 3rem; animation: scrollX 32s linear infinite; will-change: transform; }
   .hero-marquee-wrap:hover .marquee-track { animation-play-state: paused; }
-  .marquee-track span { font-family: var(--serif); font-style: italic; font-size: 1.2rem; color: var(--ink); display: inline-flex; align-items: center; gap: 3rem; }
+  .marquee-track span { font-family: var(--serif); font-style: italic; font-size: 1.15rem; color: var(--ink); display: inline-flex; align-items: center; gap: 3rem; }
   .marquee-track span::after { content:'✦'; font-family: var(--display); font-style: normal; font-size: .7rem; color: var(--accent); }
   @keyframes scrollX { to { transform: translateX(-50%); } }
-
-  /* strip: location | buttons | scroll hint */
-  .hero-strip { display:flex; align-items:center; justify-content:space-between; gap:1rem; border-top: 1px solid var(--line); padding: .85rem 0 1.4rem; font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); flex-wrap: wrap; position: relative; z-index: 2; }
-  .hero-actions { display: flex; gap: .7rem; align-items: center; }
   .js .hero-actions { opacity: 0; }
   .js body.ready .hero-actions { animation: fadeUp 1s var(--ease) .5s forwards; }
   .btn { display: inline-flex; align-items: center; gap: .55rem; font-weight: 600; font-size: .88rem; padding: .7rem 1.25rem; border-radius: 100px; transition: transform .35s var(--ease), background .3s, color .3s; }
@@ -210,7 +230,7 @@
 
   @media (max-width: 620px){
     .hero-h1 { font-size: clamp(2.4rem, 11vw, 5rem); }
-    .hero-strip { flex-direction: column; align-items: flex-start; gap: .8rem; }
+    .hero-h1 .row { overflow: visible; padding-bottom: 0; margin-bottom: 0; }
   }
 
   /* ---------- progress bar ---------- */
@@ -244,7 +264,7 @@
   .rv[data-d="1"]{ transition-delay:.08s;} .rv[data-d="2"]{transition-delay:.16s;} .rv[data-d="3"]{transition-delay:.24s;} .rv[data-d="4"]{transition-delay:.32s;} .rv[data-d="5"]{transition-delay:.4s;}
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-h1 .row > span, .hero-lede, .hero-actions { animation: none !important; transform: none !important; opacity: 1 !important; }
+    .hero-h1 .row > span, .hero-lede, .hero-actions, .hero-kicker, .hero-corner { animation: none !important; transform: none !important; opacity: 1 !important; }
     .marquee-track { animation: none; }
     .rv { opacity: 1; transform: none; transition: none; }
   }
@@ -265,7 +285,6 @@
   .intro-top { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: .76rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
   .intro-count { color: var(--accent); font-size: 1rem; }
   .intro-word { font-weight: 800; letter-spacing: -.04em; line-height: .95; font-size: clamp(3rem,13vw,11rem); margin: .14em 0; min-height: 1em; }
-  .intro-word.small { font-size: clamp(1.8rem,7vw,5rem); color: var(--accent); }
   .intro-foot { display: flex; justify-content: space-between; font-family: var(--mono); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
   .intro-bar { position: absolute; left: 0; bottom: 0; width: 100%; height: 2px; background: rgba(255,255,255,.12); }
   .intro-bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s linear; }
@@ -302,25 +321,22 @@
 <!-- ============ HERO ============ -->
 <header class="hero panel" id="home">
   <canvas id="heroGrid" aria-hidden="true"></canvas>
-  <div class="wrap hero-top">
-    <div class="hero-eyebrow-row">
-      <span class="eyebrow rv in">Shaurya Pratap Singh · Est. 2025</span>
-      <span class="hero-badge"><span class="hero-badge-dot"></span>Available for opportunities</span>
-    </div>
-    <h1 class="hero-h1">
-      <span class="row"><span>Law, politics,</span></span>
-      <span class="row"><span>&amp; the <span class="rotor"><span class="rw" id="rotor">written</span></span> word.</span></span>
-    </h1>
-    <p class="hero-lede rv">A high schooler working at the intersection of law, political thought, and the written word. Writing, editing, designing, and showing up.</p>
-  </div>
-  <div class="wrap hero-bottom">
-    <div class="hero-strip">
-      <span>Based in Delhi, India · GMT+5:30</span>
+  <div class="hero-echo" id="heroEcho" aria-hidden="true">written</div>
+  <span class="hero-corner tr"><span class="hero-badge-dot"></span>Available for opportunities</span>
+  <span class="hero-corner bl">Based in Delhi, India · GMT+5:30</span>
+  <a class="hero-corner br" href="#about">Scroll to read ↓</a>
+  <div class="hero-center">
+    <div class="hero-inner">
+      <div class="hero-kicker">Est. 2025 · Law · Politics · Words</div>
+      <h1 class="hero-h1">
+        <span class="row"><span>Law, politics,</span></span>
+        <span class="row"><span>&amp; the <span class="rotor"><span class="rw" id="rotor">written</span></span> word.</span></span>
+      </h1>
+      <p class="hero-lede">A high schooler working at the intersection of law, political thought, and the written word. Writing, editing, designing, and showing up.</p>
       <div class="hero-actions">
         <a href="#writing" class="btn btn-fill" data-mag>Read the writing <span class="arr">→</span></a>
         <a href="#about" class="btn btn-ghost" data-mag>About me</a>
       </div>
-      <span>Scroll to read ↓</span>
     </div>
   </div>
   <!-- marquee pinned to the very bottom of the hero -->
@@ -541,40 +557,45 @@
   .tl::-webkit-scrollbar { height: 3px; }
   .tl::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 100px; }
   .tl-track { display: flex; min-width: max-content; position: relative; padding-top: 0; gap: 0; }
-  /* continuous accent line running across the top */
-  .tl-track::before { content:''; position:absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--line); }
+  /* rail line connecting the dots */
+  .tl-track::before { content:''; position:absolute; top: 6px; left: 7px; right: 7px; height: 1px; background: var(--line-2); }
   .tl-node {
-    position: relative; flex: 0 0 auto; width: clamp(180px, 23vw, 230px);
-    padding: 1.4rem 1.4rem 1.4rem 0;
-    cursor: pointer; background: none; border: none; border-right: 1px solid var(--line);
+    position: relative; flex: 0 0 auto; width: clamp(166px, 21vw, 208px);
+    padding: 38px 1.7rem 0 0;
+    cursor: pointer; background: none; border: none;
     text-align: left; color: inherit; font-family: inherit;
-    transition: background .3s;
   }
-  .tl-node:first-child { padding-left: 0; }
-  .tl-node:last-child { border-right: none; }
-  /* accent top bar on active node */
-  .tl-node::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: transparent; transition: background .3s; }
-  .tl-node.on::after { background: var(--accent); box-shadow: 0 0 8px rgba(255,90,31,.5); }
-  .tl-node:hover::after { background: rgba(255,90,31,.4); }
+  /* dot marker sitting on the rail */
+  .tl-node::before { content:''; position:absolute; top: 0; left: 0; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--paper); border: 2px solid var(--line-2);
+    transition: background .3s, border-color .3s, box-shadow .3s, transform .3s; }
+  .tl-node:hover::before { border-color: var(--accent); }
+  .tl-node.on::before { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 5px var(--accent-soft); }
   .tl-date { font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
-  .tl-org { font-size: .98rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin-top: .5rem; transition: color .3s; }
-  .tl-node.on .tl-org, .tl-node:hover .tl-org { color: var(--accent); }
+  .tl-org { font-size: 1rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin-top: .5rem; transition: color .3s; }
+  .tl-node.on .tl-org { color: var(--accent); }
+  .tl-node:hover .tl-org { color: var(--ink); }
   .tl-role { font-size: .78rem; color: var(--ink-2); margin-top: .3rem; line-height: 1.3; font-weight: 500; }
   .tl-detail { margin-top: clamp(2rem,4vw,3rem); min-height: 180px; }
-  .tl-d-in { opacity: 0; transform: translateY(10px); transition: opacity .4s var(--ease), transform .4s var(--ease);
-    border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0;
-    padding: clamp(1.4rem,3vw,2.2rem); background: var(--paper-2); }
+  .tl-d-in { position: relative; overflow: hidden; opacity: 0; transform: translateY(10px); transition: opacity .45s var(--ease), transform .45s var(--ease);
+    border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0;
+    padding: clamp(1.6rem,3vw,2.4rem); background: var(--paper-2); }
   .tl-d-in.show { opacity: 1; transform: none; }
-  .tl-d-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: .6rem 1.4rem; }
-  .tl-d-title { font-size: clamp(1.6rem,3.6vw,2.7rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.02; }
+  /* oversized editorial index that fills the empty space */
+  .tl-d-num { position: absolute; top: -.2em; right: .08em; font-family: var(--display); font-weight: 800;
+    font-size: clamp(6rem, 15vw, 15rem); line-height: 1; letter-spacing: -.05em; color: rgba(255,255,255,.04); pointer-events: none; z-index: 0; }
+  .tl-d-main { position: relative; z-index: 1; max-width: 60ch; }
+  .tl-d-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1.3rem; }
+  .tl-d-title { font-size: clamp(1.6rem,3.6vw,2.7rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.04; }
   .tl-d-role { font-family: var(--serif); font-style: italic; color: var(--accent); font-size: clamp(1.1rem,2vw,1.5rem); }
-  .tl-d-meta { font-family: var(--mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); opacity: .7; margin-top: .6rem; }
-  .tl-d-body { margin-top: 1.1rem; max-width: 64ch; color: var(--ink-2); font-size: 1.02rem; line-height: 1.65; font-weight: 500; }
+  .tl-d-meta { font-family: var(--mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); opacity: .75; margin-top: .6rem; }
+  .tl-d-body { margin-top: 1.1rem; color: var(--ink-2); font-size: 1.02rem; line-height: 1.65; font-weight: 500; }
   .tl-d-body p + p { margin-top: .8rem; }
-  .tl-pics { display: none; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: .8rem; margin-top: 1.6rem; }
+  .tl-pics { display: none; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: .8rem; margin-top: 1.6rem; position: relative; z-index: 1; }
   .tl-pics.show { display: grid; }
   .tl-pics img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 7px; border: 1px solid var(--line); filter: grayscale(1) contrast(1.04); transition: filter .5s, transform .5s; }
   .tl-pics img:hover { filter: none; transform: scale(1.02); }
+  @media (max-width: 600px){ .tl-d-num { display: none; } }
   .tl-hint { font-family: var(--mono); font-size: .68rem; letter-spacing:.06em; text-transform: uppercase; color: var(--ink-3); margin-top: 1rem; }
 
   .mun-wrap { margin-top: clamp(3rem,6vw,4.5rem); }
@@ -782,6 +803,12 @@
       </div>
     </footer>
   </div>
+  <div class="mun-footer-img">
+    <img src="munbanner.jpeg" alt="Model UN · Shaurya Pratap Singh" decoding="async" onload="window.dispatchEvent(new Event('resize'))" onerror="this.closest('.mun-footer-img').style.display='none';window.dispatchEvent(new Event('resize'))">
+  </div>
+  <div class="end-banner">
+    <img src="jxqdq.png" alt="" loading="lazy" onload="window.dispatchEvent(new Event('resize'))" onerror="this.closest('.end-banner').style.display='none';window.dispatchEvent(new Event('resize'))">
+  </div>
 </section>
 
 <!-- ============ ARTICLE READER ============ -->
@@ -800,11 +827,13 @@
 <style>
   /* ===== stacking panels: pinned; the next rises over them. Alternating black / dark-grey ===== */
   .panel { position: sticky; top: 0; z-index: 2; background-color: #000000;
-    border-radius: 26px 26px 0 0; box-shadow: 0 -34px 60px -36px rgba(0,0,0,0.96);
+    border-radius: 26px 26px 0 0;
     transition: box-shadow .5s var(--ease), filter .45s var(--ease); overflow: hidden; }
   .panel.pgrey { background-color: #111111; }
   .panel:first-of-type { border-radius: 0; }
   .panel > * { position: relative; z-index: 1; }
+  /* hero's framed elements must stay absolutely positioned (override the rule above) */
+  .hero > .hero-center, .hero > .hero-corner, .hero > .hero-marquee-wrap, .hero > .hero-echo, .hero > #heroGrid { position: absolute; }
   /* subtle grid pattern only on black panels */
   .panel.has-grid::after { content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
     background-image:
@@ -817,13 +846,15 @@
   .panel::before { content:''; position:absolute; left:0; right:0; top:0; height:1px; z-index: 6; pointer-events:none;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,.22) 13%, rgba(255,255,255,.22) 87%, transparent);
     opacity:.5; transition: opacity .5s var(--ease), background .5s var(--ease), height .3s var(--ease); }
-  .panel.is-active { box-shadow: 0 -34px 90px -38px rgba(255,90,31,0.18), 0 -10px 30px -20px rgba(0,0,0,0.9); }
+  .panel.is-active { box-shadow: 0 -22px 70px -44px rgba(255,90,31,0.22); }
   .panel.is-active::before { opacity:1; height:2px;
     background: linear-gradient(90deg, transparent, var(--accent) 20%, var(--accent) 80%, transparent);
     box-shadow: 0 0 22px rgba(255,90,31,.55); }
 
-  /* ===== panel-leaving: the panel being covered blurs + darkens as the next rises over it ===== */
-  .panel.covered { filter: blur(4px) brightness(0.5); }
+  /* ===== panel-leaving: the panel being covered darkens as the next rises over it ===== */
+  /* NOTE: no blur here - filter:blur() forces a full re-raster of each panel and leaves
+     panels blank during fast scrolling. brightness() is a cheap per-pixel shader that renders reliably. */
+  .panel.covered { filter: brightness(0.5); }
 
   @media (prefers-reduced-motion: reduce){ .panel{ position: relative; border-radius:0; box-shadow:none; filter: none !important; } }
 
@@ -881,7 +912,7 @@ addEventListener('scroll', () => nav.classList.toggle('stuck', scrollY > 40), { 
   const panels=[...document.querySelectorAll('.panel')];
   if(!panels.length) return;
   // alternate dark / dark-grey; grid only on the dark ones
-  panels.forEach((p,i)=>{ p.classList.add(i%2 ? 'pgrey' : 'pdark'); if(i%2===0) p.classList.add('has-grid'); });
+  panels.forEach((p,i)=>{ p.classList.add(i%2 ? 'pgrey' : 'pdark'); if(i%2===0 && p.id!=='home') p.classList.add('has-grid'); });
   let ticking=false;
   function layout(){
     const vh=innerHeight;
@@ -944,14 +975,35 @@ const cio = new IntersectionObserver(es=>es.forEach(e=>{ if(!e.isIntersecting) r
 }), {threshold:.6});
 document.querySelectorAll('.num[data-target]').forEach(el=>cio.observe(el));
 
-/* ===== hero rotor ===== */
+/* ===== hero rotor (drives the giant echo word too) ===== */
 (function(){
   const el=document.getElementById('rotor'); if(!el) return;
+  const echo=document.getElementById('heroEcho');
   const words=['written','spoken','printed','argued','drafted','designed'];
   let i=0;
   setInterval(()=>{ i=(i+1)%words.length; el.style.transition='opacity .3s, transform .3s'; el.style.opacity='0'; el.style.transform='translateY(-30%)';
-    setTimeout(()=>{ el.textContent=words[i]; el.style.transform='translateY(30%)'; requestAnimationFrame(()=>{ el.style.opacity='1'; el.style.transform='translateY(0)'; }); },300);
+    setTimeout(()=>{ el.textContent=words[i]; if(echo) echo.textContent=words[i]; el.style.transform='translateY(30%)'; requestAnimationFrame(()=>{ el.style.opacity='1'; el.style.transform='translateY(0)'; }); },300);
   }, 2400);
+})();
+
+/* ===== hero mouse-parallax depth ===== */
+(function(){
+  const hero=document.getElementById('home'); if(!hero) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches || matchMedia('(hover: none)').matches) return;
+  const layers=[
+    {el:hero.querySelector('.hero-echo'), x:38, y:24},
+    {el:hero.querySelector('.hero-kicker'), x:7, y:4},
+    {el:hero.querySelector('.hero-h1 .row:nth-child(1)'), x:13, y:7},
+    {el:hero.querySelector('.hero-h1 .row:nth-child(2)'), x:20, y:11}
+  ].filter(l=>l.el);
+  let tx=0,ty=0,cx=0,cy=0,raf=null;
+  function move(e){ const r=hero.getBoundingClientRect(); tx=((e.clientX-r.left)/r.width-.5)*2; ty=((e.clientY-r.top)/r.height-.5)*2; if(!raf) raf=requestAnimationFrame(tick); }
+  function tick(){ raf=null; cx+=(tx-cx)*.08; cy+=(ty-cy)*.08;
+    for(const l of layers){ l.el.style.transform=`translate3d(${(-cx*l.x).toFixed(2)}px,${(-cy*l.y).toFixed(2)}px,0)`; }
+    if(Math.abs(tx-cx)>.001||Math.abs(ty-cy)>.001) raf=requestAnimationFrame(tick);
+  }
+  hero.addEventListener('mousemove', move, {passive:true});
+  hero.addEventListener('mouseleave', ()=>{ tx=0; ty=0; if(!raf) raf=requestAnimationFrame(tick); });
 })();
 
 /* ===== MUN tabs ===== */
@@ -1203,15 +1255,17 @@ document.querySelectorAll('.mun-tab').forEach(tab=>{
       }
       pics=`<div class="tl-pics">${imgs}</div>`;
     }
-    const html=`<div class="tl-d-top"><div class="tl-d-title">${esc(x.org)}</div><div class="tl-d-role">${esc(x.role)}</div></div>`+
+    const num=String(i+1).padStart(2,'0');
+    const html=`<div class="tl-d-num" aria-hidden="true">${num}</div>`+
+               `<div class="tl-d-main"><div class="tl-d-top"><div class="tl-d-title">${esc(x.org)}</div><div class="tl-d-role">${esc(x.role)}</div></div>`+
                `<div class="tl-d-meta">${esc(x.date)}</div>`+
-               `<div class="tl-d-body">${x.body.map(p=>'<p>'+esc(p)+'</p>').join('')}</div>`+pics;
+               `<div class="tl-d-body">${x.body.map(p=>'<p>'+esc(p)+'</p>').join('')}</div></div>`+pics;
     detail.classList.remove('show');
     setTimeout(()=>{ detail.innerHTML=html; requestAnimationFrame(()=>detail.classList.add('show')); }, 180);
   }
   // auto-cycle latest -> oldest, looping; pause on hover, restart on click
   let cur=0, auto=null;
-  const DWELL=4200;
+  const DWELL=2600;
   function tick(){ cur=(cur+1)%XP.length; select(cur,true); }
   function start(){ stop(); auto=setInterval(tick,DWELL); }
   function stop(){ if(auto){ clearInterval(auto); auto=null; } }
@@ -1421,11 +1475,5 @@ document.querySelectorAll('.mun-tab').forEach(tab=>{
   <div class="dlb-caption" id="dlbCap"></div>
 </div>
 
-<div class="mun-footer-img">
-  <img src="munbanner.jpeg" alt="Model UN · Shaurya Pratap Singh" loading="lazy" onerror="this.closest('.mun-footer-img').style.display='none'">
-</div>
-<div class="end-banner">
-  <img src="jxqdq.png" alt="" loading="lazy" onerror="this.closest('.end-banner').style.display='none'">
-</div>
 </body>
 </html>
