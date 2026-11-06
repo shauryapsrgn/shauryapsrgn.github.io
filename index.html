@@ -951,6 +951,7 @@ const R = rng(20261206), rr = (a, b) => a + R() * (b - a);
 
 /* ======================================================================= quality */
 const qs = new URLSearchParams(location.search), qp = qs.get('q'), BAKE = qs.has('bake'), EXPORT = qs.has('export');
+const BENCH = qs.has('bench'), PROF = { on: false, up: 0, rd: 0, n: 0 };
 const GPU = (() => { try { const gl = document.createElement('canvas').getContext('webgl2'); const x = gl && gl.getExtension('WEBGL_debug_renderer_info'); return x ? String(gl.getParameter(x.UNMASKED_RENDERER_WEBGL)) : ''; } catch (e) { return ''; } })();
 const weakGPU = /swiftshader|llvmpipe|software|mali|adreno|powervr|gma|intel(\(r\))? (hd|uhd)/i.test(GPU) && !/iris|arc/i.test(GPU);
 const cores = navigator.hardwareConcurrency || 4, mem = navigator.deviceMemory || 8;
@@ -1358,15 +1359,18 @@ async function main(){
   if (EXPORT){ window.__export = await exportForBake(); return; }
   splitArrayMeshes(); mergeProps();
   LM.on = await applyBake(); ld.real = .95;
-  drawOrder(); if (!qs.has('noglass')) thinGlass(); cullLights();
+  drawOrder(); if (!qs.has('noglass')) thinGlass(); cullLights(); if (!qs.has('nosplit')) splitSides();
   if (LM.on){ applyLevels(1, 1, 1, 1, true); captureEnv(); applyLevels(0, 0, 1, 1, true); if (gtao) gtao.enabled = false; LM.mats.forEach(m => { m.envMap = scene.environment; m.envMapIntensity = m.userData.src === M.floor ? .32 : .7; }); }
+  // with no AO pass the scene always lands in one buffer and the tone-mapping pass writes the other; that second one
+  // only ever receives a full-screen quad, where all 4 samples are equal, so it doesn't need to be multisampled
+  if (!gtao || !gtao.enabled){ composer.renderTarget1.samples = 0; composer.renderTarget1.dispose(); }
   renderer.shadowMap.needsUpdate = true;
   try { await Promise.race([renderer.compileAsync(scene, camera), new Promise(r => setTimeout(r, 6000))]); } catch (e) {}
-  preupload(); composer.render(0.016); ld.real = 1;
+  preupload(); composer.render(0.016); if (LO.composer) LO.composer.render(0.016); ld.real = 1;
 
   setupUI();
   window.__props = Object.keys(PROPS).length;
-  if (window.__DTMAX) window.__dbg = { renderer, composer, scene, A, camera, THREE, LEX, goTo, openPage, closePage, lexToStation, openCert, mnav, laser: () => toggleLaser(), info: () => ({ calls: renderer.info.render.calls, tris: renderer.info.render.triangles, merge: window.__merge, tier: Q.tier, gpu: GPU }) };
+  if (window.__DTMAX) window.__LO = LO; if (window.__DTMAX) window.__dbg = { renderer, composer, scene, A, camera, THREE, LEX, goTo, openPage, closePage, lexToStation, openCert, mnav, laser: () => toggleLaser(), info: () => ({ calls: renderer.info.render.calls, tris: renderer.info.render.triangles, merge: window.__merge, tier: Q.tier, gpu: GPU }) };
   let last = performance.now(), frames = 0, acc = 0, checks = 0, accDt = 0, prevRendered = false, prevNow = last;
   function frame(now){
     requestAnimationFrame(frame);
@@ -1376,20 +1380,27 @@ async function main(){
     accDt += (now - last) / 1000; last = now;
     const b = isBusy();
     if (!window.__DTMAX && accDt < (b ? 1 / 63 : 1 / 32)){ prevRendered = false; return; }
-    const dt = Math.min(accDt, window.__DTMAX || .05); accDt = 0;
+    // the camera and UI keep real-time pace down to 10 fps (they used to slow down below 20 fps); Lex steps at most 50 ms at a time
+    const dt = Math.min(accDt, window.__DTMAX || .1); accDt = 0;
     if (prevRendered && b && introDone && !window.__DTMAX){ acc += raw; frames++; }
     prevRendered = true;
     time += dt; frameNo++;
-    updateTweens(dt); updateCamera(dt); updatePanels(dt); updateLex(dt); animate(dt);
+    const p0 = PROF.on ? performance.now() : 0;
+    updateTweens(dt); updateCamera(dt); updatePanels(dt); if (dt > .05){ updateLex(dt / 2); updateLex(dt / 2); } else updateLex(dt); animate(dt);
     grade.uniforms.uTime.value = time;
-    composer.render(dt);
+    const p1 = PROF.on ? performance.now() : 0;
+    (LO.on && camMoving ? LO.composer : composer).render(dt);
+    if (PROF.on){ PROF.up += p1 - p0; PROF.rd += performance.now() - p1; PROF.n++; }
     if (frames >= 50){ const avg = acc / frames; acc = frames = 0; checks++;
-      if (avg > 1 / 40 && gtao && gtao.enabled) gtao.enabled = false; else if (avg > 1 / 22 && bloom.enabled) bloom.enabled = false; }
+      if (avg > 1 / 40 && gtao && gtao.enabled) gtao.enabled = false;
+      else if (avg > 1 / 45 && LM.on && !LO.on && LO.composer && !qs.has('nolo')) LO.on = true; // can't hold ~45 fps: lighter frames while the camera travels
+      else if (avg > 1 / 22 && bloom.enabled) bloom.enabled = false; }
   }
   requestAnimationFrame(frame);
-  addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.fov = camera.aspect < 1 ? 66 : 48; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight, false); composer.setSize(innerWidth, innerHeight); grade.uniforms.uRes.value.set(innerWidth, innerHeight); buildStations(); });
+  addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.fov = camera.aspect < 1 ? 66 : 48; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight, false); composer.setSize(innerWidth, innerHeight); if (LO.composer) LO.composer.setSize(innerWidth * LO.scale, innerHeight * LO.scale); grade.uniforms.uRes.value.set(innerWidth, innerHeight); buildStations(); });
 
-  await loaderDone(); intro();
+  await loaderDone(); intro(); if (BENCH) bench();
+  addEventListener('message', e => { if (e.data && e.data.__roomBench === 'rb-7f3k' && !window.__benchRunning){ window.__benchRunning = true; bench(e.source); } });
 }
 
 let camMoving = true;
@@ -1480,7 +1491,8 @@ function bloomNoBlend(b){
 }
 function setupComposer(){
   const size = renderer.getDrawingBufferSize(new THREE.Vector2());
-  const rt = new THREE.WebGLRenderTarget(size.x, size.y, { type: THREE.HalfFloatType, samples: +(qs.get('msaa') ?? 4) });
+  // the scene's depth is never read after the scene is drawn, so the multisampled depth isn't resolved every frame
+  const rt = new THREE.WebGLRenderTarget(size.x, size.y, { type: THREE.HalfFloatType, samples: +(qs.get('msaa') ?? 4), resolveDepthBuffer: false });
   composer = new EffectComposer(renderer, rt);
   composer.addPass(new RenderPass(scene, camera));
   if (Q.hi){
@@ -1504,7 +1516,15 @@ function setupComposer(){
   op.render = (r, w, rb, dt, mk) => { op.uniforms.tBloom.value = bloom.renderTargetsHorizontal[0].texture; op.uniforms.uBloom.value = bloom.enabled ? 1 : 0; opRender(r, w, rb, dt, mk); };
   composer.addPass(op);
   grade = new ShaderPass(GradeShader); grade.uniforms.uRes.value.set(innerWidth, innerHeight); composer.addPass(grade);
+  // a lighter twin of this chain for slow graphics chips: the same bloom, tone mapping and grade (shared, so the glow
+  // and grain are identical), only the room itself is drawn into a smaller buffer. Used only while the camera travels.
+  const lrt = new THREE.WebGLRenderTarget(Math.round(size.x * LO.scale), Math.round(size.y * LO.scale), { type: THREE.HalfFloatType, samples: rt.samples, resolveDepthBuffer: false });
+  LO.composer = new EffectComposer(renderer, lrt); LO.composer.renderTarget1.samples = 0;
+  LO.composer.addPass(new RenderPass(scene, camera));
+  LO.composer.addPass({ get enabled(){ return bloom.enabled; }, needsSwap: false, clear: false, renderToScreen: false, setSize(){}, dispose(){}, render: (r, w, rb, dt, mk) => bloom.render(r, w, rb, dt, mk) });
+  LO.composer.addPass(op); LO.composer.addPass(grade);
 }
+const LO = { on: false, scale: .75, composer: null };
 function captureEnv(){
   const hide = []; scene.traverse(o => { if (o.userData.noEnv && o.visible){ o.visible = false; hide.push(o); } });
   const crt = new THREE.WebGLCubeRenderTarget(Q.tier ? 256 : 128, { type: THREE.HalfFloatType });
@@ -1612,6 +1632,72 @@ function cullLights(){
     if (!made.has(mk)) made.set(mk, maskedMat(o.material, pm, sm));
     o.material = made.get(mk); if (pm !== fullP || sm !== fullS) n++; });
   window.__culled = n;
+}
+/* ---------- performance bench (only with ?bench, used to measure on real hardware) ---------- */
+async function bench(host){
+  const wait = ms => new Promise(r => setTimeout(r, ms)), raf = () => new Promise(r => requestAnimationFrame(r));
+  while (!introDone) await wait(200); await wait(2500);
+  const gl = renderer.getContext(), tq = gl.getExtension('EXT_disjoint_timer_query_webgl2');
+  const el = document.createElement('pre'); el.id = 'benchOut';
+  el.style.cssText = 'position:fixed;left:4px;top:4px;right:4px;z-index:99999;margin:0;background:rgba(0,0,0,.92);color:#9f9;font:13px/1.35 monospace;padding:8px 10px;white-space:pre-wrap;pointer-events:none';
+  document.body.appendChild(el); const out = []; const log = s => { out.push(s); el.textContent = out.join('\n'); try { (host || parent).postMessage({ __roomBenchOut: el.textContent }, '*'); } catch (e) {} };
+  const sz = renderer.getDrawingBufferSize(new THREE.Vector2());
+  log(`GPU ${GPU}\nbuffer ${sz.x}x${sz.y} css ${innerWidth}x${innerHeight} pr ${renderer.getPixelRatio()} msaa ${composer.renderTarget1.samples} tier ${Q.tier} hi ${Q.hi} timer ${!!tq}`);
+  const T = n => { composer.render(1 / 60); gl.finish(); const t0 = performance.now(); for (let i = 0; i < n; i++) composer.render(1 / 60); gl.finish(); return (performance.now() - t0) / n; };
+  const passT = async n => { if (!tq) return 'no timer'; const sums = composer.passes.map(() => 0), cnt = composer.passes.map(() => 0), pend = [], orig = composer.passes.map(p => p.render);
+    composer.passes.forEach((p, i) => { p.render = function(...a){ const q = gl.createQuery(); gl.beginQuery(tq.TIME_ELAPSED_EXT, q); orig[i].apply(this, a); gl.endQuery(tq.TIME_ELAPSED_EXT); pend.push([i, q]); }; });
+    for (let f = 0; f < n; f++){ composer.render(1 / 60); await raf(); }
+    composer.passes.forEach((p, i) => p.render = orig[i]);
+    for (let tries = 0; tries < 90 && pend.length; tries++){ await raf(); const dis = gl.getParameter(tq.GPU_DISJOINT_EXT);
+      for (let k = pend.length - 1; k >= 0; k--){ const [i, q] = pend[k]; if (gl.getQueryParameter(q, gl.QUERY_RESULT_AVAILABLE)){ if (!dis){ sums[i] += gl.getQueryParameter(q, gl.QUERY_RESULT) / 1e6; cnt[i]++; } gl.deleteQuery(q); pend.splice(k, 1); } } }
+    const nm = p => p === bloom ? 'bloom' : p === grade ? 'grade' : p instanceof RenderPass ? 'scene' : (p.constructor && p.constructor.name) || 'pass';
+    return composer.passes.filter(p => p.enabled).map(p => { const i = composer.passes.indexOf(p); return nm(p) + ' ' + (cnt[i] ? (sums[i] / cnt[i]).toFixed(1) : '-'); }).join(' | '); };
+  const rts = () => [composer.renderTarget1, composer.renderTarget2];
+  const hideWhere = (pred) => { const h = []; scene.traverse(o => { if (o.visible && pred(o)) { o.visible = false; h.push(o); } }); return () => h.forEach(o => o.visible = true); };
+  paused = true; await raf(); await raf();
+  for (const st of [1, 2, 3, 5]){
+    window.scrollTo(0, st * scrollMax() / (N - 1)); paused = false; await wait(2500); paused = true; await raf();
+    sNow = st; { const t = camTarget(st); cam.p.copy(t.p); cam.yaw = t.yaw; cam.pitch = t.pitch; applyCam(); camera.updateMatrixWorld(); }
+    renderer.info.autoReset = false; renderer.info.reset(); composer.render(1 / 60); const calls = renderer.info.render.calls, tris = renderer.info.render.triangles; renderer.info.autoReset = true;
+    const r = {}; r.full = T(10);
+    let un = hideWhere(o => BEAMS.includes(o)); r.beamsOff = T(10); un();
+    bloom.enabled = false; r.bloomOff = T(10); bloom.enabled = true;
+    const s0 = rts().map(rt => rt.samples); rts().forEach(rt => { rt.samples = 0; rt.dispose(); }); r.msaa0 = T(10); rts().forEach((rt, i) => { rt.samples = s0[i]; rt.dispose(); });
+    { const c0 = composer; composer = LO.composer; r.lo75 = T(10); composer = c0; }
+    un = hideWhere(o => o === LEX.root || o === LEX.shadow); r.lexOff = T(10); un();
+    un = hideWhere(o => o.isMesh && o.userData.noBake && !(o.material && o.material.lightMap) && !BEAMS.includes(o)); r.propsOff = T(10); un();
+    const ov = new THREE.MeshBasicMaterial({ color: 0x808080 }); scene.overrideMaterial = ov; r.flatShade = T(10); scene.overrideMaterial = null;
+    const pr = renderer.getPixelRatio(); renderer.setPixelRatio(pr * .75); composer.setPixelRatio(pr * .75); r.scale75 = T(10); renderer.setPixelRatio(pr); composer.setPixelRatio(pr);
+    log(`st${st} calls ${calls} tris ${Math.round(tris / 1000)}k | ` + Object.entries(r).map(([k, v]) => k + ' ' + v.toFixed(1)).join('  '));
+    log('    gpu per pass: ' + await passT(8));
+  }
+  // what scrolling feels like: the app's own loop while the page scrolls from station 1 to 5
+  window.scrollTo(0, scrollMax() / (N - 1)); paused = false; await wait(3000);
+  const ts = [], gq = [], gt = [], cr = composer.render.bind(composer);
+  composer.render = d => { ts.push(performance.now()); let q = null; if (tq){ q = gl.createQuery(); gl.beginQuery(tq.TIME_ELAPSED_EXT, q); } cr(d); if (q){ gl.endQuery(tq.TIME_ELAPSED_EXT); gq.push(q); }
+    for (let k = gq.length - 1; k >= 0; k--){ if (gl.getQueryParameter(gq[k], gl.QUERY_RESULT_AVAILABLE)){ if (!gl.getParameter(tq.GPU_DISJOINT_EXT)) gt.push(gl.getQueryParameter(gq[k], gl.QUERY_RESULT) / 1e6); gl.deleteQuery(gq[k]); gq.splice(k, 1); } } };
+  PROF.up = PROF.rd = PROF.n = 0; PROF.on = true;
+  const t0 = performance.now(), goal = scrollMax() * 5 / (N - 1);
+  while (scrollY < goal - 2 && performance.now() - t0 < 12000){ window.scrollBy(0, 28); await wait(16); }
+  await wait(1200); composer.render = cr; PROF.on = false;
+  const iv = ts.slice(1).map((t, i) => t - ts[i]).sort((a, b) => a - b), q = f => iv[Math.min(iv.length - 1, Math.floor(iv.length * f))];
+  log(`scroll: ${ts.length} frames in ${((ts[ts.length - 1] - ts[0]) / 1000).toFixed(1)}s  avg ${(iv.reduce((a, b) => a + b, 0) / iv.length).toFixed(1)}ms  p50 ${q(.5).toFixed(1)}  p90 ${q(.9).toFixed(1)}  max ${iv[iv.length - 1].toFixed(1)}  >34ms ${iv.filter(v => v > 34).length}  >50ms ${iv.filter(v => v > 50).length}`);
+  gt.sort((a, b) => a - b); const gq_ = f => gt.length ? gt[Math.min(gt.length - 1, Math.floor(gt.length * f))].toFixed(1) : '-';
+  log(`scroll gpu/frame: p50 ${gq_(.5)}  p90 ${gq_(.9)}  max ${gq_(.999)} (${gt.length} samples) | cpu/frame: update ${(PROF.up / Math.max(1, PROF.n)).toFixed(1)}ms  render-submit ${(PROF.rd / Math.max(1, PROF.n)).toFixed(1)}ms`);
+  log(`programs ${renderer.info.programs.length} textures ${renderer.info.memory.textures} geometries ${renderer.info.memory.geometries}`);
+  log('done'); window.__benchRunning = false; setTimeout(() => el.remove(), 4000);
+}
+/* a see-through double-sided material makes three.js flip it to back faces and then front faces on every frame,
+   rebuilding its shader state twice per object per frame. Two meshes, one per side, draw exactly the same thing
+   in the same order (back first: it keeps the lower id, so the transparent sort puts it first) */
+function splitSides(){
+  const list = []; scene.traverse(o => { const m = o.material; if (o.isMesh && !o.isInstancedMesh && !o.isSkinnedMesh && m && !Array.isArray(m) && m.transparent && m.side === THREE.DoubleSide && !m.forceSinglePass) list.push(o); });
+  for (const o of list){ const m = o.material, side = s => { const c = Object.create(m); Object.defineProperty(c, 'id', { value: new THREE.Material().id }); c.side = s; return c; };
+    const f = new THREE.Mesh(o.geometry, side(THREE.FrontSide));
+    f.position.copy(o.position); f.quaternion.copy(o.quaternion); f.scale.copy(o.scale); f.matrix.copy(o.matrix); f.matrixAutoUpdate = o.matrixAutoUpdate;
+    f.renderOrder = o.renderOrder; f.frustumCulled = o.frustumCulled; f.visible = o.visible; f.layers.mask = o.layers.mask; f.castShadow = o.castShadow; f.receiveShadow = o.receiveShadow; f.userData = Object.assign({}, o.userData);
+    o.material = side(THREE.BackSide); o.parent.add(f); f.updateMatrixWorld(true); }
+  window.__split = list.length;
 }
 /* upload every texture now, during loading, instead of the first time each corner of the room comes into view */
 function preupload(){ const seen = new Set();
