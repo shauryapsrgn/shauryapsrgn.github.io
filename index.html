@@ -6,12 +6,12 @@
 <title>Shaurya's Room · Shaurya Pratap Singh</title>
 <meta name="theme-color" content="#060608">
 <meta name="description" content="Shaurya Pratap Singh. Essays on law and politics, editorial design, and a cat called Lex. Walk around the room.">
-<link rel="icon" href="assets/favicon.webp">
+<link rel="icon" href="favicon.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Caveat:wght@700&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="preload" href="assets/room-lm.json" as="fetch" crossorigin>
-<link rel="preload" href="assets/tex/lightmap.webp" as="fetch" crossorigin>
+<link rel="preload" href="room-lm.json" as="fetch" crossorigin>
+<link rel="preload" href="tex/lightmap.webp" as="fetch" crossorigin>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}
 </script>
@@ -611,7 +611,7 @@ body.nogl .panel [data-r],body.nogl .w>span{opacity:1;transform:none}
       <div class="tags" data-r><span>Editor-in-Chief</span><span>Speaker, Student Parliament</span><span>President, Environmental Committee</span><span>Head, Journalism Branch</span><span>MUN Directorate</span></div></section>
     <section class="sec" id="honours"><div class="sech"><h3 class="split">Honours</h3><span data-r>Credentials &amp; recognition</span></div>
       <div class="honours">
-        <div class="hcard prince" data-r><img src="assets/ryan-prince.webp" alt="Shaurya receiving the Ryan Prince" loading="lazy" onerror="this.onerror=null;this.src='ryan-prince.jpeg'">
+        <div class="hcard prince" data-r><img src="ryan-prince.webp" alt="Shaurya receiving the Ryan Prince" loading="lazy" onerror="this.onerror=null;this.src='ryan-prince.jpeg'">
           <div class="in"><span class="k">Group level · Ryan International Group</span><div class="big">The Ryan <em>Prince</em></div>
           <p>Awarded in Grade XII at Group level, chosen from among students across hundreds of Ryan International and St. Xavier's schools, for academic excellence, leadership and character. This is separate from the school-level Ryan Prince title that individual branches award.</p>
           <small>Ryan International School, Greater Noida · Grade XII · 2025–26</small></div></div>
@@ -626,7 +626,7 @@ body.nogl .panel [data-r],body.nogl .w>span{opacity:1;transform:none}
   <header class="phead"><button class="back" data-close>Back to the room</button><nav class="tabs"><a data-page="writing">Writing</a><a data-page="design">Design</a><a data-page="experience">Experience</a><a data-page="about" class="on">About</a></nav></header>
   <div class="wrap">
     <div class="about-top">
-      <figure class="portrait" data-r><img src="assets/shaurya.webp" alt="Shaurya Pratap Singh" onerror="this.onerror=null;this.src='shaurya.jpeg'"><figcaption>Shaurya Pratap Singh · 2026</figcaption></figure>
+      <figure class="portrait" data-r><img src="shaurya.webp" alt="Shaurya Pratap Singh" onerror="this.onerror=null;this.src='shaurya.jpeg'"><figcaption>Shaurya Pratap Singh · 2026</figcaption></figure>
       <div><span class="k" data-r>About him</span>
         <div class="stmt split">Studying the courts, the constitution, and the institutions that shape public life. Writing about what holds them <em>together.</em></div>
         <p data-r style="--d:2">Writing essays on the courts, the constitution, and the institutions that shape public life. Designing over 200 editorial covers, NGO campaigns, and conference identities. Showing up: across 20+ NGOs, 40+ Model UNs, and a few things built from scratch.</p>
@@ -941,7 +941,7 @@ const lerp = (a, b, t) => a + (b - a) * t;
 const damp = (a, b, k, dt) => a + (b - a) * (1 - Math.exp(-k * Math.max(0, dt)));
 const angDiff = (a, b) => ((a - b + PI) % (2 * PI) + 2 * PI) % (2 * PI) - PI;
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const asset = n => 'assets/' + n + '.webp';
+const asset = n => '' + n + '.webp';
 if (fine) document.documentElement.classList.add('fine');
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
@@ -1046,7 +1046,7 @@ function baked(name, paint, { srgb = true, rep = [1, 1] } = {}){
     const done = src => { tex.image = src; tex.needsUpdate = true; res(); };
     const paintNow = () => { const c = paint(); if (BAKE) (window.__bake ||= {})[name] = c; done(c); };
     if (BAKE) return paintNow();
-    const img = new Image(); img.decoding = 'async'; img.onload = () => done(img); img.onerror = paintNow; img.src = 'assets/tex/' + name + '.webp';
+    const img = new Image(); img.decoding = 'async'; img.onload = () => done(img); img.onerror = paintNow; img.src = 'tex/' + name + '.webp';
   }));
   return tex;
 }
@@ -1709,7 +1709,7 @@ const PH_IDS = { floor: 'herringbone_parquet', plaster: 'painted_plaster_wall', 
 async function loadPH(){
   const out = {}, il = new THREE.ImageLoader(), bm = typeof createImageBitmap !== 'undefined';
   const one = url => bm ? fetchBitmap(url, true).catch(() => il.loadAsync(url)) : il.loadAsync(url);
-  await Promise.all(Object.entries(PH_IDS).map(async ([k, id]) => { try { const [d, n, a] = await Promise.all(['d', 'n', 'arm'].map(x => one(`assets/tex/ph/${id}-${x}.webp`)));
+  await Promise.all(Object.entries(PH_IDS).map(async ([k, id]) => { try { const [d, n, a] = await Promise.all(['d', 'n', 'arm'].map(x => one(`tex/ph/${id}-${x}.webp`)));
     out[k] = { d: new THREE.Source(d), n: new THREE.Source(n), a: new THREE.Source(a) }; } catch (e) { console.warn('texture', id); } }));
   return out;
 }
@@ -1725,7 +1725,7 @@ async function loadProps(){
   const [{ GLTFLoader }, { MeshoptDecoder }] = await Promise.all([import('three/addons/loaders/GLTFLoader.js'), import('three/addons/libs/meshopt_decoder.module.js')]);
   const gl = new GLTFLoader(); gl.setMeshoptDecoder(MeshoptDecoder); const out = {};
   await Promise.all(PROP_IDS.map(async id => { try {
-    const j = await (await fetch('assets/models/' + id + '.json')).json();
+    const j = await (await fetch('models/' + id + '.json')).json();
     out[id] = (await gl.parseAsync(b64bytes(j.glb).buffer, '')).scene; } catch (e) { console.warn('model', id, e); } }));
   return out;
 }
@@ -1814,8 +1814,8 @@ let bakeP = null;
 function b64bytes(s){ if (Uint8Array.fromBase64) return Uint8Array.fromBase64(s); const bin = atob(s), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return u8; }
 function prefetchBake(){
   if (BAKE || EXPORT || qs.has('nobake')) return null;
-  const lmP = typeof createImageBitmap !== 'undefined' ? fetchBitmap('assets/tex/lightmap.webp', false).catch(() => new THREE.ImageLoader().loadAsync('assets/tex/lightmap.webp')) : new THREE.ImageLoader().loadAsync('assets/tex/lightmap.webp');
-  return Promise.all([fetch('assets/room-lm.json').then(r => r.json()), lmP]).catch(e => (console.warn('lightmap', e), null));
+  const lmP = typeof createImageBitmap !== 'undefined' ? fetchBitmap('tex/lightmap.webp', false).catch(() => new THREE.ImageLoader().loadAsync('tex/lightmap.webp')) : new THREE.ImageLoader().loadAsync('tex/lightmap.webp');
+  return Promise.all([fetch('room-lm.json').then(r => r.json()), lmP]).catch(e => (console.warn('lightmap', e), null));
 }
 const LM = { on: false, mats: [], k: Math.PI / LM_SCALE * LM_GAIN };
 async function applyBake(){
